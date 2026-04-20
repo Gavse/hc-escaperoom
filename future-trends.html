@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>בונוס: התאמה לעולם עבודה משתנה</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Heebo', sans-serif;
+    direction: rtl;
+    min-height: 100vh;
+    background: #3d2b1f;
+    background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(139,90,43,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 30%, rgba(139,90,43,0.1) 0%, transparent 50%);
+    padding: 24px;
+}
+.page { max-width: 1100px; margin: 0 auto; }
+
+/* Board frame */
+.board {
+    background: #6b4226;
+    background-image:
+        repeating-linear-gradient(0deg, rgba(0,0,0,0.03) 0px, transparent 1px, transparent 3px),
+        repeating-linear-gradient(90deg, rgba(0,0,0,0.02) 0px, transparent 1px, transparent 4px);
+    border-radius: 8px;
+    border: 6px solid #4a2c14;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.3), 0 8px 32px rgba(0,0,0,0.5);
+    padding: 28px 24px 20px;
+    position: relative;
+}
+
+/* Title - white chalk style */
+h1 {
+    font-size: 22px; font-weight: 800;
+    color: #f5e6d0;
+    text-align: center;
+    margin-bottom: 6px;
+    text-shadow: 0 1px 3px rgba(0,0,0,0.4);
+}
+
+/* Sticky note - intro */
+.sticky-note {
+    background: #fff9c4;
+    border: 1px solid #e6d88a;
+    border-radius: 2px;
+    padding: 12px 16px;
+    margin: 0 auto 18px;
+    max-width: 700px;
+    box-shadow: 2px 3px 8px rgba(0,0,0,0.25);
+    transform: rotate(-0.5deg);
+    position: relative;
+}
+/* Tape strip on sticky note */
+.sticky-note::before {
+    content: '';
+    position: absolute; top: -8px; right: 42%;
+    width: 50px; height: 16px;
+    background: rgba(255,255,255,0.35);
+    border: 1px solid rgba(255,255,255,0.15);
+    transform: rotate(-2deg);
+}
+
+/* Question mark on board */
+.board-question {
+    position: absolute;
+    top: 12px; left: 24px;
+    font-size: 120px; font-weight: 900;
+    color: rgba(255,255,255,0.15);
+    transform: rotate(-8deg);
+    user-select: none;
+    pointer-events: none;
+    text-shadow: 2px 3px 6px rgba(0,0,0,0.3);
+    z-index: 0;
+}
+.sticky-note p {
+    font-size: 11px; line-height: 1.5;
+    color: #5d4e37;
+}
+.sticky-note strong { color: #c0392b; }
+
+/* Card grid - 2 rows of 3, wide gaps */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 24px;
+    row-gap: 18px;
+    margin-bottom: 20px;
+}
+
+/* Pinned card on board */
+.pin-card {
+    background: linear-gradient(135deg, #fff 0%, #faf8f5 100%);
+    border-radius: 3px;
+    padding: 6px 10px 6px;
+    border-bottom: 1px solid #e8e0d4;
+    box-shadow: 2px 3px 10px rgba(0,0,0,0.3);
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.pin-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 3px 5px 16px rgba(0,0,0,0.4);
+}
+.pin-card.active {
+    outline: 3px solid #14b8a6;
+    outline-offset: 2px;
+}
+/* Pushpin - metallic */
+.pin-card::before {
+    content: '';
+    position: absolute; top: -8px; right: 20px;
+    width: 16px; height: 16px;
+    background: radial-gradient(circle at 35% 35%, #ff6b6b, #c0392b 50%, #8b1a1a);
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 2px rgba(255,255,255,0.3);
+    z-index: 2;
+}
+.pin-card::after {
+    content: '';
+    position: absolute; top: -1px; right: 26px;
+    width: 4px; height: 4px;
+    background: rgba(0,0,0,0.15);
+    border-radius: 50%;
+}
+/* Slight rotations */
+.pin-card:nth-child(1) { transform: rotate(-1deg); }
+.pin-card:nth-child(2) { transform: rotate(0.5deg); }
+.pin-card:nth-child(3) { transform: rotate(-0.3deg); }
+.pin-card:nth-child(4) { transform: rotate(0.8deg); }
+.pin-card:nth-child(5) { transform: rotate(-0.5deg); }
+.pin-card:nth-child(6) { transform: rotate(0.3deg); }
+.pin-card:hover { transform: translateY(-2px) rotate(0deg) !important; }
+
+.pin-card .card-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; color: #fff;
+    margin-bottom: 6px;
+}
+/* Amber = external forces */
+.pin-card.force .card-icon { background: linear-gradient(135deg, #b45309, #d97706); }
+/* Teal = adaptation */
+.pin-card.adapt .card-icon { background: linear-gradient(135deg, #0f766e, #0d9488); }
+/* Amber = regulation */
+.pin-card.reg .card-icon { background: linear-gradient(135deg, #b45309, #d97706); }
+
+.pin-card h3 {
+    font-size: 11px; font-weight: 700;
+    color: #1e293b;
+    line-height: 1.3;
+    text-align: center;
+}
+.pin-card .card-icon { margin: 0 auto 6px; }
+.pin-card { text-align: center; }
+
+/* Connecting lines (SVG overlay) */
+.lines-layer {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+.cards-grid { position: relative; z-index: 1; }
+
+/* Detail panel (opens below cards) */
+.detail-panel {
+    background: #fff;
+    border-radius: 6px;
+    padding: 20px 22px;
+    box-shadow: 2px 4px 16px rgba(0,0,0,0.3);
+    margin-bottom: 16px;
+    display: none;
+    animation: panelIn 0.25s ease;
+    position: relative;
+}
+.detail-panel::before {
+    content: '';
+    position: absolute; top: -7px; right: 30px;
+    width: 14px; height: 14px;
+    background: #e74c3c;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.detail-panel.visible { display: block; }
+@keyframes panelIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+.detail-panel .section-title {
+    font-size: 15px; font-weight: 800; color: #fff;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 6px;
+}
+.detail-panel .section-title.amber { background: linear-gradient(135deg, #b45309, #d97706); }
+.detail-panel .section-title.force { background: linear-gradient(135deg, #b45309, #d97706); }
+.detail-panel .section-title i { font-size: 18px; }
+.detail-panel .section-sub {
+    font-size: 13px; line-height: 1.6; color: #115e59;
+    background: #f0fdfa; border: 1.5px solid #99f6e4; border-radius: 0 0 10px 10px;
+    padding: 8px 16px 10px;
+    margin-top: -6px; margin-bottom: 10px;
+}
+.detail-panel .section-sub.amber { color: #92400e; background: #fffbeb; border-color: #fcd34d; }
+.detail-panel .section-sub.force { color: #92400e; background: #fffbeb; border-color: #fcd34d; }
+
+/* Track cards inside detail panel */
+.track-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    border-right: 4px solid #14b8a6;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    display: flex; gap: 10px; align-items: flex-start;
+}
+.track-card.amber-border { border-right-color: #f59e0b; }
+.track-card.force-border { border-right-color: #f59e0b; }
+.track-card.force-border .tc-icon { background: #fffbeb; }
+.track-card.force-border .sub-details li::before { background: #f59e0b; }
+.track-card .tc-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #f0fdfa;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0; margin-top: 2px;
+}
+.track-card.amber-border .tc-icon { background: #fffbeb; }
+.track-card h4 { font-size: 13.5px; font-weight: 700; color: #1e293b; margin-bottom: 2px; }
+.track-card p { font-size: 12.5px; line-height: 1.6; color: #64748b; }
+
+.track-card[data-expandable] { cursor: pointer; }
+.track-card .sub-toggle { font-size: 11px; font-weight: 700; color: #0d9488; display: inline-block; margin-top: 4px; }
+.track-card.open .sub-toggle { display: none; }
+.track-card .sub-details { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; list-style: none; padding: 0; margin: 0; }
+.track-card.open .sub-details { max-height: 2000px; padding-top: 6px; margin-top: 6px; border-top: 1px solid #f1f5f9; }
+.track-card .sub-details li { font-size: 12px; line-height: 1.6; color: #64748b; padding: 3px 12px 3px 0; position: relative; }
+.track-card .sub-details li::before { content: ''; position: absolute; right: 0; top: 10px; width: 5px; height: 5px; border-radius: 50%; background: #14b8a6; }
+.track-card.amber-border .sub-details li::before { background: #f59e0b; }
+
+sup { font-size: 9px; color: #0d9488; cursor: default; font-weight: 700; }
+
+/* Close button for detail panel */
+.detail-close {
+    position: absolute; top: 12px; left: 12px;
+    background: none; border: none; cursor: pointer;
+    font-size: 18px; color: #94a3b8;
+}
+.detail-close:hover { color: #1e293b; }
+
+/* Endnotes */
+.endnotes-section { margin-top: 16px; }
+.endnotes-toggle { font-size: 13px; font-weight: 700; color: #f5e6d0; cursor: pointer; background: rgba(245,230,208,0.15); border: 1.5px solid rgba(245,230,208,0.3); border-radius: 20px; padding: 6px 16px; display: inline-block; }
+.endnotes-list { max-height: 0; overflow: hidden; transition: max-height 0.4s ease; list-style: none; padding: 0; margin: 8px 0 0; }
+.endnotes-list.open { max-height: 5000px; }
+.endnotes-list li { font-size: 11px; line-height: 1.5; color: rgba(245,230,208,0.6); padding: 3px 0; border-bottom: 1px solid rgba(245,230,208,0.1); }
+.endnotes-list li strong { color: rgba(245,230,208,0.8); }
+.endnotes-list li a { color: #14b8a6; word-break: break-all; }
+</style>
+</head>
+<body>
+<div class="page">
+<div class="board">
+    <div class="board-question">?</div>
+
+    <h1>בונוס: התאמה לעולם העבודה המשתנה</h1>
+
+    <div class="sticky-note">
+        <p>בעוד רוב החלקים בהתנסות עוסקים באתגרים הנוכחיים ובבעיות שניתן לאבחן ולמדוד בתוך המערכת, חלק זה עוסק בשינויים המתחילים להתרחש מחוץ לשירות המדינה, משנים את כללי המשחק עצמם ואת אופי הצורך בכוח האדם של ארגונים ומערכות - מגיוס, שימור, קידום, פיתוח מקצועי ועד מבנה התפקיד והמבנה ארגוני.</p>
+        <p style="margin-top:6px"><strong>חשוב להדגיש כי המטרה היא לעודד חשיבה ולא לתת תשובות.</strong> המגמות המוצגות אינן משקפות ניתוח מגמות מקצועי ואינן ממצות. כמו כן מגמות עתידיות לקוחות מהקשרים שונים, תלויות באינטראקציה בין גורמים רבים ושרמת האי וודאות לגבי העתיד היא תמיד גבוהה. על כן, המטרה היא לחשוף לרעיונות ולעודד חשיבה ויש צורך לפרשם בזהירות, לפעול תוך חשיבה ביקורתית ולהתאימן להקשר. מצד שני גם חשוב לציין שחוסר פעולה בעולם משתנה היא גם החלטה עם השלכות.</p>
+    </div>
+
+    <div style="position:relative">
+        <!-- Red yarn strings -->
+        <svg class="lines-layer" viewBox="0 0 600 220" preserveAspectRatio="none">
+            <!-- דמוגרפיה → כישורים (vertical) -->
+            <path d="M100,90 Q95,105 100,120" stroke="#c0392b" stroke-width="2" fill="none" opacity="0.6"/>
+            <!-- טכנולוגיה → כישורים (diagonal) -->
+            <path d="M300,90 Q280,105 240,120" stroke="#c0392b" stroke-width="2" fill="none" opacity="0.6"/>
+            <!-- טכנולוגיה → מיונים (diagonal) -->
+            <path d="M340,90 Q370,105 400,120" stroke="#c0392b" stroke-width="2" fill="none" opacity="0.6"/>
+            <!-- כישורים → הכשרה (horizontal row 2) -->
+            <path d="M160,165 Q230,170 300,165" stroke="#c0392b" stroke-width="1.5" fill="none" opacity="0.4"/>
+            <!-- מיונים → הכשרה (horizontal row 2) -->
+            <path d="M440,165 Q370,170 300,165" stroke="#c0392b" stroke-width="1.5" fill="none" opacity="0.4"/>
+        </svg>
+
+        <div class="cards-grid">
+            <div class="pin-card force" onclick="showSection(0, this)">
+                <div class="card-icon"><i class="ti ti-users"></i></div>
+                <h3>שינויים דמוגרפיים ובין-דוריים</h3>
+            </div>
+            <div class="pin-card force" onclick="showSection(1, this)">
+                <div class="card-icon"><i class="ti ti-cpu"></i></div>
+                <h3>טכנולוגיה המשנה את טבע העבודה</h3>
+            </div>
+            <div class="pin-card adapt" onclick="showSection(2, this)">
+                <div class="card-icon"><i class="ti ti-certificate-2"></i></div>
+                <h3>אורך חיי כישורים מתכווץ</h3>
+            </div>
+            <div class="pin-card adapt" onclick="showSection(3, this)">
+                <div class="card-icon"><i class="ti ti-list-check"></i></div>
+                <h3>מיונים</h3>
+            </div>
+            <div class="pin-card adapt" onclick="showSection(4, this)">
+                <div class="card-icon"><i class="ti ti-school"></i></div>
+                <h3>הכשרה ופיתוח מקצועי</h3>
+            </div>
+            <div class="pin-card adapt" onclick="showSection(5, this)">
+                <div class="card-icon"><i class="ti ti-flask-2"></i></div>
+                <h3>חדשנות ברגולציה</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-panel" id="detailPanel">
+        <button class="detail-close" onclick="closePanel()">✕</button>
+        <div id="detailContent"></div>
+    </div>
+
+    <!-- ═══ ENDNOTES ═══ -->
+    <div class="endnotes-section">
+        <span class="endnotes-toggle" onclick="this.nextElementSibling.classList.toggle('open'); this.textContent = this.nextElementSibling.classList.contains('open') ? 'מקורות ▲' : 'מקורות ▼'">מקורות ▼</span>
+        <ul class="endnotes-list">
+            <li><strong>1.</strong> משרד הבריאות, "גידול משמעותי בתוחלת החיים בישראל," 19.10.2025. <a href="https://www.gov.il/he/departments/news/19102025-03" target="_blank">gov.il</a></li>
+            <li><strong>2.</strong> נציבות שירות המדינה, דו"ח סיכום פעילות לשנת 2024 (2025), פרק "אגף בכיר לפרישה וגמלאות" <a href="https://www.gov.il/BlobFolder/reports/full_report_csc_2024/he/full_report_csc_2024.pdf" target="_blank">gov.il</a></li>
+            <li><strong>3.</strong> Top Employers Institute, "Gen Z: Redefining the Future of Work," accessed March 18, 2026. <a href="https://www.top-employers.com/blog/gen-z-redefining-the-future-of-work/" target="_blank">top-employers.com</a></li>
+            <li><strong>4.</strong> Randstad, The Gen Z Workplace Blueprint: Future Focused, Fast Moving, 2025. <a href="https://workforceinsights.randstad.com/download-gen-z-report" target="_blank">workforceinsights.randstad.com</a></li>
+            <li><strong>5.</strong> World Economic Forum, The Future of Jobs Report 2025, January 7, 2025. <a href="https://www.weforum.org/publications/the-future-of-jobs-report-2025" target="_blank">weforum.org</a></li>
+            <li><strong>6.</strong> McKinsey Global Institute, Agents, Robots, and Us: Skill Partnerships in the Age of AI, November 25, 2025. <a href="https://www.mckinsey.com/mgi/our-research/agents-robots-and-us-skill-partnerships-in-the-age-of-ai" target="_blank">mckinsey.com</a></li>
+            <li><strong>7.</strong> OECD, Employment Outlook 2023: Artificial Intelligence and the Labour Market, Chapter 4 (2023). <a href="https://www.oecd.org/en/publications/oecd-employment-outlook-2023_08785bba-en/full-report/artificial-intelligence-and-jobs-no-signs-of-slowing-labour-demand-yet_5aebe670.html" target="_blank">oecd.org</a></li>
+            <li><strong>8.</strong> Andy Jassy, "Strengthening our culture and teams," Amazon, September 2024. <a href="https://www.aboutamazon.com/news/company-news/ceo-andy-jassy-latest-update-on-amazon-return-to-office-manager-team-ratio" target="_blank">aboutamazon.com</a></li>
+            <li><strong>9.</strong> McKinsey, The Agentic Organization, September 2025. <a href="https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/the-agentic-organization-contours-of-the-next-paradigm-for-the-ai-era" target="_blank">mckinsey.com</a></li>
+            <li><strong>10.</strong> SignalFire, The State of Tech Talent Report 2025. <a href="https://www.signalfire.com/blog/signalfire-state-of-talent-report-2025" target="_blank">signalfire.com</a></li>
+            <li><strong>11.</strong> Revelio Labs, "Is AI Responsible for the Rise in Entry-Level Unemployment?," 2025. <a href="https://www.reveliolabs.com/news/macro/is-ai-responsible-for-the-rise-in-entry-level-unemployment/" target="_blank">reveliolabs.com</a>; SignalFire 2025; WEF Future of Jobs 2025.</li>
+            <li><strong>12.</strong> McKinsey, Agents, Robots, and Us, 2025. <a href="https://www.mckinsey.com/mgi/our-research/agents-robots-and-us-skill-partnerships-in-the-age-of-ai" target="_blank">mckinsey.com</a>; Brynjolfsson, Li & Raymond, Generative AI at Work, NBER Working Paper 31161, 2023. <a href="https://www.nber.org/papers/w31161" target="_blank">nber.org</a></li>
+            <li><strong>13.</strong> IBM, "Tech Talent Shortage." <a href="https://www.ibm.com/think/insights/tech-talent-shortage" target="_blank">ibm.com</a>; WEF Future of Jobs 2025; McKinsey, Agents, Robots, and Us, 2025.</li>
+            <li><strong>14.</strong> Harvard Business School / Burning Glass Institute, Skills-Based Hiring, 2024. <a href="https://www.hbs.edu/managing-the-future-of-work/Documents/research/Skills-Based%20Hiring.pdf" target="_blank">hbs.edu</a>; WEF Future of Jobs 2025.</li>
+            <li><strong>15.</strong> NSW Public Service Commission, Talent pools guide, 2019. <a href="https://www.psc.nsw.gov.au/assets/psc/documents/Talent-pools-guide-for-HR-and-hiring-managers.pdf" target="_blank">psc.nsw.gov.au</a>; U.S. OPM, Available Talent Pools + Chance to Compete Act, 2023-2024. <a href="https://www.opm.gov/policy-data-oversight/hiring-information/available-talent-pools/" target="_blank">opm.gov</a>; OECD, Governing with Artificial Intelligence, Chapter 5 (2025). <a href="https://www.oecd.org/en/publications/governing-with-artificial-intelligence_795de142-en.html" target="_blank">oecd.org</a></li>
+            <li><strong>16.</strong> Alex Hern, "Unilever saves on recruiters by using AI," The Guardian, 2019. <a href="https://www.theguardian.com/technology/2019/oct/25/unilever-saves-on-recruiters-by-using-ai-to-assess-job-interviews" target="_blank">theguardian.com</a></li>
+            <li><strong>17.</strong> Public Service Commission of Canada, AI in the hiring process, 2026. <a href="https://www.canada.ca/en/public-service-commission/services/appointment-framework/guides-tools-appointment-framework/ai-hiring-process.html" target="_blank">canada.ca</a></li>
+            <li><strong>18.</strong> İlhan et al., "Opportunities and challenges of asynchronous video interviews," 2025. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC12151341/" target="_blank">pmc.ncbi.nlm.nih.gov</a></li>
+            <li><strong>19.</strong> South, 2018. <a href="https://dl4d.org/wp-content/uploads/2018/10/01-Digital-Game-Based-Learning-Main-Paper.pdf" target="_blank">dl4d.org</a>; Shrivastava et al., "Serious Games in Medical Education," Cureus 16(5), 2024. <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC11174159/" target="_blank">pmc.ncbi.nlm.nih.gov</a></li>
+            <li><strong>20.</strong> Mehraeen et al., "Serious Games in Nursing Education," Teaching and Learning in Nursing, 2025. <a href="https://www.sciencedirect.com/science/article/pii/S2214139125000253" target="_blank">sciencedirect.com</a></li>
+            <li><strong>21.</strong> CIPD, "Review Recruitment and Performance Management," 2025. <a href="https://www.cipd.org/en/about/news/Dont-wait-for-ERB-clarity-review-recruitment-performance-management/" target="_blank">cipd.org</a>; U.S. Dept of Labor, ApprenticeshipUSA. <a href="https://www.apprenticeship.gov/sites/default/files/dol_apprenticeshipusa_v13_web-ready.pdf" target="_blank">apprenticeship.gov</a>; UK Gov, Work Trials. <a href="https://www.gov.uk/jobcentre-plus-help-for-recruiters/work-trials" target="_blank">gov.uk</a></li>
+            <li><strong>22.</strong> Phenom, "Onboarding Trends 2026," 2025. <a href="https://www.phenom.com/blog/onboarding-trends-ai-skills" target="_blank">phenom.com</a>; SAP, "Learning in the Flow of Work," 2023. <a href="https://www.sap.com/resources/learning-in-the-flow-of-work" target="_blank">sap.com</a>; Brandon Hall Group, 2024. <a href="https://brandonhall.com/creating-an-effective-onboarding-learning-experience-strategies-for-success/" target="_blank">brandonhall.com</a></li>
+            <li><strong>23.</strong> TeamViewer/DHL Success Story. <a href="https://www.teamviewer.com/en/success-stories/dhl/" target="_blank">teamviewer.com</a>; AR Insider, "DHL Streamlines Warehouse Logistics with AR," 2025. <a href="https://arinsider.co/2025/06/05/case-study-dhl-streamlines-warehouse-logistics-with-ar/" target="_blank">arinsider.co</a></li>
+            <li><strong>24.</strong> WEF Future of Jobs 2025; OECD, Place-Based Policies for Displaced Workers, 2025. <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2025/06/place-based-policies-for-displaced-workers_2ae61406/69b86784-en.pdf" target="_blank">oecd.org</a>; IEA, Just and Inclusive Energy Transitions, 2025. <a href="https://www.iea.org/reports/ensuring-a-strong-labour-dimension-for-just-and-inclusive-energy-transitions/just-and-inclusive-energy-transitions" target="_blank">iea.org</a></li>
+            <li><strong>25.</strong> OECD, Regulatory Sandbox Toolkit, 2025. <a href="https://www.oecd.org/en/publications/regulatory-sandbox-toolkit_de36fa62-en.html" target="_blank">oecd.org</a></li>
+            <li><strong>26.</strong> UK FCA, Regulatory Sandbox, 2015. <a href="https://www.fca.org.uk/firms/innovation/regulatory-sandbox" target="_blank">fca.org.uk</a>; Datasphere Initiative / Future of Privacy Forum, "Regulatory Sandboxes as a Tool for AI Governance," 2025. <a href="https://fpf.org/blog/balancing-innovation-and-oversight-regulatory-sandboxes-as-a-tool-for-ai-governance/" target="_blank">fpf.org</a>; Senatore et al., "Regulatory Sandbox Expansion," ScienceDirect, 2025. <a href="https://www.sciencedirect.com/science/article/pii/S2950261625000202" target="_blank">sciencedirect.com</a></li>
+            <li><strong>27.</strong> UNDP, "Making Our Future," 2023. <a href="https://www.undp.org/sites/g/files/zskgke326/files/2023-11/undp_regional_human_development_report_web_final_0.pdf" target="_blank">undp.org</a>; WEF, "Agile Regulation for the Fourth Industrial Revolution," 2020. <a href="https://www3.weforum.org/docs/WEF_Agile_Regulation_for_the_Fourth_Industrial_Revolution_2020.pdf" target="_blank">weforum.org</a>; Eggers, Turley & Kishnani, "The future of regulation," Deloitte, 2018. <a href="https://www.deloittelegal.com.hk/en/The_Future_Of_Regulation_Principles_For_Regulating.html" target="_blank">deloitte.com</a>; OECD, "Agile Regulatory Governance," 2021. <a href="https://legalinstruments.oecd.org/en/instruments/OECD-LEGAL-0464" target="_blank">oecd.org</a></li>
+        </ul>
+    </div>
+
+</div>
+</div>
+
+<script>
+// All section content - exact same text, icons, sups
+var sections = [
+{
+    title: 'שינויים דמוגרפיים ובין-דוריים', icon: 'ti-users', color: 'force',
+    sub: 'שירות המדינה עומד בפני לחץ כפול: מלמעלה - עליה בתוחלת החיים, ומלמטה - ציפיות והעדפות שונות של הדורות הצעירים, המצמצמים את ההתאמה של המנגנון הקיים.',
+    cards: [
+        { icon: 'ti-trending-up', title: 'מלמעלה: עלייה בתוחלת החיים ובגיל הפרישה משירות המדינה', text: 'בשנת 2023 ישראל דורגה במקום הרביעי ב-OECD עם תוחלת חיים ממוצעת של <strong>83.8</strong> שנים (לעומת כ-81.5 ב-2010).<sup>1</sup> ב-2024 גיל הפרישה בפנסיות תקציביות עלה משמעותית מ-<strong>56.3</strong> ב-2002 ל-<strong>60.9</strong> ב-2024 ובפנסיה צוברת רוב הפורשים (<strong>52.9%</strong>) יצאו בגילים 64-67.&rlm;<sup>2</sup>' },
+        { icon: 'ti-mood-boy', title: 'מלמטה: דור ה-Z ודור האלפא', text: 'ציפיות והעדפות שונות של דור ה-Z (ילידי 1997-2012). נראה כי דור ה-Z מעדיפים גמישות ואיזון בין החיים לעבודה - סקר אחד מצא כי <strong>שני שליש מדור ה-Z מוכנים לקבל שכר נמוך יותר עבור גמישות</strong>.<sup>3</sup>', expand: '<li>עבור דור ה-Z תחושת משמעות היא מפתח למוטיבציה לעבודה ונשארים פחות זמן בתפקיד מדורות קודמים.<sup>4</sup></li><li>עדיין לא ידוע כיצד דור האלפא (כניסה לשוק מ-2028) יתנהל, אך הערכות ראשוניות מצביעות כי הוא צפוי לדרוש את כל אלה כברירת מחדל.</li><li>שירות ציבורי שלא יציע גמישות במקום, בזמן ובדרך העבודה ושלא מציע הזדמנויות פיתוח יתקשה יותר ויותר להתחרות בגיוס כמו גם לאפשר לכוח עבודה מבוגר מעורבות מתאימה.</li>' }
+    ]
+},
+{
+    title: 'טכנולוגיה המשנה את טבע העבודה', icon: 'ti-cpu', color: 'force',
+    sub: 'הבינה המלאכותית והאוטומציה משנות את מהות העבודה האנושית; לפי WEF (1,000+ מעסיקים, 55 כלכלות), <strong>39% מהכישורים הנדרשים בשוק העבודה ישתנו עד 2030</strong>.<sup>5</sup> השינוי מתבטא בכמה מישורים.',
+    cards: [
+        { icon: 'ti-robot', title: 'ייתור משימות', text: 'כבר בשנים הקרובות בינה מלאכותית צפויה לבצע משימות קוגניטיביות מובנות כמו עיבוד נתונים, סקירת מסמכים, ניסוח טיוטות, תרגום,תזמון, טוב יותר, מהר יותר וזול יותר מבני אדם.', expand: '<li>לפי חברת הייעוץ מקינזי, 57% <strong>משעות העבודה</strong> בארה"ב כבר ניתנות לאוטומציה טכנית (44% באמצעות סוכני תוכנה, 13% רובוטים).<sup>6</sup></li>' },
+        { icon: 'ti-arrows-exchange', title: 'שינוי אופי תפקידים', text: 'רוב התפקידים בשירות הציבורי לא צפויים להיעלם בבת אחת אלא ישתנו מבפנים.', expand: '<li>לפי OECD Employment Outlook 2023, <strong>27% מהמשרות במדינות ה-OECD נמצאות בסיכון גבוה לאוטומציה</strong> - אבל המסקנה המרכזית היא שעבור רוב העובדים ההשפעה תהיה לא באובדן תעסוקה אלא בשינוי הרכב המשימות שהם מבצעים - פחות ביצוע ישיר, יותר שיפוט ופיקוח.<sup>7</sup></li>' },
+        { icon: 'ti-hierarchy', title: 'מבנים ארגוניים', text: 'שכבות ניהול שתפקידן לאסוף מידע, לרכז ולדווח מעלה עשויות להצטמצם.', expand: '<li>חברת אמזון דרשה מכל יחידה להגדיל את היחס בין עובדים מקצועיים למנהלים ב-<strong>15%</strong> ומודרנה מיזגה מחלקות שלמות.<sup>8</sup></li><li>לפי מקינזי המודל המתגבש הוא <strong>צוותים קטנים ומולטי-דיסציפלינריים של 2-5 אנשים</strong> שאחראים על תוצאה שלמה - לא על פונקציה צרה.<sup>9</sup></li><li>בהתאם לכך, תפקיד הניהול לא נעלם אלא עשוי להשתנות - פחות ריכוז ודיווח, יותר תיאום, ליווי, הכשרה וקבלת החלטות באי-ודאות.</li>' },
+        { icon: 'ti-trending-down', title: 'שחיקת שכבת הכניסה', text: 'מגמות ראשוניות מצביעות על ירידה בהתחלות גיוס למשרות כניסה. מספר ניתוחים מצאו <strong>ירידה של בין 13%-50% בגיוס למשרות כניסה</strong> בתפקידים עם חשיפה לבינה מלאכותית.<sup>10</sup>', expand: '<li>לדוגמה, ניתוח של SignalFire מצא ירידה של כ-<strong>50% בהתחלות עבודה לעובדים עם פחות משנת ניסיון</strong> בארה"ב בין 2019 ל-2024, בעיקר בענפי ידע וטכנולוגיה.<sup>10</sup></li><li>עם זאת חשוב לציין כי מגמה זו מושפעת גם מכוחות מאקרו-כלכליים הנובעים מאי וודאות עולמית, תיקון פוסט קורונה והאטה בצמיחה, אך עדיין נראה שבינה מלאכותית היא גורם מרכזי.<sup>11</sup></li><li>שכבת הכניסה נשחקת בין היתר עקב שינוי ביכולת הבינה המלאכותית לבצע עבודה קוגניטיבית מובנית ו<strong>עליה משמעותית בתפוקות</strong> של עובדים בעלי ניסיון וצוותים המפעילים אותה באופן יעיל.<sup>12</sup></li><li>חלק מהשחיקה הוא "סטטיסטי" - הרבה תפקידים שהיו פעם מוצהרים כ-entry level הועלו רמתם לדרישה של <strong>2-3 שנות ניסיון</strong>, או הוסטו למסלולי התמחות/פרילנס.</li>' }
+    ]
+},
+{
+    title: 'אורך חיי כישורים מתכווץ', icon: 'ti-certificate-2', color: 'teal',
+    sub: 'הכשרה חד-פעמית בכניסה לתפקיד כבר אינה מספיקה. הפורום הכלכלי העולמי מעריך ש-<strong>59% מכוח העבודה העולמי יזדקק להכשרה מחדש עד 2030</strong>.',
+    cards: [
+        { icon: 'ti-brain', title: 'כישורים שנשארים רלוונטיים', text: 'בעוד כישורים טכניים ספציפיים מתיישנים בקצב הולך וגובר, המחקר מצביע על כך שמיומנויות כמו יכולת למידה מהירה, שיפוט, פתרון בעיות, לצד חוסן, גמישות ומיומנויות חברתיות ומנהיגותיות צפויות להיות רלוונטיות לאורך זמן.<sup>13</sup>' }
+    ]
+},
+{
+    title: 'מיונים', icon: 'ti-list-check', color: 'teal',
+    sub: 'השינוי בכישורים הנדרשים גם מחזק את הצורך במעבר מהתבססות על תעודות ותארים למיון על בסיס יכולות מוכחות בעזרת מבחנים מקצועיים, מבחני ביצוע וסימולציות.<sup>14</sup>',
+    cards: [
+        { icon: 'ti-database', title: 'מאגרי מועמדים ואוטומציה במיון', text: 'שימוש במאגרי מועמדים (מועמדים שעברו שלבי מיונים אך לא זכו במכרז ומועמדים המבצעים שלבי מיון ראשוניים בזמן המתאים להם), כמו גם אוטומציה בבדיקת תנאי הסף ושימוש בבינה מלאכותית לבדיקת שלבי המיון הראשונים כמו, משחקי הערכה דיגיטליים, ביצוע משימה מקצועית וראיון א-סינכרוני עשויים להוריד עלויות ולקצר באופן משמעותי את תהליך הגיוס.<sup>15</sup>', expand: '<li>חברת יוניליוור דיווחה כי חסכה כ-<strong>100,000 שעות ראיון בשנה</strong> וכמיליון דולר בעלויות גיוס דרך שילוב של משחקי הערכה, ראיונות א-סינכרוניים ומודלי ניבוי התאמה.<sup>16</sup></li><li>עם זאת, בינה מלאכותית משמרת הטיות כך שבמיוחד בהקשר הציבורי יש צורך באמצעי זהירות ובבקרה אנושית.<sup>17</sup></li><li>כמו כן, לצד פוטנציאל לייעול, ראיונות א-סינכרונים עשויים לפגוע בחוויית המועמד ובתפיסת ההוגנות.<sup>18</sup></li>' }
+    ]
+},
+{
+    title: 'הכשרה ופיתוח מקצועי', icon: 'ti-school', color: 'teal',
+    sub: 'מספר מגמות מראות על שינויים משמעותיים בתחום.',
+    cards: [
+        { icon: 'ti-refresh', title: 'מעבר מהכשרה חד-פעמית ללמידה מתמשכת בתוך זרם העבודה', text: 'מעבר מלמידה בתואר והכשרה אינטנסיבית בכניסה לתפקיד ללמידה לאורך החיים ופיתוח יכולות תוך כדי תנועה ובזמן אמת.' },
+        { icon: 'ti-device-gamepad-2', title: 'סימולציות דיגיטליות', text: 'סימולציות דיגיטליות פשוטות - כגון משחקי תרחיש ותרגול מבוסס החלטות הופכות לכלי הכשרה חשוב לפיתוח מיומנויות ולמידה פעילה ומצבית בסביבה אותנטית ובטוחה עם משוב מהיר.<sup>19</sup> לדוגמה, בתוכניות הכשרה רפואיות וסיעודיות מעודכנות, הן מוצגות ככלים יעילים לתרגול קבלת החלטות, פתרון בעיות ושיקול דעת בתרחישים מציאותיים.<sup>20</sup>' },
+        { icon: 'ti-arrows-shuffle', title: 'טשטוש הגבול בין מיון, קליטה והכשרה', text: 'ייתכן שמתפתחת מגמה המטשטשת את הגבול בין מיון, קליטה והכשרה. במסגרת מודלים אלה, מועמדים שעברו סינון ראשוני מבצעים בתשלום משימות עבודה אמיתיות או נכנסים לתקופות ניסיון קצרות, ולעיתים ממושכות יותר. מודלים כאלה עשויים לקצר את תהליך הגיוס, לאפשר בחינת התאמה בתנאים מציאותיים, ולהפחית עלויות וסיכון, תוך מתן שכר וניסיון מעשי למועמדים.<sup>21</sup>' },
+        { icon: 'ti-rocket', title: 'קליטה מבוססת טכנולוגיה', text: 'קליטה - "onboarding" מבוסס טכנולוגיה עשוי לשמש תפקיד חשוב בסגירת פערי היכולת של עובדים חדשים. כבר כיום יש אינדיקציות ראשוניות לארגונים שהטמיעו תהליכים מבוססי בינה מלאכותית ומצאו ש<strong>עובדים חדשים מגיעים לפריון מלא מהר יותר בעד כ-50%</strong>.<sup>22</sup>', expand: '<li>לדוגמה, חברת הלוגיסטיקה DHL דיווחה כי בעקבות פיילוט בו הטמיעה משקפי מציאות רבודה שמציגות הנחיות ופידבק ויזואלי - זמן ההכשרה קוצר בכ-50%, הפריון עלה בכ-15%, ושיעור השגיאות ירד לכ-0.1%.<sup>23</sup></li>' },
+        { icon: 'ti-replace', title: 'הכשרה מחדש (reskilling)', text: 'הכשרה מחדש של עובדים שתפקידיהם משתנים או נעלמים עשויה לשחק תפקיד חשוב בסיוע בשימור עובדים ובהגנה על זכויותיהם, במיוחד כאשר היא משולבת בהשמה מחדש, בהכרה בכישורים קיימים ובדיאלוג שמבטיח תנאי מעבר הוגנים.<sup>24</sup>' }
+    ]
+},
+{
+    title: 'חדשנות ברגולציה וארגזי חול רגולטוריים', icon: 'ti-flask-2', color: 'teal',
+    sub: 'נסיון להתאים רגולציה לעולם שמשתנה במהירות באמצעות כלים חדשים המאפשרים לבדוק, ללמוד ולתקן תוך כדי תנועה.',
+    cards: [
+        { icon: 'ti-box', title: 'ארגזי חול רגולטוריים', text: 'מגמה משמעותית וצומחת היא השימוש בארגזי חול רגולטוריים - הקלות רגולטוריות זמניות בתוך סביבה מבוקרת לצורך בחינת ההזדמנויות והסיכונים הכרוכים בחדשנות ספציפית לצורך שיפור הסביבה הרגולטורית בטווח הארוך.<sup>25</sup>', expand: '<li>מודל זה צמח משימוש בודד בתחום הפיננסים ב-2015 ליותר מ-60 שימושים בממשלות ברחבי העולם בתחומים שונים כמו בריאות, חינוך ובינה מלאכותית.</li><li><strong>מהווה נתיב מרכזי עבור מדינות לאיזון בין מגבלות רגולטוריות וצורך בשינויים הדרגתיים ואחראיים לבין הצורך בחדשנות, גמישות והתאמה לעולם משתנה.</strong><sup>26</sup></li>', amber: true },
+        { icon: 'ti-adjustments-alt', title: 'רגולציה אדפטיבית, אג\'ילית וצופה פני עתיד', text: 'שינוי זה הינו חלק ממגמה רחבה יותר של חדשנות ברגולציה - נסיון להתאים רגולציה לעולם שמשתנה במהירות. רגולציה אדפטיבית, אג\'ילית וצופה פני עתיד:<sup>27</sup>', expand: '<li>זיהוי מגמות ופעולה מקדימה כדי שרגולציה תהיה תואמת את המציאות בזמן</li><li>בשיטות עבודה שמאפשרות לבדוק ולתקן במהירות תוך כדי תנועה (לדוגמא באמצעות regulatory sandboxes, SupTech, co-regulation, innovation zones, No-Action Letters, Digital Twins)</li><li>ומסתגלת באמצעות כללים גמישים שיכולים להשתנות כשהמציאות תשתנה (לדוגמא באמצעות Sunset Rules, Regulatory Guillotine, Outcome-Based Regulation, Tiered / Dynamic Regulation)</li>', amber: true }
+    ]
+}
+];
+
+function showSection(idx, card) {
+    document.querySelectorAll('.pin-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    var s = sections[idx];
+    var colorClass = s.color !== 'teal' ? ' ' + s.color : '';
+    var subClass = s.color !== 'teal' ? ' ' + s.color : '';
+    var html = '<div class="section-title' + colorClass + '"><i class="ti ' + s.icon + '"></i> ' + s.title + '</div>';
+    html += '<div class="section-sub' + subClass + '">' + s.sub + '</div>';
+    s.cards.forEach(function(c) {
+        var borderClass = c.amber ? ' amber-border' : (s.color === 'force' ? ' force-border' : '');
+        var expandAttr = c.expand ? ' data-expandable onclick="this.classList.toggle(\'open\')"' : '';
+        html += '<div class="track-card' + borderClass + '"' + expandAttr + '>';
+        html += '<div class="tc-icon"><i class="ti ' + c.icon + '"></i></div><div>';
+        html += '<h4>' + c.title + '</h4>';
+        html += '<p>' + c.text + '</p>';
+        if (c.expand) {
+            html += '<span class="sub-toggle">פירוט ▼</span>';
+            html += '<ul class="sub-details">' + c.expand + '</ul>';
+        }
+        html += '</div></div>';
+    });
+    var panel = document.getElementById('detailPanel');
+    document.getElementById('detailContent').innerHTML = html;
+    panel.classList.add('visible');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function closePanel() {
+    document.getElementById('detailPanel').classList.remove('visible');
+    document.querySelectorAll('.pin-card').forEach(c => c.classList.remove('active'));
+}
+</script>
+</body>
+</html>

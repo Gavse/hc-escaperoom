@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<title>תהליך המיון בשירות המדינה</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Heebo', sans-serif;
+    background: #f0f2f5;
+    direction: rtl;
+    padding: 24px 24px 48px;
+}
+.page { max-width: 780px; margin: 0 auto; }
+
+.back-btn {
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: #2c3e5a;
+    background: linear-gradient(180deg, #eaf0f7 0%, #d5deea 100%);
+    border: 1.5px solid #8a9ab0;
+    border-radius: 6px;
+    padding: 7px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 20px;
+    transition: background 0.2s;
+}
+.back-btn:hover { background: linear-gradient(180deg, #e0e8f2 0%, #ccd6e4 100%); }
+
+h1 { font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 8px; }
+
+/* Intro box */
+.intro-box {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+}
+.intro-text {
+    font-size: 14px; line-height: 1.7;
+    color: #334155; margin: 0;
+}
+
+/* Section titles */
+.section-title {
+    font-size: 15px; font-weight: 800; color: #fff;
+    margin: 20px 0 10px;
+    padding: 8px 16px;
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 8px;
+}
+.section-teal { background: linear-gradient(135deg, #0f766e, #0d9488); }
+.section-amber { background: linear-gradient(135deg, #b45309, #d97706); }
+
+/* Step flow */
+.step-flow {
+    display: flex; align-items: stretch; gap: 0;
+    direction: rtl; margin: 12px 0 20px;
+}
+.step-box {
+    flex: 1; border-radius: 10px;
+    padding: 10px 8px; text-align: center;
+    background: #f0fdfa; border: 1.5px solid #5eead4;
+}
+.step-label { font-size: 13px; font-weight: 800; color: #1e293b; }
+.step-detail { font-size: 11px; color: #64748b; margin-bottom: 2px; }
+.step-arrow-wrap {
+    display: flex; align-items: center; justify-content: center;
+    padding: 0 6px; color: #64748b; font-size: 20px;
+}
+
+/* Cards */
+.card-stack { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
+.info-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    border-right: 4px solid #14b8a6;
+    padding: 10px 14px;
+    display: flex; gap: 10px;
+    align-items: flex-start;
+    transition: box-shadow 0.2s;
+}
+.info-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.06); }
+.card-amber { border-right-color: #f59e0b; }
+.card-red { border-right-color: #f87171; }
+.card-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: #f0fdfa;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0; margin-top: 1px;
+}
+.icon-amber { background: #fffbeb; }
+.icon-red { background: #fef2f2; }
+.card-body { flex: 1; }
+.card-body h4 { font-size: 14px; font-weight: 700; color: #1e293b; line-height: 1.3; margin-bottom: 2px; }
+.card-body p { font-size: 12.5px; line-height: 1.55; color: #64748b; }
+.source { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+
+/* Committee visual */
+.committee-grid {
+    display: flex; gap: 10px; margin-bottom: 12px;
+}
+.committee-card {
+    flex: 1;
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 14px;
+    text-align: center;
+}
+.committee-card h4 {
+    font-size: 14px; font-weight: 800; color: #0f766e;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #99f6e4;
+}
+.member-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+.member-row:last-child { border-bottom: none; }
+.member-icon {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+}
+.mi-blue { background: #dbeafe; }
+.mi-green { background: #d1fae5; }
+.mi-purple { background: #ede9fe; }
+.mi-orange { background: #ffedd5; }
+.member-label {
+    font-size: 13px; font-weight: 600; color: #334155;
+    text-align: right;
+}
+.member-note {
+    font-size: 11px; color: #94a3b8; font-weight: 400;
+}
+
+/* Expandable rules */
+.rules-section {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+}
+.rules-header {
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.rules-header:hover { background: #f8fafc; }
+.rules-header h4 {
+    font-size: 14px; font-weight: 700; color: #1e293b;
+    display: flex; align-items: center; gap: 8px;
+}
+.rules-toggle {
+    background: rgba(15,118,110,0.1);
+    border: 1.5px solid rgba(15,118,110,0.3);
+    border-radius: 20px;
+    color: #0f766e; font-family: 'Heebo', sans-serif;
+    font-size: 13px; font-weight: 700;
+    padding: 5px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex; align-items: center; gap: 6px;
+}
+.rules-toggle:hover { background: rgba(15,118,110,0.18); }
+.rules-toggle .arrow {
+    transition: transform 0.3s;
+    font-size: 10px;
+}
+.rules-section.open .rules-toggle .arrow { transform: rotate(180deg); }
+.rules-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+.rules-section.open .rules-body { max-height: 1000px; }
+.rules-list {
+    list-style: none; padding: 0 16px 12px; margin: 0;
+    display: flex; flex-direction: column; gap: 6px;
+    border-top: 1px solid #e2e8f0;
+}
+.rules-list li {
+    font-size: 12.5px; line-height: 1.55; color: #475569;
+    padding: 8px 12px 8px 8px;
+    background: #f8fafc;
+    border-radius: 6px;
+    position: relative;
+    padding-right: 24px;
+}
+.rules-list li::before {
+    content: '•'; position: absolute; right: 10px; top: 8px;
+    color: #0d9488; font-weight: 700; font-size: 14px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<button class="back-btn" onclick="try { window.parent.closeProcess() } catch(e) { window.parent.postMessage('closeProcess','*') }">← חזרה</button>
+
+<h1>תהליך המיון בשירות המדינה</h1>
+
+<!-- INTRO -->
+<div class="intro-box">
+    <p class="intro-text">
+        לאחר פרסום מכרז וסגירת ההגשה, מתחיל תהליך המיון - בדיקת תנאי סף, מבחנים ו/או מרכזי הערכה, ובחינה בעל פה בפני ועדת בוחנים. להלן נקודות מרכזיות מתוך <a href="https://www.gov.il/apps/nasham/takshir/takshir-tree" style="color:#0d9488;">פרק 11 בתקשי"ר</a> (מכרזים ומינויים).
+    </p>
+</div>
+
+<!-- STEP FLOW -->
+<div class="step-flow">
+    <div class="step-box">
+        <div class="step-label">תנאי סף</div>
+        <div class="step-detail">סינון ראשוני</div>
+    </div>
+    <div class="step-arrow-wrap">←</div>
+    <div class="step-box">
+        <div class="step-label">מבחנים / מרכז הערכה</div>
+        <div class="step-detail">כתב, סימולציות, הערכה</div>
+    </div>
+    <div class="step-arrow-wrap">←</div>
+    <div class="step-box">
+        <div class="step-label">ועדת בוחנים</div>
+        <div class="step-detail">בחינה בעל פה</div>
+    </div>
+    <div class="step-arrow-wrap">←</div>
+    <div class="step-box">
+        <div class="step-label">מינוי</div>
+        <div class="step-detail">כשיר ראשון</div>
+    </div>
+</div>
+
+<!-- SECTION: שלבי התהליך -->
+<div class="section-title section-teal">שלבי התהליך</div>
+<div class="card-stack">
+    <div class="info-card">
+        <div class="card-icon">1</div>
+        <div class="card-body">
+            <h4>בדיקת תנאי סף</h4>
+            <p>לאחר סגירת ההגשה, נבדקת עמידת המועמדים בתנאי הסף שנקבעו למשרה (השכלה, ניסיון, רישיונות). מועמד שלא עומד בתנאי הסף נפסל. מועמד רשאי להגיש ערר על אי קבלת מועמדותו למנהל אגף בחינות ומכרזים בנציבות, ללא שיהוי.</p>
+            <div class="source">תקשי"ר 11.441</div>
+        </div>
+    </div>
+    <div class="info-card">
+        <div class="card-icon">2</div>
+        <div class="card-body">
+            <h4>מבחנים ו/או מרכזי הערכה</h4>
+            <p>היו <strong>8 מועמדים או פחות</strong> - יוזמנו כולם ישירות לבחינה בעל פה. היו <strong>יותר מ-8</strong> - יוזמנו למבחנים בכתב ו/או מרכזי הערכה, באישור אגף בכיר בחינות ומכרזים. לבחינה בעל פה יוזמנו 8 המועמדים שהישגיהם הגבוהים ביותר.</p>
+            <div class="source">תקשי"ר 11.451</div>
+        </div>
+    </div>
+    <div class="info-card">
+        <div class="card-icon">3</div>
+        <div class="card-body">
+            <h4>בחינה בעל פה - ועדת בוחנים</h4>
+            <p>ועדת הבוחנים היא הגוף שמראיין את המועמדים ומדרג אותם. הוועדה בוחנת כישורים, התאמה לתפקיד ונתונים אישיים, ומדרגת את המועמדים הכשירים לפי סדר עדיפות.</p>
+            <div class="source">תקשי"ר 11.460</div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION: הרכב ועדת בוחנים -->
+<div class="section-title section-teal">הרכב ועדת בוחנים</div>
+<div class="committee-grid">
+    <div class="committee-card">
+        <h4>דרגה 21 ומעלה</h4>
+        <div class="member-row">
+            <div class="member-icon mi-blue">🏛</div>
+            <div class="member-label">יו"ר מנציבות שירות המדינה</div>
+        </div>
+        <div class="member-row">
+            <div class="member-icon mi-green">👤</div>
+            <div class="member-label">מנהל ישיר</div>
+        </div>
+        <div class="member-row">
+            <div class="member-icon mi-purple">🏢</div>
+            <div class="member-label">נציג ממשרד אחר</div>
+        </div>
+        <div class="member-row">
+            <div class="member-icon mi-orange">🤝</div>
+            <div class="member-label">נציג ההסתדרות</div>
+        </div>
+    </div>
+    <div class="committee-card">
+        <h4>דרגה 20 ומטה</h4>
+        <div class="member-row">
+            <div class="member-icon mi-green">👤</div>
+            <div class="member-label">יו"ר = המנהל הישיר</div>
+        </div>
+        <div class="member-row">
+            <div class="member-icon mi-blue">🏛</div>
+            <div class="member-label">חבר מנציבות</div>
+        </div>
+        <div class="member-row">
+            <div class="member-icon mi-orange">🤝</div>
+            <div class="member-label">נציג ההסתדרות</div>
+        </div>
+    </div>
+</div>
+
+<!-- Expandable rules -->
+<div class="rules-section">
+    <div class="rules-header">
+        <h4>📋 כללים להרכב הוועדה</h4>
+        <button class="rules-toggle" type="button"><span>הרחבה</span> <span class="arrow">▼</span></button>
+    </div>
+    <div class="rules-body">
+        <ul class="rules-list">
+            <li>מתח דרגות חברי הוועדה לא יהיה נמוך ממתח הדרגות של המשרה הנדונה. חריג: נציג הסתדרות יכול להיות בדרגה נמוכה יותר <span class="source">(תקשי"ר 11.460)</span></li>
+            <li>חבר ועדה שאינו נציג המשרד - לא יהיה עובד של אותו משרד, אלא במקרים חריגים באישור הנציב <span class="source">(תקשי"ר 11.460)</span></li>
+            <li>אין לשבץ כחבר ועדה מי שהביע דעה חיובית בכתב על אחד המועמדים (כגון מכתב המלצה) - למניעת דעה קדומה <span class="source">(תקשי"ר 11.460)</span></li>
+            <li>בכל ועדת בוחנים יהיה ייצוג מגדרי <span class="source">(תקשי"ר 11.460)</span></li>
+        </ul>
+    </div>
+</div>
+
+<!-- SECTION: סדרי עבודה -->
+<div class="section-title section-teal">סדרי עבודה של ועדת בוחנים</div>
+<div class="card-stack">
+    <div class="info-card">
+        <div class="card-icon">👤</div>
+        <div class="card-body">
+            <h4>מנהל ועדת בוחנים</h4>
+            <p>עובד יחידת ההון האנושי שהוכשר והוסמך מקצועית בהתאם להנחיות אגף בכיר גיוס ומיון. רשאי לקחת חלק בראיונות ולהביע דעתו בשלב הדיון - <strong>ללא זכות בחירה</strong>. הוועדה תתקיים בנוכחותו. נוכחות מקוונת אפשרית רק אם כלל חברי הוועדה נוכחים מרחוק.</p>
+            <div class="source">תקשי"ר 11.460</div>
+        </div>
+    </div>
+    <div class="info-card">
+        <div class="card-icon">📋</div>
+        <div class="card-body">
+            <h4>תצהיר ניגוד עניינים</h4>
+            <p>כל חברי הוועדה חותמים על תצהיר ניגוד עניינים בפתח ההליך. מנהל ועדת הבוחנים חותם אף הוא.</p>
+            <div class="source">תקשי"ר 11.460</div>
+        </div>
+    </div>
+    <div class="info-card">
+        <div class="card-icon">🚫</div>
+        <div class="card-body">
+            <h4>פסילת שאלות מפלות</h4>
+            <p>מנהל ועדת הבוחנים רשאי לפסול שאלות מפלות ולהפסיק את הוועדה לצורך התייעצות. הוא כפוף מקצועית להנחיות אגף בכיר גיוס ומיון, ועל חברי הוועדה להישמע להנחיותיו.</p>
+            <div class="source">תקשי"ר 11.462, 11.494</div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION: תוצאות ומינוי -->
+<div class="section-title section-teal">תוצאות ומינוי</div>
+<div class="card-stack">
+    <div class="info-card">
+        <div class="card-icon">🥇</div>
+        <div class="card-body">
+            <h4>כשיר ראשון, שני, שלישי</h4>
+            <p>ועדת בוחנים מדרגת את המועמדים הכשירים לפי סדר עדיפות. המועמד שבראש הרשימה מתמנה למשרה. אם הכשיר הראשון ויתר, הועבר בתקופת ניסיון, או פרש - מתמנה הבא ברשימה. אם כל הכשירים ויתרו או פרשו אחרי 6 חודשים מסיום דיוני הוועדה - יש לפרסם מכרז חדש.</p>
+            <div class="source">תקשי"ר 11.481, 11.411</div>
+        </div>
+    </div>
+    <div class="info-card">
+        <div class="card-icon">🔄</div>
+        <div class="card-body">
+            <h4>כשיר ממכרז קודם</h4>
+            <p>מועמד שנמצא כשיר לאותה משרה במכרז פנימי או בין-משרדי שפורסם עליה בעבר, זכאי להתמנות לאותה משרה - בתנאי שטרם עברו 6 חודשים מיום סיום דיוני ועדת הבוחנים.</p>
+            <div class="source">תקשי"ר 11.485</div>
+        </div>
+    </div>
+</div>
+
+<!-- SECTION: השגה וביטול -->
+<div class="section-title section-amber">השגה וביטול</div>
+<div class="card-stack">
+    <div class="info-card card-red">
+        <div class="card-icon icon-red">⏰</div>
+        <div class="card-body">
+            <h4>השגה על הליכי מכרז</h4>
+            <p>מועמד רשאי להגיש השגה במועד שבו נודע לו על הנסיבות. לא ניתן להגיש השגה בחלוף 3 ימים מהמועד. הוגשה השגה לפני שהתכנסה ועדת הבוחנים - אגף בכיר בחינות ומכרזים רשאי להורות על הקפאת הליכי המכרז. הוגשה השגה על החלטת הוועדה - אין לשבץ את הכשיר שנבחר עד להכרעה.</p>
+            <div class="source">תקשי"ר 11.492</div>
+        </div>
+    </div>
+    <div class="info-card card-amber">
+        <div class="card-icon icon-amber">⚖️</div>
+        <div class="card-body">
+            <h4>ביטול החלטת ועדת בוחנים</h4>
+            <p>נציב שירות המדינה או מי שהוסמך על ידו רשאי לבטל החלטה של ועדת בוחנים אם: (1) המועמד שנבחר אינו עונה על דרישות המשרה, או (2) נמצאו פגמים בהליכי המכרז. ביטל הנציב החלטת ועדת בוחנים - יורה על המשך ההליכים לאיוש המשרה.</p>
+            <div class="source">תקשי"ר 11.491</div>
+        </div>
+    </div>
+    <div class="info-card card-amber">
+        <div class="card-icon icon-amber">🔍</div>
+        <div class="card-body">
+            <h4>סמכויות אגף בכיר בחינות ומכרזים</h4>
+            <p>להכריע בהשגה על הליכי מכרז בטרם ניתנה החלטת ועדת הבוחנים. לבחון השגה על החלטת ועדת הבוחנים ולדחותה אם הטענות אינן מגלות עילה מספקת לביטול.</p>
+            <div class="source">תקשי"ר 11.492</div>
+        </div>
+    </div>
+</div>
+
+</div>
+<script>
+document.querySelector('.rules-section').addEventListener('click', function() {
+    this.classList.toggle('open');
+    var label = this.querySelector('.rules-toggle span:first-child');
+    label.textContent = this.classList.contains('open') ? 'צמצום' : 'הרחבה';
+});
+</script>
+</body>
+</html>

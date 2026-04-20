@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>פטור ממכרז ומסלולים חלופיים</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Heebo', sans-serif;
+    background: #f0f2f5;
+    direction: rtl;
+    padding: 32px 24px 48px;
+    min-height: 100vh;
+}
+.overlay-inner { max-width: 780px; margin: 0 auto; }
+
+/* Back button */
+.back-btn {
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: #2c3e5a;
+    background: linear-gradient(180deg, #eaf0f7 0%, #d5deea 100%);
+    border: 1.5px solid #8a9ab0;
+    border-radius: 6px;
+    padding: 7px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 20px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.back-btn:hover {
+    background: linear-gradient(180deg, #e0e8f2 0%, #ccd6e4 100%);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+h1 { font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 8px; }
+
+/* Intro box */
+.intro-box {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+}
+.intro-box h2 { font-size: 16px; font-weight: 800; color: #0f766e; margin-bottom: 6px; }
+.intro-box p { font-size: 14px; line-height: 1.7; color: #334155; }
+
+/* Section titles — gradient banner */
+.section-title {
+    font-size: 15px; font-weight: 800; color: #fff;
+    margin: 20px 0 10px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 8px;
+}
+.section-title i { font-size: 18px; }
+.section-title.amber { background: linear-gradient(135deg, #b45309, #d97706); }
+.section-title-box {
+    margin: 20px 0 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.section-title-box .section-title {
+    margin: 0;
+    border-radius: 10px 10px 0 0;
+}
+.section-title-box.teal {
+    background: #f0fdfa;
+    border: 1.5px solid #99f6e4;
+    border-radius: 10px;
+}
+.section-title-box.teal .section-title-sub {
+    color: #115e59;
+}
+.section-title-box.amber {
+    background: #fffbeb;
+    border: 1.5px solid #fcd34d;
+    border-radius: 10px;
+}
+.section-title-sub {
+    font-size: 13px; line-height: 1.6; color: #92400e;
+    padding: 8px 16px 10px;
+}
+
+/* Cards */
+.track-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    border-right: 4px solid #14b8a6;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    display: flex; gap: 10px; align-items: flex-start;
+}
+.track-card.amber-border { border-right-color: #f59e0b; }
+.track-card.muted {
+    border-right-color: #cbd5e1;
+    background: #f8fafc;
+}
+.track-card .tc-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #f0fdfa;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0; margin-top: 2px;
+}
+.track-card.amber-border .tc-icon { background: #fffbeb; }
+.track-card.muted .tc-icon { background: #f1f5f9; }
+.track-card h4 { font-size: 13.5px; font-weight: 700; color: #1e293b; margin-bottom: 2px; }
+.track-card p { font-size: 12.5px; line-height: 1.6; color: #64748b; }
+.track-card a { color: #0d9488; text-decoration: underline; }
+.track-card .tc-source { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+.track-card .sub-toggle {
+    font-size: 11px; font-weight: 700; color: #0d9488;
+    display: inline-block; margin-top: 4px;
+}
+.track-card.open .sub-toggle { display: none; }
+.track-card .sub-details {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+    list-style: none; padding: 0; margin: 0;
+}
+.track-card.open .sub-details {
+    max-height: 800px;
+    padding-top: 6px; margin-top: 6px;
+    border-top: 1px solid #f1f5f9;
+}
+.track-card .sub-details li {
+    font-size: 12px; line-height: 1.6; color: #64748b;
+    padding: 3px 12px 3px 0; position: relative;
+}
+.track-card .sub-details li::before {
+    content: ''; position: absolute;
+    right: 0; top: 10px;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #14b8a6;
+}
+.track-card .tc-source { max-height: 0; overflow: hidden; }
+.track-card.open .tc-source { max-height: 40px; }
+
+/* Child cards — same style as parent, indented */
+/* Parent toggle */
+.parent-toggle {
+    cursor: pointer;
+    margin-bottom: 0 !important;
+    border-radius: 10px 10px 0 0 !important;
+    position: relative;
+}
+.parent-expand {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px; font-weight: 700; color: #0d9488;
+    background: rgba(13, 148, 136, 0.1);
+    border: 1.5px solid rgba(13, 148, 136, 0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+}
+.parent-toggle .closed-label { display: none; }
+.parent-toggle .open-label { display: inline; }
+.parent-toggle.closed .closed-label { display: inline; }
+.parent-toggle.closed .open-label { display: none; }
+.parent-toggle.closed { border-radius: 10px !important; margin-bottom: 6px !important; }
+
+.child-items {
+    margin: 0 36px 6px 0;
+    display: flex; flex-direction: column; gap: 3px;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+.child-items.collapsed {
+    max-height: 0; overflow: hidden; opacity: 0;
+    margin: 0 36px 0 0;
+}
+.child-item {
+    background: #f4f5f7;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+.child-title-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 2px;
+}
+.child-item h5 {
+    font-size: 12.5px; font-weight: 700; color: #334155;
+    margin: 0;
+}
+.child-item .sub-desc {
+    font-size: 12px; line-height: 1.6; color: #64748b;
+}
+.child-item .sub-toggle {
+    font-size: 11px; font-weight: 700; color: #0d9488;
+    white-space: nowrap;
+}
+.child-item.open .sub-toggle { display: none; }
+.child-item .sub-details {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+    list-style: none; padding: 0; margin: 0;
+}
+.child-item.open .sub-details {
+    max-height: 800px;
+    padding-top: 6px; margin-top: 6px;
+    border-top: 1px dashed #e2e8f0;
+}
+.child-item .sub-details li {
+    font-size: 12px; line-height: 1.6; color: #64748b;
+    padding: 3px 12px 3px 0; position: relative;
+}
+.child-item .sub-details li::before {
+    content: ''; position: absolute;
+    right: 0; top: 10px;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #14b8a6;
+}
+.child-item .tc-source {
+    font-size: 11px; color: #94a3b8; margin-top: 4px;
+    max-height: 0; overflow: hidden;
+}
+.child-item.open .tc-source { max-height: 40px; }
+
+/* Intro paragraph for section 2 */
+.section-intro { font-size: 13px; line-height: 1.7; color: #475569; margin-bottom: 10px; }
+
+</style>
+</head>
+<body>
+<div class="overlay-inner">
+
+    <button class="back-btn" onclick="try { window.parent.closeProcess() } catch(e) { window.parent.postMessage('closeProcess','*') }">
+        <i class="ti ti-arrow-right"></i>
+        <span>חזרה</span>
+    </button>
+
+    <h1>פטור ממכרז ומסלולים חלופיים</h1>
+
+    <!-- ═══ SECTION 1: פטור ממכרז ═══ -->
+    <div class="section-title-box teal">
+        <h2 class="section-title"><i class="ti ti-route"></i> פטור ממכרז</h2>
+        <p class="section-title-sub">מתי אפשר לא להוציא מכרז? בעוד המכרז מוגדר כברירת מחדל, התקשי"ר מגדיר מספר מסלולים חלופיים לאיוש משרות. כל מסלול כפוף לתנאים ומגבלות ספציפיים.</p>
+    </div>
+
+    <div class="track-card">
+        <div class="tc-icon"><i class="ti ti-gavel"></i></div>
+        <div>
+            <h4>מינוי בידי הממשלה</h4>
+            <p>רלוונטי למספר משרות שהוגדרו בחוק או בהחלטת ממשלה כגון תפקידים דיפלומטיים מסוימים ותפקידים בכירים כגון מנכ"לים, החשב הכללי, הממונה על השכר, ועוד (ניתן לראות את הרשימה כאן (תקש"יר 11.961)</p>
+        </div>
+    </div>
+
+    <div class="track-card">
+        <div class="tc-icon"><i class="ti ti-key"></i></div>
+        <div>
+            <h4>משרות אמון</h4>
+            <p>משרה הדורשת קשר אישי ישיר ואמון מיוחד עם השר/המנכ"ל. המינוי נעשה דרך מינוי בפועל.</p>
+            <div class="tc-source">תקשי"ר 18.207</div>
+        </div>
+    </div>
+
+    <div class="track-card">
+        <div class="tc-icon"><i class="ti ti-users-group"></i></div>
+        <div>
+            <h4>ועדת איתור מועמדים</h4>
+            <p>משרות המאופיינות בהיבט מקצועי ומדעי מובהק, או בעלות אופי רגולטורי ושמירה על האינטרס הציבורי. ניתן להיכנס לקישור כדי לראות את <a href="https://www.gov.il/BlobFolder/generalpage/jobs_list_committee_search/he/ExemptionTenders.pdf" target="_blank">רשימת המשרות והרכבי הוועדות</a></p>
+            <div class="tc-source">תקשי"ר 11.968</div>
+        </div>
+    </div>
+
+    <!-- עובדים זמניים — parent card + indented child cards -->
+    <div class="track-card parent-toggle" onclick="this.classList.toggle('closed'); this.nextElementSibling.classList.toggle('collapsed')">
+        <div class="tc-icon"><i class="ti ti-clock"></i></div>
+        <div><h4>עובדים זמניים</h4></div>
+        <span class="parent-expand open-label">צמצום ▲</span>
+        <span class="parent-expand closed-label">הרחבה ▼</span>
+    </div>
+    <div class="child-items">
+        <div class="child-item" onclick="this.classList.toggle('open')">
+            <h5>הטלת תפקיד</h5>
+            <span class="sub-desc">מתן הוראה מיוחדת לעובד למלא, בנוסף על תפקידו הקבוע, תפקיד או תפקידים נוספים באופן זמני.</span>
+        </div>
+
+        <div class="child-item" onclick="this.classList.toggle('open')">
+            <div class="child-title-row"><h5>מינוי בפועל</h5><span class="sub-toggle">הרחבה ▼</span></div>
+            <span class="sub-desc">נועד לאיוש זמני של עובד מדינה כאשר המשרה פנויה או כאשר נושא המשרה נעדר מעבודתו (מילוי זמני במקום המשרה המקורית).</span>
+            <ul class="sub-details">
+                <li>מותר למנות עובד בפועל לתקופה שלא תעלה על שנה, בתנאי שהוחל כבר בהליכים למילוי קבוע של המשרה. (על מנת להאריך את התקופה מעבר לשנה יש צורך לאישור נוסף מהנציבות)</li>
+                <li>הממונה יכול למנות עובד בפועל רק בפער של עד שתי דרגות מהדרגה הנמוכה ביותר של המשרה אליה מתמנה. (לדוגמא אם עובד בדרגה 40 המשרה הכי גבוהה אליה ניתן למנות אותו היא מתח דרגות שמתחיל ב-42)</li>
+                <li>רק אם לא נמצא עובד שממלא את התנאי וחיוני שתפקידי המשרה ימולאו ללא דיחוי, ניתן למנות עובד שלא עומד בתנאי פער הדרגות לתקופה של לא יותר משנה אחת, אך רק אם העובד עומד בדרישות ההשכלה והניסיון.</li>
+            </ul>
+            <div class="tc-source">תקשי"ר 18.2</div>
+        </div>
+
+        <div class="child-item open">
+            <h5>ממלא מקום</h5>
+            <span class="sub-desc">העסקת אדם, שאיננו עובד המדינה במקום עובד הנעדר מתפקידו באופן זמני (מחלה, חל"ת וכד') במידה ויש חיוניות במינוי ואין אפשרות שעובד אחר מהמשרד ימלא את התפקיד.</span>
+            <ul class="sub-details">
+                <li>האחראי רשאי לאשר העסקת ממלא מקום לתקופה של עד שלוש שנים שלא במכרז, בכפוף לקיומו של הליך בחירה לפי נוהל איוש משרה זמנית.</li>
+            </ul>
+            <div class="tc-source">תקשי"ר 18.110, 18.13</div>
+        </div>
+    </div>
+
+    <!-- פטור ממכרז למשרות זמניות — same level as עובדים זמניים -->
+    <div class="track-card" onclick="this.classList.toggle('open')">
+        <div class="tc-icon"><i class="ti ti-file-off"></i></div>
+        <div>
+            <h4>פטור ממכרז למשרות זמניות</h4>
+            <p>משרדים יכולים להגיש בקשה לאישור פטור ממכרז עבור משרה זמנית לוועדת משנה של ועדת שירות המדינה.</p>
+            <span class="sub-toggle">הרחבה ▼</span>
+            <ul class="sub-details">
+                <li>משרה זמנית נועדה לעסוק במשימה חולפת, קצובה בזמן, שאינה צפויה להיטמע במערך הקבוע של שירות המדינה; זמן המשימה צפוי להימשך עד חמש שנים; המשרה עוסקת במשימה חיונית אשר יש חשיבות שתבוצע ללא דיחוי, ולא ניתן לאיישה בהליך מכרזי בזמן סביר.</li>
+                <li>ניתן לאייש או באמצעות מינוי בפעול או פרסום פומבי</li>
+                <li>תקופת ההעסקה תהיה עד חמש שנים בסך הכל, ועד שנה בכל פעם, או עד לתום המשימה הזמנית, לפי המוקדם מבניהם.</li>
+            </ul>
+            <div class="tc-source">תקשי"ר 11.98</div>
+        </div>
+    </div>
+
+    <!-- השאלת עובד — same level, muted style -->
+    <div class="track-card muted">
+        <div class="tc-icon"><i class="ti ti-transfer-out"></i></div>
+        <div>
+            <h4>השאלת עובד</h4>
+            <p>לא מונח רשמי. לעיתים עובד משובץ באופן זמני לפעילות במקום אחר ללא שינוי התקן אליו שובץ.</p>
+        </div>
+    </div>
+
+    <!-- ═══ SECTION 2: מסלולים חלופיים להון אנושי ═══ -->
+    <div class="section-title-box amber">
+        <h2 class="section-title amber"><i class="ti ti-building-factory"></i> מסלולים חלופיים להון אנושי באמצעות משרות</h2>
+        <p class="section-title-sub">בנוסף לפטור ממכרז, שירות המדינה בפועל משתמש בהון אנושי חיצוני באמצעות נתיבים כמו מיקור חוץ , קולות קוראים ופרויקטים משותפים.</p>
+    </div>
+
+    <div class="track-card amber-border">
+        <div class="tc-icon"><i class="ti ti-building-factory-2"></i></div>
+        <div>
+            <h4>מיקור חוץ</h4>
+            <p>הממשלה מפרסמת מכרז לשירותים מספקים חיצוניים (למשל ייעוץ, פיתוח, אדמיניסטרציה), במקום להעסיק עובדים כעובדי מדינה. כך בפועל מתווסף כוח אדם שאינו מופיע במצבת התקנים.</p>
+        </div>
+    </div>
+
+    <div class="track-card amber-border">
+        <div class="tc-icon"><i class="ti ti-speakerphone"></i></div>
+        <div>
+            <h4>קול קורא</h4>
+            <p>מנגנון שבו משרד ממשלתי מגדיר יעד מדיניות, תקציב מוגדר ותנאי זכאות שוויוניים לקבלת מענקים ייעודיים וגופים חיצוניים (עמותות, רשויות מקומיות, אוניברסיטאות ולעיתים גם חברות) יכולים להגיש הצעות, ואם הן עומדות בקריטריונים - המשרד מממן את הפעילות באופן מלא או חלקי. בפועל, לעיתים מדובר בפעילות ציבורים המבוצעת ע"י צוותים שאינם עובדי מדינה, ולכן זה מהווה חלופה חלקית ליכולת פנימית.</p>
+        </div>
+    </div>
+
+    <div class="track-card amber-border">
+        <div class="tc-icon"><i class="ti ti-arrows-exchange"></i></div>
+        <div>
+            <h4>פרויקטים משותפים</h4>
+            <p>מצב שבו המדינה וגוף חיצוני (אוניברסיטה, עמותה, חברה, רשות מקומית) מבצעים יחד שיתוף פעולה רשמי ומוסכם, כאשר כל צד תורם משאבים. בפועל, חלק מהעבודה הציבורית מבוצע ע"י צוותים שאינם עובדי מדינה, ולכן מהווה חלופה חלקית ליכולת פנימית.</p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

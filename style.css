@@ -1,0 +1,701 @@
+/* ==================== SHARED STYLES — Escape Room ==================== */
+
+@import url('heebo.css');
+
+:root {
+  --bg-dark: #1B2A4A;
+  --bg-room: #2c2c2c;
+  --cream: #F0EBE3;
+  --font: 'Heebo', sans-serif;
+  --shadow: 0 8px 32px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.12);
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg-room);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  direction: rtl;
+}
+
+/* ==================== ZOOM CONTROLS ==================== */
+
+#room-container {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+}
+.zoom-controls {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 35;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.zoom-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(44, 62, 80, 0.85);
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s, transform 0.1s;
+  font-family: var(--font);
+}
+.zoom-btn:hover:not(:disabled) {
+  background: rgba(44, 62, 80, 1);
+  transform: scale(1.1);
+}
+.zoom-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* Assistant chat button (NotebookLM popup launcher) */
+.assistant-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  border: 2px solid rgba(255,255,255,0.3);
+  background: rgba(44, 62, 80, 0.9);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  transition: background 0.2s, transform 0.1s;
+}
+.assistant-btn:hover {
+  background: rgba(44, 62, 80, 1);
+  transform: scale(1.05);
+}
+.assistant-btn .assistant-icon { font-size: 18px; line-height: 1; }
+.assistant-btn .assistant-label { white-space: nowrap; }
+
+/* ==================== ROOM VIEWS ==================== */
+
+.view {
+  position: relative;
+  display: none;
+  width: 100%;
+}
+.view.active { display: block; }
+.view:not(#main) {
+  width: auto;
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 20;
+  border-radius: 12px;
+  box-shadow: 0 12px 60px rgba(0,0,0,0.5);
+  overflow: auto;
+  max-width: 95vw;
+  max-height: 95vh;
+}
+/* Backdrop for zoom click-outside-to-close */
+.zoom-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 15;
+  cursor: pointer;
+}
+.zoom-backdrop.active { display: block; }
+
+#main img {
+  width: 100%;
+  display: block;
+  cursor: default;
+}
+/* Zoom images: full picture, no crop — fits within 83vw AND 90vh */
+.view:not(#main) img {
+  max-width: 83vw;
+  max-height: 90vh;
+  display: block;
+  cursor: default;
+  border-radius: 12px;
+}
+
+/* ==================== HOTSPOTS ==================== */
+
+.hotspot {
+  position: absolute;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.hotspot[data-label]::after {
+  content: attr(data-label);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(44, 62, 80, 0.92);
+  color: #e8d5a3;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  letter-spacing: 0.01em;
+  z-index: 10;
+}
+.hotspot[data-label]:hover::after {
+  opacity: 1;
+}
+.hotspot:hover {
+  border-color: rgba(232,196,124,0.8);
+  border-width: 4px;
+  box-shadow: 0 0 50px rgba(232,196,124,0.5), inset 0 0 60px rgba(232,196,124,0.15);
+  background: rgba(232,196,124,0.12);
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 32 32'%3E%3Cpath d='M11 0C9.9 0 9 .9 9 2v14.6L5.7 13.3c-.8-.8-2-.8-2.8 0s-.8 2 0 2.8l8.5 8.5c1.5 1.5 3.5 2.4 5.6 2.4h2c3.3 0 6-2.7 6-6V10c0-1.1-.9-2-2-2s-2 .9-2 2v1h0V8c0-1.1-.9-2-2-2s-2 .9-2 2v3h0V6c0-1.1-.9-2-2-2s-2 .9-2 2v5h0V2c0-1.1-.9-2-2-2z' fill='white' stroke='%23333' stroke-width='1.5' stroke-linejoin='round'/%3E%3C/svg%3E") 10 0, pointer;
+}
+
+/* ==================== BACK BUTTON ==================== */
+
+.back-btn {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 25;
+  background: rgba(180, 40, 40, 0.9);
+  color: white;
+  border: 2px solid rgba(255,100,100,0.5);
+  padding: 12px 28px;
+  font-size: 18px;
+  font-family: var(--font);
+  font-weight: 700;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+  text-decoration: none;
+  display: inline-block;
+}
+.back-btn:hover {
+  background: rgba(44, 62, 80, 1);
+  transform: scale(1.05);
+}
+
+/* ==================== BOARD SUB-VIEWS ==================== */
+
+.board-sub {
+  z-index: 22 !important;
+}
+.whiteboard-composite {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+}
+.whiteboard-composite > img:first-child {
+  max-width: 83vw;
+  max-height: 90vh;
+  display: block;
+  border-radius: 12px;
+}
+.whiteboard-composite .wb-overlay {
+  position: absolute;
+  top: 50%;
+  left: 5%;
+  width: 90%;
+  max-height: 80%;
+  transform: translateY(-50%);
+  object-fit: contain;
+}
+.whiteboard-composite .wb-iframe {
+  position: absolute;
+  top: 2%;
+  left: 2%;
+  width: 96%;
+  height: 96%;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  overflow-y: auto;
+}
+.board-scroll {
+  max-height: 85vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 10px 0;
+  border-radius: 12px;
+}
+.board-scroll .whiteboard-composite > img:first-child {
+  max-width: 80vw;
+  max-height: none;
+}
+.wb-source {
+  position: absolute;
+  right: 6%;
+  z-index: 4;
+  font-family: var(--font);
+  font-size: 12px;
+  color: #5a6577;
+  direction: rtl;
+  text-align: right;
+  max-width: 88%;
+}
+.wb-source a {
+  color: #4a90a4;
+  text-decoration: underline;
+}
+.wb-source a:hover { color: #2c6e7e; }
+
+.wb-info-row {
+  position: absolute;
+  z-index: 4;
+  display: flex;
+  gap: 10px;
+  direction: rtl;
+}
+.wb-hero-card {
+  flex: 1;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px 14px 10px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  position: relative;
+  overflow: hidden;
+}
+.wb-hero-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 4px; height: 100%;
+}
+.wb-hero-card.blue::after { background: #0A69A5; }
+.wb-hero-card.red::after { background: #e76f51; }
+.wb-hero-num {
+  font-family: var(--font);
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.1;
+  font-feature-settings: 'tnum';
+  margin-bottom: 2px;
+}
+.wb-hero-card.blue .wb-hero-num { color: #0A69A5; }
+.wb-hero-card.red .wb-hero-num { color: #e76f51; }
+.wb-hero-title {
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+.wb-hero-sub {
+  font-family: var(--font);
+  font-size: 11px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 8%;
+  left: 15%;
+  right: 15%;
+  z-index: 5;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  background: rgba(44, 62, 80, 0.8);
+  padding: 8px 16px;
+  border-radius: 20px;
+  text-align: center;
+  pointer-events: none;
+  animation: hintPulse 2s ease-in-out infinite;
+}
+.board-back {
+  left: 20px;
+  top: 20px;
+  color: #2c3e5a !important;
+  background: linear-gradient(180deg, #eaf0f7 0%, #d5deea 100%) !important;
+  border: 1.5px solid #8a9ab0 !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6) !important;
+  padding: 7px 18px !important;
+  font-size: 15px !important;
+  border-radius: 6px !important;
+}
+/* Global back-to-room button for board sub-views */
+#boardBackToRoom {
+  display: none;
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 50;
+}
+
+/* ==================== ZOOM LABEL ==================== */
+
+.zoom-label {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(44, 62, 80, 0.8);
+  color: white;
+  padding: 8px 24px;
+  font-size: 16px;
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+/* ==================== EMPLOYEE CARD (ec- namespace) ==================== */
+
+.ec-card {
+  width: 900px; max-width: 100%;
+  border-radius: 16px; overflow: visible;
+  box-shadow: var(--shadow);
+  position: relative;
+  display: flex; flex-direction: column;
+  font-family: var(--font);
+}
+.ec-card-header {
+  background: linear-gradient(180deg, #f0ebe3 0%, #e8e2d8 100%);
+  height: 52px; position: relative; z-index: 2;
+  border-radius: 16px 16px 0 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+.ec-header-icons {
+  position: absolute; top: 12px; left: 18px;
+  display: flex; gap: 8px; color: #8a8070;
+}
+.ec-header-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(0,0,0,0.05);
+  display: flex; align-items: center; justify-content: center;
+}
+.ec-header-title {
+  position: absolute; top: 17px; right: 22px;
+  color: #6b6050; font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+}
+.ec-card-body {
+  display: flex; height: 448px; direction: rtl;
+  border-radius: 0 0 16px 16px; overflow: visible;
+  background: linear-gradient(175deg, #2c3650 0%, #1e2740 40%, #1a2035 60%, #151b2a 100%);
+}
+.ec-sidebar {
+  width: 33.333%; padding: 0 18px 18px 0;
+  display: flex; flex-direction: column; align-items: center;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  overflow: visible;
+}
+.ec-avatar {
+  width: 68px; height: 68px; border-radius: 50%;
+  background: linear-gradient(135deg, #c8c0b4, #a8a090);
+  border: 3px solid var(--cream);
+  z-index: 3;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.22);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: -34px; margin-bottom: 12px;
+}
+.ec-avatar-silhouette { width: 32px; height: 32px; opacity: 0.45; color: #6b6050; }
+.ec-sidebar-title {
+  font-size: 11px; font-weight: 700;
+  color: rgba(255,255,255,0.65); margin-bottom: 8px;
+  padding-bottom: 5px; border-bottom: 2px solid rgba(255,255,255,0.15);
+  display: inline-block; align-self: flex-start;
+}
+.ec-task-list { list-style: none; display: flex; flex-direction: column; gap: 1px; width: 100%; margin: 0; padding: 0; }
+.ec-task-item {
+  display: flex; align-items: flex-start; gap: 6px;
+  padding: 5px 7px; border-radius: 6px;
+  border-right: 3px solid transparent;
+}
+.ec-task-bullet {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(255,255,255,0.35); margin-top: 6px; flex-shrink: 0;
+}
+.ec-task-text { font-size: 10.5px; line-height: 1.45; color: rgba(255,255,255,0.7); flex: 1; }
+.ec-main-area {
+  flex: 1; position: relative;
+  display: flex; align-items: center; justify-content: center;
+}
+.ec-main-area::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 40% 25%, rgba(232,196,124,0.06) 0%, transparent 55%);
+  pointer-events: none;
+}
+.ec-main-area::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(10,12,20,0.3) 100%);
+  pointer-events: none;
+}
+
+/* ==================== CARD THUMBNAIL (top-right corner, image) ==================== */
+
+.employee-card {
+  position: fixed;
+  top: 10px;
+  right: 1%;
+  width: 180px;
+  z-index: 40;
+  cursor: pointer;
+  transition: transform 0.2s;
+  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.4));
+  border-radius: 10px;
+  overflow: hidden;
+  display: block;
+  text-decoration: none;
+}
+.employee-card:hover { transform: scale(1.05); }
+.employee-card img {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+}
+
+/* Hint label pointing at card */
+.card-hint {
+  position: fixed;
+  top: 125px;
+  right: calc(1% + 10px);
+  z-index: 41;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  direction: rtl;
+  pointer-events: none;
+  animation: hintPulse 2s ease-in-out infinite;
+}
+.card-hint-icon {
+  font-size: 34px;
+}
+.card-hint-text {
+  font-family: var(--font);
+  font-size: 20px;
+  font-weight: 900;
+  color: #f0c040;
+  -webkit-text-stroke: 1px rgba(0,0,0,0.7);
+  paint-order: stroke fill;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.8), 0 0 20px rgba(240,192,64,0.3);
+}
+@keyframes hintPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* ==================== CHAIRS INFOGRAPHIC OVERLAY ==================== */
+
+.chairs-inner {
+  width: 90vw;
+  max-width: 1120px;
+  height: 92vh;
+  position: relative;
+}
+.chairs-inner .card-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 16px;
+  background: #f0f2f5;
+}
+
+/* ==================== CARD ZOOMED OVERLAY ==================== */
+
+.card-zoomed {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 30;
+  background: rgba(0,0,0,0.7);
+  justify-content: center;
+  align-items: center;
+}
+.card-zoomed.active { display: flex; }
+.card-zoomed-inner {
+  width: 83vw;
+  max-width: 1000px;
+  height: 90vh;
+  max-height: 560px;
+  position: relative;
+}
+.card-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 16px;
+  background: transparent;
+}
+.card-close {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 45;
+  background: rgba(180, 40, 40, 0.9);
+  color: white;
+  border: 2px solid rgba(255,100,100,0.5);
+  padding: 8px 20px;
+  font-size: 14px;
+  font-family: var(--font);
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.card-close {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  z-index: 45;
+  background: rgba(180, 40, 40, 0.9);
+  color: white;
+  border: 2px solid rgba(255,100,100,0.5);
+  padding: 8px 20px;
+  font-size: 14px;
+  font-family: var(--font);
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* ==================== ZOOM PAGE LAYOUT ==================== */
+
+.zoom-page {
+  max-width: 1100px;
+  width: 100%;
+  position: relative;
+}
+.zoom-page img {
+  width: 100%;
+  display: block;
+}
+.zoom-interaction {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+}
+.zoom-interaction > * {
+  pointer-events: all;
+}
+
+/* Mobile compatibility notice (touch devices only) */
+#mobileNotice { display: none; }
+@media (pointer: coarse) {
+  #mobileNotice {
+    display: flex;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10000;
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+    padding: 10px 14px;
+    font-family: 'Heebo', sans-serif;
+    font-size: 14px;
+    align-items: center;
+    justify-content: space-between;
+    direction: rtl;
+  }
+  #mobileNotice button {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 0 8px;
+    line-height: 1;
+  }
+}
+
+/* ============================================================
+   Mobile defensive fixes (2026-04-14)
+   All zero-risk on desktop. Protect touch-device users.
+   ============================================================ */
+
+/* 1. Prevent iOS Safari auto-inflating fonts in landscape */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* 2. Eliminate residual tap delay + suppress double-tap zoom
+      on interactive elements. Pinch-zoom still works. */
+.hotspot,
+button,
+.zoom-btn,
+.zoom-controls button,
+.board-back,
+.nav-btn,
+.option-btn {
+  touch-action: manipulation;
+}
+
+/* 3. Prevent long-press text-select flash + iOS link-callout
+      on interactive UI. Body text still selectable. */
+.hotspot,
+.zoom-btn,
+.zoom-controls button,
+.board-back,
+.nav-btn,
+.option-btn {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+/* 4. Scroll-containment: prevent pull-to-refresh / scroll-chain
+      from overlays leaking to the underlying room. */
+.view,
+.board-scroll,
+.main-area,
+#cardZoom {
+  overscroll-behavior: contain;
+}
+
+/* 5. Use dynamic viewport height where we currently use vh.
+      Prevents iOS Safari address-bar clipping. Values match
+      existing rules; dvh line is additive for supporting browsers. */
+.view:not(#main) {
+  max-height: 95vh;
+  max-height: 95dvh;
+}
+.view:not(#main) img {
+  max-height: 90vh;
+  max-height: 90dvh;
+}
+.whiteboard-composite > img:first-child {
+  max-height: 90vh;
+  max-height: 90dvh;
+}
+.board-scroll {
+  max-height: 85vh;
+  max-height: 85dvh;
+}
+.card-zoomed-inner {
+  height: 90vh;
+  height: 90dvh;
+}

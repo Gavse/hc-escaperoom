@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>שימור עובדים - שירות המדינה</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Heebo', sans-serif;
+    direction: rtl;
+    background: transparent;
+    padding: 4px 4px;
+}
+
+.page { max-width: 100%; margin: 0 auto; }
+
+.page-title {
+    text-align: center;
+    margin-bottom: 6px;
+}
+.page-title h1 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+/* ── Section Headers ── */
+.sec-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+    margin-top: 8px;
+}
+.sec-head .sh-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+.sec-head h2 {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1e293b;
+}
+.sec-head .line {
+    flex: 1;
+    height: 1.5px;
+    background: #d1d5db;
+}
+
+/* ── Top row: 3 hero cards ── */
+.hero-row {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 10px;
+}
+
+.hero-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px 6px 8px;
+    border: 1px solid #e5e7eb;
+    position: relative;
+    overflow: hidden;
+}
+.hero-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 4px; height: 100%;
+}
+.hero-card.red::after { background: #dc2626; }
+.hero-card.blue::after { background: #6a8a0a; }
+.hero-card.green::after { background: #8590a0; }
+
+.hero-num {
+    font-size: 34px;
+    font-weight: 900;
+    line-height: 1.1;
+    font-feature-settings: 'tnum';
+    margin-bottom: 2px;
+}
+.hero-card.red .hero-num { color: #dc2626; }
+.hero-card.blue .hero-num { color: #6a8a0a; }
+.hero-card.green .hero-num { color: #8590a0; }
+
+.hero-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+}
+.hero-sub {
+    font-size: 11px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* ── Triple row: engagement + tenure + factors ── */
+.triple-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 6px;
+    margin-top: 6px;
+}
+.triple-col {
+    display: flex;
+    flex-direction: column;
+}
+.tenure-chart {
+    flex: 1;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    padding: 10px 6px 8px;
+}
+.factors-col {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.tenure-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.tenure-title i { font-size: 14px; color: #0A69A5; }
+
+.tenure-row {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+.tenure-label {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #475569;
+    text-align: right;
+}
+.tenure-stack {
+    display: flex;
+    height: 22px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.t-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    color: #fff;
+    min-width: 20px;
+}
+.t-seg.high { background: #6a8a0a; }
+.t-seg.passive { background: #8590a0; }
+.t-seg.low { background: #dc2626; }
+
+.tenure-legend {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 6px;
+}
+.tenure-legend span {
+    font-size: 10px;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+.tenure-legend .dot {
+    width: 8px; height: 8px;
+    border-radius: 2px;
+}
+
+.tenure-insight {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+}
+
+.factor-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px 10px 8px 8px;
+    border: 1px solid #e5e7eb;
+    border-right: 4px solid;
+}
+.factor-card.positive { border-right-color: #6a8a0a; }
+.factor-card.negative { border-right-color: #dc2626; }
+
+.factor-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.factor-card.positive .factor-title i { color: #6a8a0a; }
+.factor-card.positive .factor-list li::before { background: #6a8a0a; }
+.factor-card.negative .factor-title i { color: #dc2626; }
+
+.factor-list {
+    list-style: none;
+    padding: 0;
+}
+.factor-list li {
+    font-size: 11px;
+    color: #475569;
+    line-height: 1.5;
+    padding-right: 12px;
+    position: relative;
+}
+.factor-list li::before {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 7px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+}
+.factor-card.negative .factor-list li::before { background: #dc2626; }
+
+/* ── Charts section ── */
+.charts-section {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 8px 4px 6px;
+    margin-top: 6px;
+}
+.charts-row {
+    display: flex;
+    gap: 0;
+}
+.chart-box {
+    flex: 1;
+}
+.chart-box + .chart-box {
+    border-right: 1px solid #e5e7eb;
+    padding-right: 10px;
+    margin-right: 10px;
+}
+.chart-title {
+    text-align: center;
+    font-size: 15px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+.chart-wrap { width: 100%; }
+.chart-wrap svg { width: 100%; height: auto; display: block; }
+.chart-legend {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 6px;
+}
+.chart-legend span {
+    font-size: 10px;
+    font-weight: 600;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.legend-dot {
+    width: 10px;
+    height: 3px;
+    border-radius: 1px;
+}
+
+/* ── Explanatory text ── */
+.explain-text {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 10px 14px;
+    margin-top: 6px;
+}
+.explain-text p {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 6px;
+}
+.explain-text p:last-child { margin-bottom: 0; }
+
+/* ── Sources ── */
+.sources {
+    font-size: 12px;
+    color: #5a6577;
+    direction: rtl;
+    text-align: right;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #e5e7eb;
+}
+.sources a {
+    color: #4a90a4;
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+    <div class="page-title">
+        <h1>תמונת מצב - מחוברות עובדים</h1>
+    </div>
+
+    <!-- ═══ Hero Row ═══ -->
+    <div class="sec-head">
+        <div class="sh-icon" style="background:#e8f1fe; color:#0A69A5;"><i class="ti ti-heart-handshake"></i></div>
+        <h2>מדד מחוברות <span style="font-size:10px; font-weight:500; color:#94a3b8;">(2024)</span></h2>
+        <div class="line"></div>
+    </div>
+
+    <!-- ═══ Row 1: Engagement + Tenure + Factors ═══ -->
+    <div class="triple-row">
+        <!-- Col 1: Engagement cards -->
+        <div class="triple-col">
+            <div class="hero-card blue" style="margin-bottom:8px">
+                <div class="hero-num">~34%</div>
+                <div class="hero-title">מחוברות גבוהה - ממוצע כללי</div>
+                <div class="hero-sub">עלייה קלה מ-32% ב-2022. דומה לארה"ב (33%) וגבוהה משמעותית מהממוצע הגלובלי (23%, Gallup 2023).</div>
+            </div>
+            <div class="hero-card green">
+                <div class="hero-num">~62%</div>
+                <div class="hero-title">מחוברות פאסיבית - ממוצע כללי</div>
+                <div class="hero-sub">רוב העובדים לא מנותקים אך גם לא מחוברים באופן פעיל - המוקד העיקרי לפעולה.</div>
+            </div>
+        </div>
+
+        <!-- Col 2: Tenure chart -->
+        <div class="tenure-chart">
+            <div class="tenure-title"><i class="ti ti-chart-bar"></i> מחוברות לפי ותק</div>
+            <div class="tenure-row">
+                <div class="tenure-label">עד 2 שנים</div>
+                <div class="tenure-stack">
+                    <div class="t-seg high" style="width:37%">37%</div>
+                    <div class="t-seg passive" style="width:59%">59%</div>
+                    <div class="t-seg low" style="width:4%"></div>
+                </div>
+            </div>
+            <div class="tenure-row">
+                <div class="tenure-label">2-4 שנים</div>
+                <div class="tenure-stack">
+                    <div class="t-seg high" style="width:31%">31%</div>
+                    <div class="t-seg passive" style="width:65%">65%</div>
+                    <div class="t-seg low" style="width:4%"></div>
+                </div>
+            </div>
+            <div class="tenure-row">
+                <div class="tenure-label">5-9 שנים</div>
+                <div class="tenure-stack">
+                    <div class="t-seg high" style="width:28%">28%</div>
+                    <div class="t-seg passive" style="width:66%">66%</div>
+                    <div class="t-seg low" style="width:6%"></div>
+                </div>
+            </div>
+            <div class="tenure-row">
+                <div class="tenure-label">10-19 שנים</div>
+                <div class="tenure-stack">
+                    <div class="t-seg high" style="width:32%">32%</div>
+                    <div class="t-seg passive" style="width:64%">64%</div>
+                    <div class="t-seg low" style="width:4%"></div>
+                </div>
+            </div>
+            <div class="tenure-row">
+                <div class="tenure-label">20+ שנים</div>
+                <div class="tenure-stack">
+                    <div class="t-seg high" style="width:38%">38%</div>
+                    <div class="t-seg passive" style="width:59%">59%</div>
+                    <div class="t-seg low" style="width:3%"></div>
+                </div>
+            </div>
+            <div class="tenure-legend">
+                <span><span class="dot" style="background:#6a8a0a"></span> גבוהה</span>
+                <span><span class="dot" style="background:#8590a0"></span> פאסיבית</span>
+                <span><span class="dot" style="background:#dc2626"></span> נמוכה</span>
+            </div>
+            <div class="tenure-insight"><i class="ti ti-trending-down" style="font-size:13px"></i> צניחה מ-37% ל-28% אחרי 5-9 שנים</div>
+        </div>
+
+        <!-- RIGHT: Factors -->
+        <div class="factors-col">
+            <div class="factor-card positive">
+                <div class="factor-title"><i class="ti ti-thumb-up"></i> גורמים מחזקים</div>
+                <ul class="factor-list">
+                    <li>מוטיבציה פנימית לשירות הציבורי</li>
+                    <li>תחושת שליחות והזדהות</li>
+                    <li>השפעה ויצירת ערך בתפקיד</li>
+                    <li>מנהל ישיר קשוב ומעריך</li>
+                </ul>
+            </div>
+            <div class="factor-card negative">
+                <div class="factor-title"><i class="ti ti-thumb-down"></i> גורמים מחלישים</div>
+                <ul class="factor-list">
+                    <li>הערכת הארגון והנהלתו</li>
+                    <li>אפשרויות קידום ופיתוח</li>
+                    <li>בהירות התהליכים</li>
+                    <li>פתיחות לחדשנות</li>
+                    <li>שקיפות ואמון בהנהלה</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="sec-head">
+        <div class="sh-icon" style="background:#e8f1fe; color:#0A69A5;"><i class="ti ti-user-search"></i></div>
+        <h2>מועמדויות מתוך המערכת <span style="font-size:10px; font-weight:500; color:#94a3b8;">(2022-2025)</span></h2>
+        <div class="line"></div>
+    </div>
+
+    <div class="charts-section">
+        <div class="charts-row">
+            <div class="chart-box">
+                <div class="chart-title">כמות מועמדויות לפי סוג מכרז</div>
+                <div class="chart-wrap" id="chart1"></div>
+            </div>
+            <div class="chart-box">
+                <div class="chart-title">% מכרזים שנסגרו עם בחירת מועמד</div>
+                <div class="chart-wrap" id="chart2"></div>
+            </div>
+        </div>
+        <div class="chart-legend">
+            <span><span class="legend-dot" style="background:#0A69A5"></span>בין-משרדי</span>
+            <span><span class="legend-dot" style="background:#8590a0"></span>פנימי</span>
+        </div>
+    </div>
+
+    <!-- Explanatory text -->
+    <div class="explain-text">
+        <p>לפי נתוני הנציבות נמצאה ירידה של כ-32% בהגשת מועמדים מתוך המערכת למכרזים מ-2022. לצד ירידה של כ-6.25% במציאת מועמדים מתאימים במכרזים בין-משרדיים וכ-18.5% במכרזים פנימיים. מעבר לכך, בסקר מחוברות עובדים מ-2024, 34% מהעובדים דיווחו מחוברות גבוהה - עלייה קלה מ-2022 (32%), דומה לרמה בארה"ב (33%) וגבוהה משמעותית מהממוצע העולמי (23%). כלומר לא נראה שיש תמיכה בבעיה חריגה במערכת הישראלית. עם זאת לא ניתן להגיד כי לא קיימת בעיה כלל - מעבר לאחוזים הגבוהים של מחוברות פאסיבית, המחוברות צונחת מ-37% עבור עובדים בשנתיים הראשונות בשירות המדינה ל-29-30% אחרי 4-10 שנים למרות מוטיבציה ציבורית גבוהה, ומחוברות סביבתית גבוהה ניכרת בכלל העובדים למעט הבכירים.</p>
+        <p>גורמים המזינים את הבעיה: לפי הסקר, בין הגורמים המרכזיים להחלשת המחוברות הם - הערכת הארגון והנהלתו, אפשרויות קידום ופיתוח, בהירות התהליכים, פתיחות לחדשנות, חיבור ההנהלות לשטח, שקיפות ואמון בהנהלה.</p>
+    </div>
+
+    <!-- Sources -->
+    <div class="sources">
+        מקור - מדד מחוברות וגורמים משפיעים: נציבות שירות המדינה (2024), <a href="https://www.gov.il/BlobFolder/reports/employee-engagement-survey24/he/employee-connections-survey24.pdf" target="_blank"><em>סקר מחוברות עובדים בשירות המדינה 2024</em></a>.<br>
+        מקור - מועמדויות מתוך המערכת: <a href="https://www.gov.il/files/csc/GiyusData1/genially.html" target="_blank">דשבורד נתוני הגיוס והמיון</a>, נציבות שירות המדינה.
+    </div>
+</div>
+
+<script>
+function drawLineChart(containerId, data, yMax, yMin, yStep, formatVal) {
+    var container = document.getElementById(containerId);
+    var W = 260, H = 150;
+    var margin = { top: 16, right: 12, bottom: 26, left: 36 };
+    var pad = 30; // inner padding so points don't sit on edges
+    var w = W - margin.left - margin.right;
+    var h = H - margin.top - margin.bottom;
+
+    var years = [2022, 2023, 2024, 2025];
+
+    function xPos(year) { return margin.left + pad + (year - 2022) / 3 * (w - 2 * pad); }
+    function yPos(val) { return margin.top + (1 - (val - yMin) / (yMax - yMin)) * h; }
+
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '">';
+
+    // Grid (skip the bottom line — start one step above yMin)
+    for (var g = yMin + yStep; g <= yMax; g += yStep) {
+        var gy = yPos(g);
+        svg += '<line x1="' + margin.left + '" y1="' + gy + '" x2="' + (W - margin.right) + '" y2="' + gy + '" stroke="#e5e7eb" stroke-width="0.5"/>';
+        svg += '<text x="' + (margin.left - 4) + '" y="' + (gy + 3) + '" text-anchor="end" font-size="8" fill="#94a3b8" font-family="Heebo">' + formatVal(g) + '</text>';
+    }
+
+    // X axis
+    for (var j = 0; j < years.length; j++) {
+        svg += '<text x="' + xPos(years[j]) + '" y="' + (H - 4) + '" text-anchor="middle" font-size="9" font-weight="700" fill="#475569" font-family="Heebo">' + years[j] + '</text>';
+    }
+
+    // Lines + dots + end labels
+    for (var s = 0; s < data.length; s++) {
+        var series = data[s];
+        var points = '';
+        for (var k = 0; k < series.values.length; k++) {
+            var px = xPos(years[k]);
+            var py = yPos(series.values[k]);
+            points += (k === 0 ? 'M' : 'L') + px.toFixed(1) + ',' + py.toFixed(1);
+            // Dot + value label at every point
+            svg += '<circle cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="2.5" fill="' + series.color + '"/>';
+            var labelY = s === 0 ? py - 6 : py + 12; // first series above, second below
+            svg += '<text x="' + px.toFixed(1) + '" y="' + labelY + '" text-anchor="middle" font-size="8" font-weight="700" fill="' + series.color + '" font-family="Heebo">' + formatVal(series.values[k]) + '</text>';
+        }
+        svg += '<path d="' + points + '" fill="none" stroke="' + series.color + '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>';
+    }
+
+    svg += '</svg>';
+    container.innerHTML = svg;
+}
+
+// Chart 1: כמות מועמדויות
+drawLineChart('chart1', [
+    { color: '#0A69A5', values: [18519, 11776, 16232, 11960] },
+    { color: '#8590a0', values: [13330, 9759, 10026, 9817] }
+], 20000, 9000, 3000, function(v) { return v.toLocaleString(); });
+
+// Chart 2: % נסגרו עם בחירת מועמד
+drawLineChart('chart2', [
+    { color: '#0A69A5', values: [64, 63, 57, 60] },
+    { color: '#8590a0', values: [54, 50, 47, 44] }
+], 68, 42, 8, function(v) { return v + '%'; });
+</script>
+</body>
+</html>

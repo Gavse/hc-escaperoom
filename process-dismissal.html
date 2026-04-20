@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>סיום העסקה</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Heebo', sans-serif;
+    background: #f0f2f5;
+    direction: rtl;
+    padding: 32px 24px 48px;
+    min-height: 100vh;
+}
+.overlay-inner { max-width: 780px; margin: 0 auto; }
+
+/* Back button */
+.back-btn {
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: #2c3e5a;
+    background: linear-gradient(180deg, #eaf0f7 0%, #d5deea 100%);
+    border: 1.5px solid #8a9ab0;
+    border-radius: 6px;
+    padding: 7px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 20px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.back-btn:hover {
+    background: linear-gradient(180deg, #e0e8f2 0%, #ccd6e4 100%);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+h1 { font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 8px; }
+
+/* Section titles — gradient banner */
+.section-title {
+    font-size: 15px; font-weight: 800; color: #fff;
+    margin: 20px 0 10px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 8px;
+}
+.section-title i { font-size: 18px; }
+.section-title-box {
+    margin: 20px 0 10px;
+    border-radius: 10px;
+    overflow: hidden;
+}
+.section-title-box .section-title {
+    margin: 0;
+    border-radius: 10px 10px 0 0;
+}
+.section-title-box.teal {
+    background: #f0fdfa;
+    border: 1.5px solid #99f6e4;
+    border-radius: 10px;
+}
+.section-title-sub {
+    font-size: 13px; line-height: 1.6; color: #115e59;
+    padding: 8px 16px 10px;
+}
+
+/* Cards */
+.track-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    border-right: 4px solid #14b8a6;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    display: flex; gap: 10px; align-items: flex-start;
+}
+.track-card .tc-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #f0fdfa;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0; margin-top: 2px;
+}
+.track-card h4 { font-size: 13.5px; font-weight: 700; color: #1e293b; margin-bottom: 2px; }
+.track-card p { font-size: 12.5px; line-height: 1.6; color: #64748b; }
+.track-card .tc-source { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+.track-card.amber-border { border-right-color: #f59e0b; }
+.track-card.amber-border .tc-icon { background: #fffbeb; }
+.section-title.amber { background: linear-gradient(135deg, #b45309, #d97706); }
+
+/* Bullet list inside card (always visible) */
+.track-card .bullet-list {
+    list-style: none; padding: 6px 0 0; margin: 6px 0 0;
+    border-top: 1px dashed #e2e8f0;
+}
+.track-card .bullet-list li {
+    font-size: 12px; line-height: 1.6; color: #64748b;
+    padding: 2px 12px 2px 0; position: relative;
+}
+.track-card .bullet-list li::before {
+    content: ''; position: absolute;
+    right: 0; top: 10px;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #14b8a6;
+}
+
+/* Child items — gray indented cards */
+.child-items {
+    margin: 0 36px 6px 0;
+    display: flex; flex-direction: column; gap: 3px;
+}
+.child-item {
+    background: #f4f5f7;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 8px;
+    padding: 10px 14px;
+    cursor: pointer;
+}
+.child-title-row {
+    display: flex; align-items: center; gap: 8px;
+    margin-bottom: 2px;
+}
+.child-item h5 {
+    font-size: 12.5px; font-weight: 700; color: #334155;
+    margin: 0;
+}
+.child-item .sub-toggle {
+    font-size: 11px; font-weight: 700; color: #0d9488;
+    white-space: nowrap;
+}
+.child-item.open .sub-toggle { display: none; }
+.child-item .sub-details {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+    list-style: none; padding: 0; margin: 0;
+}
+.child-item.open .sub-details {
+    max-height: 2000px;
+    padding-top: 6px; margin-top: 6px;
+    border-top: 1px dashed #e2e8f0;
+}
+.child-item .sub-details li {
+    font-size: 12px; line-height: 1.6; color: #64748b;
+    padding: 3px 12px 3px 0; position: relative;
+}
+.child-item .sub-details li::before {
+    content: ''; position: absolute;
+    right: 0; top: 10px;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #14b8a6;
+}
+
+/* Bold in bullets */
+.sub-details li strong, .bullet-list li strong {
+    color: #334155;
+}
+
+/* Source footer */
+.source-footer {
+    font-size: 11px; line-height: 1.6; color: #94a3b8;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+}
+.source-footer a {
+    color: #0d9488; text-decoration: underline;
+}
+
+/* Flowchart image */
+.flowchart-image {
+    margin: 10px 0;
+    text-align: center;
+}
+.flowchart-image img {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+</style>
+</head>
+<body>
+<div class="overlay-inner">
+
+    <button class="back-btn" onclick="try { window.parent.closeProcess() } catch(e) { window.parent.postMessage('closeProcess','*') }">
+        <i class="ti ti-arrow-right"></i>
+        <span>חזרה</span>
+    </button>
+
+    <h1>סיום העסקה</h1>
+
+    <!-- Section title with intro -->
+    <div class="section-title-box teal">
+        <h2 class="section-title"><i class="ti ti-ban"></i> סיום העסקה</h2>
+        <p class="section-title-sub">כשאין מנוס מסיום העסקה חשוב להפריד בין מצבים שונים:</p>
+    </div>
+
+    <!-- 1. תקופת ניסיון -->
+    <div class="track-card">
+        <div class="tc-icon"><i class="ti ti-hourglass"></i></div>
+        <div>
+            <h4>לפני תום תקופת נסיון / משרה זמנית</h4>
+            <p>פיטורים בתקופת הניסיון פשוטים יותר מפיטורי עובד קבוע - אינם דורשים את מלוא ההליך המפורט למטה.</p>
+            <ul class="bullet-list">
+                <li>תקופת הניסיון לעובד חדש מחוץ לשירות היא שנתיים.</li>
+                <li>לעובד מתוך השירות - חצי שנה.</li>
+                <li>ראש היחידה רשאי להאריך את תקופת הניסיון בתקופות נוספות שלא יעלו על חצי שנה בסך הכל, בכפוף להסכמת העובד בכתב.</li>
+            </ul>
+            <div class="tc-source">תקשי"ר פרק 82 - <a href="https://www.gov.il/apps/nasham/takshir/takshir-tree" target="_blank">קישור</a></div>
+        </div>
+    </div>
+
+    <!-- 2. פיטורי משמעת -->
+    <div class="track-card">
+        <div class="tc-icon"><i class="ti ti-gavel"></i></div>
+        <div>
+            <h4>פיטורי משמעת</h4>
+            <p>פיטורים עקב התנהגות פסולה - מבוססים על <strong>עבירת משמעת</strong> [כהגדרתה בחוק שירות המדינה (משמעת), התשכ"ג-1963.] הסמכות לפיטורים בידי בית המשפט לענייני עבודה.</p>
+        </div>
+    </div>
+
+    <!-- 3. פיטורי אי התאמה — parent card + gray children -->
+    <div class="track-card">
+        <div class="tc-icon"><i class="ti ti-user-x"></i></div>
+        <div>
+            <h4>פיטורי אי התאמה</h4>
+            <p>פיטורים עקב כשל תפקודי מתמשך - דורש תשתית ראייתית לחוסר שביעות רצון ממקורות שונים ולאורך תקופה משמעותית.</p>
+        </div>
+    </div>
+    <div class="child-items">
+        <div class="child-item" onclick="this.classList.toggle('open')">
+            <div class="child-title-row"><h5>דוגמאות לעילות</h5><span class="sub-toggle">הרחבה ▼</span></div>
+            <ul class="sub-details">
+                <li><strong>תפקוד מקצועי לקוי</strong> - יכול לבוא לידי ביטוי בתפוקות נמוכות, אי עמידה בלוחות זמנים, הערכות מקצועיות גרועות וכו'.</li>
+                <li><strong>רשלנות מקצועית / כשלים מקצועיים</strong> - כגון: חוסר יכולת לעמוד בסטנדרטים מקצועיים.</li>
+                <li><strong>מוסר עבודה ירוד</strong> - יכול לבוא לידי ביטוי בזלזול מתמשך בנהלי עבודה מקצועיים, לרבות כללי בטיחות וגהות וכו'.</li>
+                <li><strong>יחסי אנוש גרועים</strong> - בין היתר, התנהגות לא קולגיאלית ולא ראויה לאורך זמן כלפי חברים לעבודה או כלפי הממונים. התנהגות בעייתית שחוזרת על עצמה ומעכירה את האווירה.</li>
+                <li><strong>חוסר יכולת לעבוד עם קהל</strong> כאשר מדובר בתפקיד המחייב זאת - יכול לבוא לידי ביטוי בתלונות חוזרות ונשנות על יחס לא ראוי כלפי קהל או בנוכחות קהל שנוקק לשירותיו.</li>
+                <li><strong>התעסקות ממושכת ולאורך זמן בעניינים פרטיים</strong> על חשבון העבודה - למשל, גלישה ממושכת באינטרנט וכדו'.</li>
+                <li><strong>אי קבלת מרות</strong> - דוגמת תלונות חוזרות ונשנות על כך שהעובד לא מקיים את המוטל עליו למרות שקיבל הוראות כדין.</li>
+                <li><strong>שלילת רישיון עיסוק</strong> או שינוי אחר בכישוריו של העובד, המבטל את יכולתו להוסיף ולעמוד בדרישות הסף למשרה.</li>
+            </ul>
+        </div>
+
+        <div class="child-item" onclick="this.classList.toggle('open')">
+            <div class="child-title-row"><h5>דוגמאות לאיסוף ראיות</h5><span class="sub-toggle">הרחבה ▼</span></div>
+            <ul class="sub-details">
+                <li><strong>הערכות עובד תקופתיות</strong>, עם דגש על ההערכות שניתנו לעובד במהלך תקופה הערכת הביצועים המיוחדת ובסמיכות הזמן, ככל שניתן, למועד בחינת נושא פיטוריו.</li>
+                <li><strong>מכתבי תלונה/התראה ומזכרים</strong> שנכתבו בנוגע לתפקודו המקצועי שהוכנסו לתיקו האישי של העובד.</li>
+                <li><strong>סיכומים/פרוטוקולים של ישיבות</strong> שנערכו בנוגע להתנהלותו של העובד בהשתתפותו או שלא בהשתתפותו.</li>
+                <li><strong>דוחות</strong> או כל מדד אחר בנוגע לתפוקת העבודה שלו, איכותה וכד'.</li>
+                <li><strong>סנקציות מנהליות ו/או משמעתיות</strong> שננקטו נגד העובד (למשל סירוב או דחיית קיצור פז"מ, קידומים או העלאות בדרגה; כמו כן הערות, נזיפות או סנקציות משמעתיות אחרות, בין אם הוטלו בידי המנהל ובין אם בידי בית הדין למשמעת).</li>
+            </ul>
+        </div>
+
+        <div class="child-item" onclick="this.classList.toggle('open')">
+            <div class="child-title-row"><h5>קושי להגן על החלטה</h5><span class="sub-toggle">הרחבה ▼</span></div>
+            <ul class="sub-details">
+                <li><strong>אין ערך ראייתי רב לעדויות והערכות הנערכות בדיעבד</strong> ובעיצומו של הליך הפיטורים - נחוץ תיעוד שוטף ובזמן אמת בכל הנוגע לחוסר מקצועיותו או חוסר התאמה של העובד.</li>
+                <li><strong>הערכות עובד תקופתיות</strong>, צריכות להביא לידי ביטוי את חוסר שביעות הרצון המקצועית מהעובד, שכן אם לא יהיה ביטוי לאי ההתאמה (מכל סיבה שהיא, לרבות בשל אי נעימות כלפי העובד) יהיה קושי להגן על ההחלטה.</li>
+                <li><strong>ראיות סותרות מהתיק האישי</strong>, כמו המלצות להעלאה בדרגה, מתן תעודת הערכה או הצטיינות וכיו"ב, יקשו להגן על החלטה לפטר עובד בשל אי-התאמה.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 4. מסלולים עוקפים — separate section -->
+    <h2 class="section-title amber"><i class="ti ti-route"></i> מסלולים עוקפים</h2>
+
+    <div class="track-card amber-border">
+        <div class="tc-icon"><i class="ti ti-heart-handshake"></i></div>
+        <div>
+            <h4>פרישה מרצון</h4>
+            <p>סיכום עם העובד על הסדר פרישה מרצון.</p>
+        </div>
+    </div>
+
+    <div class="track-card amber-border">
+        <div class="tc-icon"><i class="ti ti-transfer-out"></i></div>
+        <div>
+            <h4>העברה למשרה אחרת</h4>
+            <p>ניתן להעביר עובד למשרה אחרת באותה הרמה (עד רמה מתחת בהסכמה או אישור הנציבות) (תקשי"ר 11.23).</p>
+        </div>
+    </div>
+
+    <!-- תרשים זרימה -->
+    <h2 class="section-title"><i class="ti ti-git-merge"></i> תרשים זרימה של התהליך</h2>
+    <div class="flowchart-image">
+        <img src="images/flowchart-dismissal.png" alt="תרשים זרימה - תהליך סיום העסקה">
+    </div>
+
+    <!-- מקור -->
+    <div class="source-footer">
+        מקור: נציבות שירות המדינה. (2017). נוהל פיטורי אי-התאמה (הנחיה מס' 8.5, מהדורה 2). ירושלים: נציבות שירות המדינה. <a href="https://www.gov.il/BlobFolder/policy/guide_line_85/he/guideline85-v3.pdf" target="_blank">הנחיית נציב מס' 8.5 - נוהל פיטורי אי-התאמה</a>
+    </div>
+
+</div>
+</body>
+</html>

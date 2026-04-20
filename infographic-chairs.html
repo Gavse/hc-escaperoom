@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>נציבות שירות המדינה לעומת הון אנושי משרדי</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Heebo', sans-serif;
+    background: #f0f2f5;
+    direction: rtl;
+    display: flex;
+    justify-content: center;
+    padding: 8px 14px;
+}
+
+.page { width: 100%; max-width: 1080px; }
+
+/* ── Title ── */
+.title-bar {
+    text-align: center;
+    margin-bottom: 8px;
+}
+.title-bar h1 {
+    font-size: 20px; font-weight: 800; color: #1e293b;
+    margin-bottom: 2px;
+}
+.title-bar p {
+    font-size: 16px; color: #64748b;
+}
+
+/* ── Columns ── */
+.columns {
+    display: flex; gap: 14px;
+    align-items: flex-start;
+}
+.col-stack {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* ── Section ── */
+.sec-head {
+    padding: 10px 16px;
+    border-radius: 14px;
+    display: flex; align-items: flex-start; gap: 12px;
+    cursor: pointer;
+    transition: box-shadow 0.2s, border-radius 0.2s;
+    position: relative;
+}
+.sec-head:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+.sec.open .sec-head { border-radius: 14px 14px 0 0; }
+
+.sec-head .sh-icon {
+    width: 40px; height: 40px; border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+    background: rgba(255,255,255,0.18);
+    margin-top: 2px;
+}
+.sec-head h2 { font-size: 16px; font-weight: 800; color: #fff; margin-bottom: 1px; }
+.sec-head .sh-sub { font-size: 10px; color: rgba(255,255,255,0.65); font-style: italic; }
+.sec-head .sh-desc {
+    font-size: 11.5px; line-height: 1.45;
+    color: rgba(255,255,255,0.85);
+    margin-top: 4px;
+    font-weight: 400;
+}
+
+.sec-head .sh-toggle {
+    position: absolute;
+    left: 14px; top: 10px;
+    background: rgba(255,255,255,0.3);
+    border: 1.5px solid rgba(255,255,255,0.5);
+    border-radius: 20px;
+    color: #fff; font-family: 'Heebo', sans-serif;
+    font-size: 13px; font-weight: 700;
+    padding: 6px 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex; align-items: center; gap: 6px;
+    backdrop-filter: blur(4px);
+}
+.sec-head .sh-toggle:hover { background: rgba(255,255,255,0.45); }
+.sec-head .sh-toggle .arrow {
+    transition: transform 0.3s;
+    font-size: 10px;
+}
+.sec.open .sh-toggle .arrow { transform: rotate(180deg); }
+
+/* ── Color themes ── */
+.sec-teal .sec-head { background: linear-gradient(135deg, #0f766e, #0d9488); }
+.sec-amber .sec-head { background: linear-gradient(135deg, #b45309, #d97706); }
+
+/* ── Cards container — collapsible ── */
+.cards {
+    display: flex; flex-direction: column;
+    gap: 4px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.3s ease;
+    padding: 0;
+}
+.sec.open .cards {
+    max-height: 3000px;
+    padding: 6px 0 0;
+}
+
+/* ── Card ── */
+.card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    padding: 5px 10px;
+    display: flex; gap: 8px;
+    align-items: flex-start;
+    transition: box-shadow 0.2s;
+}
+.card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+
+.sec-teal .card { border-right: 4px solid #14b8a6; }
+.sec-amber .card { border-right: 4px solid #f59e0b; }
+
+.card-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; flex-shrink: 0;
+    margin-top: 1px;
+}
+.sec-teal .card-icon { background: #f0fdfa; }
+.sec-amber .card-icon { background: #fffbeb; }
+
+.card-content { flex: 1; }
+.card-content h4 {
+    font-size: 12.5px; font-weight: 700;
+    color: #1e293b; line-height: 1.3;
+    margin-bottom: 1px;
+}
+.card-content p {
+    font-size: 11px; line-height: 1.5;
+    color: #64748b;
+}
+
+/* ── Delegation card (teal accent inside amber section) ── */
+.deleg-card { border-right: 4px solid #14b8a6 !important; }
+.deleg-card .card-icon { background: #f0fdfa !important; }
+
+/* ── Process icons row ── */
+.process-section {
+    margin-top: 16px;
+    text-align: center;
+}
+.process-section h2 {
+    font-size: 20px; font-weight: 800; color: #1e293b;
+    margin-bottom: 12px;
+}
+.process-grid {
+    display: flex; gap: 14px;
+    justify-content: center;
+}
+.process-tile {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    cursor: pointer;
+    flex: 1;
+    max-width: 200px;
+}
+.process-icon {
+    width: 72px; height: 72px;
+    display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s;
+}
+.process-icon i { font-size: 72px; color: #1e293b; }
+.process-icon img { width: 72px; height: 72px; }
+.process-tile:hover .process-icon {
+    transform: translateY(-2px);
+}
+.process-label {
+    font-size: 15px; font-weight: 700;
+    color: #2c3e5a;
+    background: linear-gradient(180deg, #eaf0f7 0%, #d5deea 100%);
+    border: 1.5px solid #8a9ab0;
+    border-radius: 6px;
+    padding: 7px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+    transition: background 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.process-tile:hover .process-label {
+    background: linear-gradient(180deg, #e0e8f2 0%, #ccd6e4 100%);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+/* ── Process overlay ── */
+.process-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: #f0f2f5;
+    z-index: 100;
+    overflow-y: auto;
+    padding: 32px 24px 48px;
+    animation: fadeInOverlay 0.3s ease;
+}
+.process-overlay.active { display: block; }
+.process-iframe {
+    width: 100%; height: 100%;
+    border: none; background: #f0f2f5;
+}
+
+@keyframes fadeInOverlay {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.process-overlay .overlay-inner {
+    max-width: 780px;
+    margin: 0 auto;
+}
+
+.process-overlay .back-btn {
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: #2c3e5a;
+    background: linear-gradient(180deg, #eaf0f7 0%, #d5deea 100%);
+    border: 1.5px solid #8a9ab0;
+    border-radius: 6px;
+    padding: 7px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 20px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.process-overlay .back-btn:hover {
+    background: linear-gradient(180deg, #e0e8f2 0%, #ccd6e4 100%);
+    box-shadow: 0 3px 8px rgba(0,0,0,0.14), inset 0 1px 0 rgba(255,255,255,0.6);
+}
+
+.process-overlay h1 {
+    font-size: 22px; font-weight: 800; color: #1e293b;
+    margin-bottom: 8px;
+}
+
+/* Intro box with expandable legal sources */
+.intro-box {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+.intro-box:hover { border-color: #99f6e4; }
+.intro-box .intro-text {
+    font-size: 14px; line-height: 1.7;
+    color: #334155;
+    margin: 0 0 8px;
+}
+.intro-box .intro-text a { color: #0d9488; }
+.intro-expand-hint {
+    font-size: 13px; font-weight: 700; color: #0f766e;
+    display: flex; align-items: center; gap: 6px;
+}
+.intro-expand-hint .arrow {
+    transition: transform 0.3s;
+    font-size: 10px;
+}
+.intro-box.open .intro-expand-hint .arrow {
+    transform: rotate(180deg);
+}
+.intro-expand-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+}
+.intro-box.open .intro-expand-body {
+    max-height: 600px;
+}
+.intro-expand-body ul {
+    list-style: none; padding: 10px 0 0; margin: 0;
+    display: flex; flex-direction: column; gap: 10px;
+    border-top: 1px solid #e2e8f0;
+    margin-top: 8px;
+}
+.intro-expand-body li {
+    font-size: 13px; line-height: 1.6; color: #475569;
+    padding-right: 14px;
+    position: relative;
+}
+.intro-expand-body li::before {
+    content: '⚖️';
+    position: absolute;
+    right: -4px; top: 0;
+}
+.intro-expand-body li a {
+    color: #0d9488;
+    text-decoration: underline;
+}
+
+/* Approval box */
+.process-overlay .approval-box {
+    background: #f0fdfa;
+    border: 1.5px solid #99f6e4;
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 12px 0;
+}
+.process-overlay .approval-box h4 {
+    font-size: 14px; font-weight: 700; color: #0f766e;
+    margin-bottom: 4px;
+}
+.process-overlay .approval-box p {
+    font-size: 13px; line-height: 1.6; color: #475569;
+}
+.process-overlay .approval-box .source {
+    font-size: 11px; color: #94a3b8; margin-top: 4px;
+}
+
+/* Full link */
+.process-overlay .full-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 14px; font-weight: 600;
+    color: #0d9488;
+    text-decoration: none;
+    margin-top: 8px;
+    padding: 8px 0;
+}
+.process-overlay .full-link:hover { text-decoration: underline; }
+
+/* Section titles — gradient banner */
+.process-overlay .section-title {
+    font-size: 15px; font-weight: 800; color: #fff;
+    margin: 20px 0 10px;
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    border-radius: 10px;
+    display: flex; align-items: center; gap: 8px;
+}
+.process-overlay .section-title i { font-size: 18px; }
+
+/* Tender type cards */
+.process-overlay .tender-cards {
+    display: flex; flex-direction: column; gap: 6px;
+    margin-bottom: 8px;
+}
+.process-overlay .tender-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    border-right: 4px solid #14b8a6;
+    padding: 10px 14px;
+    display: flex; gap: 10px;
+    align-items: flex-start;
+    transition: box-shadow 0.2s;
+}
+.process-overlay .tender-card:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+}
+.process-overlay .tender-card .tc-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    background: #f0fdfa;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; flex-shrink: 0;
+    margin-top: 1px;
+}
+.process-overlay .tender-card h4 {
+    font-size: 14px; font-weight: 700;
+    color: #1e293b; line-height: 1.3;
+    margin-bottom: 2px;
+}
+.process-overlay .tender-card p {
+    font-size: 12.5px; line-height: 1.55;
+    color: #64748b;
+}
+.process-overlay .tender-card .tc-source {
+    font-size: 11px; color: #94a3b8;
+    margin-top: 4px;
+}
+
+/* Grade image */
+.process-overlay .grade-image {
+    margin: 20px 0;
+    text-align: center;
+}
+.process-overlay .grade-image img {
+    max-width: 100%;
+    border-radius: 10px;
+    border: 1.5px solid #e2e8f0;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+/* Step flow */
+.step-flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    direction: rtl;
+    margin: 8px 0;
+}
+.step-box {
+    flex: 1;
+    border-radius: 10px;
+    padding: 10px 14px;
+    text-align: center;
+    border: 1.5px solid;
+}
+.step-teal { background: #f0fdfa; border-color: #5eead4; }
+.step-amber { background: #fffbeb; border-color: #fcd34d; }
+.step-red { background: #fef2f2; border-color: #fca5a5; }
+.step-green { background: #f0fdf4; border-color: #86efac; }
+.step-box > i {
+    font-size: 20px; color: #475569;
+}
+.step-label {
+    font-size: 13px; font-weight: 800; color: #1e293b;
+}
+.step-detail {
+    font-size: 11px; color: #64748b; margin-bottom: 4px;
+}
+.step-action {
+    font-size: 12px; font-weight: 700; color: #334155;
+    background: rgba(255,255,255,0.7);
+    border-radius: 6px;
+    padding: 4px 8px;
+    display: inline-block;
+}
+.step-then {
+    font-size: 10px; font-weight: 400; color: #94a3b8;
+    display: block;
+    margin: 2px 0;
+}
+.step-arrow-wrap {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 0 8px;
+    color: #64748b;
+    font-size: 22px;
+    gap: 2px;
+}
+.step-arrow-label {
+    font-size: 10px; font-weight: 700; color: #94a3b8;
+    white-space: nowrap;
+}
+.step-dual {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+}
+.step-dual-item {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+}
+.step-dual-item i { font-size: 20px; color: #475569; }
+.step-dual-item span { font-size: 12px; font-weight: 800; color: #1e293b; }
+.step-dual-sep {
+    font-size: 16px; font-weight: 700; color: #94a3b8;
+    align-self: center;
+}
+.step-source {
+    font-size: 11px; color: #94a3b8;
+    margin-top: 4px;
+}
+.flow-card {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+}
+.flow-note {
+    font-size: 13px; font-weight: 700; color: #475569;
+    margin: 0 0 6px;
+}
+.flow-detail {
+    font-size: 12.5px; line-height: 1.6; color: #64748b;
+    margin: 8px 0 0;
+    padding-top: 8px;
+    border-top: 1px solid #f1f5f9;
+}
+
+</style>
+</head>
+<body>
+<div class="page">
+
+    <div class="title-bar">
+        <h1>נציבות שירות המדינה לעומת הון אנושי משרדי</h1>
+    </div>
+
+    <div class="columns">
+
+        <!-- ═══ RIGHT STACK: NETZIVUT ═══ -->
+        <div class="col-stack">
+            <div class="sec sec-teal" id="sec-teal">
+                <div class="sec-head" onclick="toggleSec('sec-teal')">
+                    <div class="sh-icon">🏛️</div>
+                    <div>
+                        <h2>נציבות שירות המדינה</h2>
+                        <div class="sh-sub">ארגון המטה, הרגולטור והגוף המקצועי העליון — מבט מאקרו</div>
+                        <div class="sh-desc">פועלת כגורם המטה והרגולציה המרכזי. תפקידה להגדיר את "כללי המשחק", להתוות אסטרטגיה ולוודא שהמערכת כולה פועלת על פי אמות מידה של מנהל תקין, שוויון ומקצועיות.</div>
+                    </div>
+                    <button class="sh-toggle"><span>הרחבה</span> <span class="arrow">▼</span></button>
+                </div>
+                <div class="cards">
+                    <div class="card">
+                        <div class="card-icon">📜</div>
+                        <div class="card-content">
+                            <h4>רגולציה, הנחיה וקביעת מדיניות</h4>
+                            <p>קובעת את הכללים וההנחיות לכלל משרדי הממשלה ויחידות הסמך באמצעות התקשי"ר והודעות הנציבות, ומתווה את אסטרטגיית ניהול המשאב האנושי ברמה הלאומית.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🏗️</div>
+                        <div class="card-content">
+                            <h4>תקינה, סיווג משרות ומבנים ארגוניים</h4>
+                            <p>אישור והסדרת תקינה רוחבית, בניית מבנים ארגוניים ממשלתיים, קביעת סיווגי משרות ומדיניות שכר.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🎯</div>
+                        <div class="card-content">
+                            <h4>קביעת תהליכי גיוס ומיון</h4>
+                            <p>הגדרת הסטנדרטים, השיטות והכללים המחייבים בתהליכי קליטה לשירות המדינה: מכרזים, תנאי סף, שוויון הזדמנויות.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🔍</div>
+                        <div class="card-content">
+                            <h4>בקרה וביקורת</h4>
+                            <p>פיקוח שוטף על משרדי הממשלה לוידוא עמידה בתקנים, בנהלים המקצועיים ובעקרונות המנהל התקין.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">⚖️</div>
+                        <div class="card-content">
+                            <h4>משמעת ברמה מערכתית</h4>
+                            <p>הפעלת אגף המשמעת לטיפול בעבירות חמורות, ניהול חקירות והגשת תובענות לבית הדין למשמעת. אגפי המשמעת המשרדיים פועלים בתיאום עם הנציבות.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🎓</div>
+                        <div class="card-content">
+                            <h4>פיתוח הון אנושי בכיר</h4>
+                            <p>ניהול המדרשה הלאומית למנהיגות, הכשרת סגלים בכירים כגון עתודות ניהוליות, והובלת תהליכי שיפור ולמידה ארגונית ברמת המערכת.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ LEFT STACK: MISRADI + DELEGATION ═══ -->
+        <div class="col-stack">
+            <div class="sec sec-amber" id="sec-amber">
+                <div class="sec-head" onclick="toggleSec('sec-amber')">
+                    <div class="sh-icon">🏢</div>
+                    <div>
+                        <h2>הון אנושי משרדי</h2>
+                        <div class="sh-sub">השטח, התפעול והביצוע — מבט מיקרו</div>
+                        <div class="sh-desc">תפקידם של אגפי ההון האנושי במשרדי הממשלה ויחידות הסמך הם להוציא לפועל את מדיניות הנציבות תוך התאמה לצרכי המשרד, לקדם באופן יזום את צורכי המשרד ולנהל תהליכי הון אנושי יומיומיים.</div>
+                    </div>
+                    <button class="sh-toggle"><span>הרחבה</span> <span class="arrow">▼</span></button>
+                </div>
+                <div class="cards">
+                    <div class="card">
+                        <div class="card-icon">🔄</div>
+                        <div class="card-content">
+                            <h4>ניהול מחזור חיי העובד</h4>
+                            <p>אחריות מלאה מרגע כניסת העובד ועד עזיבתו: קליטה, הצבות, ניהול נוכחות, קידום, רווחה, סיום העסקה ופרישה - הכול בכפוף לחוק ולתקשי"ר.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">📋</div>
+                        <div class="card-content">
+                            <h4>תפעול בפועל של גיוס ומכרזים</h4>
+                            <p>ניהול הלכה למעשה של הליכי המכרזים לאיוש משרות: פרסום, סינון קורות חיים, מיון מועמדים, הפעלת ועדות מכרזים משרדיות.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">💡</div>
+                        <div class="card-content">
+                            <h4>קידום צורכי המשרד וייזום שינויים</h4>
+                            <p>זיהוי צרכים מקצועיים מהשטח, בניית בקשות לשינוי מבנה ארגוני, בקשת תוספת תקנים, עדכון הגדרות תפקיד - והגשתם לאישור הנציבות.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">⚖️</div>
+                        <div class="card-content">
+                            <h4>משמעת ברמת השטח</h4>
+                            <p>זיהוי וטיפול בסוגיות משמעת ברמת המשרד: ניהול בירורים, חקירות פנימיות ושימועים. מקרים חמורים מועברים לאגף המשמעת בנציבות לטיפול בבית הדין למשמעת.</p>
+                        </div>
+                    </div>
+                    <!-- ═══ DELEGATION — single teal card ═══ -->
+                    <div class="card deleg-card">
+                        <div class="card-icon">🔑</div>
+                        <div class="card-content">
+                            <h4>האצלת סמכויות</h4>
+                            <p>לנציב שירות המדינה סמכות להאציל סמכויות למשרדים, במטרה לאפשר גמישות ניהולית וקיצור תהליכים. לדוגמה: ניהול עצמאי של גיוס ומיון (פיילוט ב-5 משרדים), העברת עובדים ומינויים בפועל, וסיום העסקה של סגל שאינו בכיר ללא אישור פרטני.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ═══ PROCESS OVERLAY: TENDERS ═══ -->
+    <div class="process-overlay" id="process-tenders">
+        <div class="overlay-inner">
+            <button class="back-btn" onclick="closeProcess()">
+                <i class="ti ti-arrow-right"></i>
+                <span>חזרה</span>
+            </button>
+
+            <h1>מכרזים בשירות המדינה</h1>
+
+            <!-- Intro box with expandable legal sources -->
+            <div class="intro-box" onclick="this.classList.toggle('open')">
+                <p class="intro-text">מכרז הוא ברירת המחדל ו"דרך המלך" לאיוש משרות בשירות המדינה. ריכוז נקודות מרכזיות על מכרזים מתוך התקשי"ר (פרק 11, מכרזים ומינויים). מומלץ להיכנס <a href="https://www.gov.il/apps/nasham/takshir/takshir-tree" target="_blank" onclick="event.stopPropagation()">לתקשי"ר המלא</a> ולבצע חיפוש על נקודות שמעניינות אתכם.</p>
+                <div class="intro-expand-hint"><i class="ti ti-scale"></i> מקורות חוקיים-נורמטיביים <span class="arrow">▼</span></div>
+                <div class="intro-expand-body">
+                    <ul>
+                        <li>חוק שירות המדינה (מינויים), תשי"ט-1959 - לא יתמנה אדם עובד המדינה אלא לאחר שנציב השירות הכריז על המשרה בפומבי (סעיף 19). סעיף 15א - חובת ייצוג הולם. <a href="https://www.nevo.co.il/law_html/law01/p221k1_001.htm" target="_blank" onclick="event.stopPropagation()">קישור</a></li>
+                        <li>תקשי"ר: פרק 11 (מכרזים ומינויים) - מפרט את סוגי המכרזים, סדר הפרסום ותנאי הזכאות. <a href="https://www.gov.il/apps/nasham/takshir/takshir-tree" target="_blank" onclick="event.stopPropagation()">קישור</a></li>
+                        <li>הנחיית היועמ"ש 1.15 - מבססת את המכרז כברירת המחדל ואוסרת מעורבות הדרג הפוליטי במינויים. <a href="https://www.justice.gov.il/Units/YoezMespati/HanchayotNew/one/11/Pages/115.aspx" target="_blank" onclick="event.stopPropagation()">קישור</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Netzivut approval -->
+            <div class="approval-box">
+                <h4><i class="ti ti-stamp"></i> אישור נציבות</h4>
+                <p>לפני הפרסום יש לפנות לנציבות שירות המדינה שתבדוק ותאשר את הפרטים המדויקים של המכרז.</p>
+                <div class="source">מקור: תקשי"ר 11.421ב'</div>
+            </div>
+
+            <!-- Tender types -->
+            <h2 class="section-title"><i class="ti ti-list-details"></i> סוגי מכרזים</h2>
+            <div class="tender-cards">
+                <div class="tender-card">
+                    <div class="tc-icon"><i class="ti ti-building"></i></div>
+                    <div>
+                        <h4>מכרז פנימי</h4>
+                        <p>פתוח לעובדי המשרד בלבד, כולל יחידות הסמך השייכות לו.</p>
+                        <div class="tc-source">תקשי"ר 11.411</div>
+                    </div>
+                </div>
+                <div class="tender-card">
+                    <div class="tc-icon"><i class="ti ti-building-community"></i></div>
+                    <div>
+                        <h4>מכרז בין-משרדי</h4>
+                        <p>פתוח לעובדי מדינה מכל משרדי הממשלה.</p>
+                        <div class="tc-source">תקשי"ר 11.411</div>
+                    </div>
+                </div>
+                <div class="tender-card">
+                    <div class="tc-icon"><i class="ti ti-world"></i></div>
+                    <div>
+                        <h4>מכרז פומבי</h4>
+                        <p>פתוח לכלל הציבור, כל מי שעומד בתנאי הסף רשאי להגיש מועמדות.</p>
+                        <div class="tc-source">תקשי"ר 11.411</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Publication order — step flow -->
+            <h2 class="section-title"><i class="ti ti-arrows-sort"></i> סדר פרסום</h2>
+
+            <div class="flow-card">
+                <p class="flow-note">דרגות ביניים (מתח דרגות נמוך מ-41 במח"ר):</p>
+                <div class="step-flow">
+                    <div class="step-box step-teal">
+                        <i class="ti ti-building"></i>
+                        <div class="step-label">פנימי</div>
+                    </div>
+                    <div class="step-arrow-wrap">
+                        <div class="step-arrow-label">לא אויש?</div>
+                        <i class="ti ti-arrow-left"></i>
+                    </div>
+                    <div class="step-box step-amber step-dual">
+                        <div class="step-dual-item"><i class="ti ti-building-community"></i><span>בין-משרדי</span></div>
+                        <div class="step-dual-sep">/</div>
+                        <div class="step-dual-item"><i class="ti ti-world"></i><span>פומבי</span></div>
+                    </div>
+                </div>
+                <p class="flow-detail">יש לפרסם מכרז פנימי במתח דרגות נמוך מ-43-41 בדירוג המח"ר והמקבילות ביתר הדירוגים. אם לא אויש דרך מכרז פנימי ניתן להוציא מכרז בין-משרדי או מכרז חיצוני.</p>
+            </div>
+
+            <div class="flow-card">
+                <p class="flow-note">סגל בכיר (מתח דרגות 41-43+) או ייצוג הולם:</p>
+                <div class="step-flow">
+                    <div class="step-box step-teal">
+                        <i class="ti ti-building-community"></i>
+                        <div class="step-label">בין-משרדי</div>
+                    </div>
+                    <div class="step-arrow-wrap">
+                        <div class="step-arrow-label">לא אויש?</div>
+                        <i class="ti ti-arrow-left"></i>
+                    </div>
+                    <div class="step-box step-amber">
+                        <i class="ti ti-world"></i>
+                        <div class="step-label">פומבי</div>
+                    </div>
+                </div>
+                <p class="flow-detail">מכרז בין-משרדי מפורסם כמכרז ראשון כש: 1. מתח הדרגות הוא 41-43 או גבוה יותר (סגל בכיר) 2. מכרזים המיועדים לאחת מהאוכלוסיות הזכאיות לייצוג הולם.</p>
+            </div>
+
+            <div class="flow-card">
+                <p class="flow-note">דרגות נמוכות (עד דרגה 17 מינהלי):</p>
+                <div class="step-flow">
+                    <div class="step-box step-green">
+                        <i class="ti ti-world"></i>
+                        <div class="step-label">ישר פומבי</div>
+                    </div>
+                </div>
+                <p class="flow-detail">ניתן לפרסם ישר מכרז פומבי במשרות עד דרגה 17 בדירוג המינהלי (משרות זוטרות יחסית).</p>
+            </div>
+
+            <div class="step-source">מקור: תקשי"ר פסקה 11.411(ח)</div>
+
+            <!-- Grade table image -->
+            <h2 class="section-title"><i class="ti ti-table"></i> דרגים בדירוג המח"ר והמינהלי</h2>
+            <div class="grade-image">
+                <img src="images/דרגות-דרג-מממ.png" alt="טבלה 1: דרגים בדירוג המח״ר והמינהלי לפי מתח דרגות">
+            </div>
+            <div class="step-source">מקור: רמי שוורץ, "נתונים נבחרים על מכרזים בשירות המדינה", מרכז המחקר והמידע של הכנסת, 21 בספטמבר 2022. <a href="https://fs.knesset.gov.il/globaldocs/MMM/542aeec9-c2e5-ec11-814d-005056aa4246/2_542aeec9-c2e5-ec11-814d-005056aa4246_11_19824.pdf" target="_blank">קישור</a></div>
+
+            <!-- Link to full Takshir -->
+            <a class="full-link" href="https://www.gov.il/apps/nasham/takshir/takshir-tree" target="_blank">
+                <i class="ti ti-external-link"></i>
+                לתקשי"ר המלא
+            </a>
+        </div>
+    </div>
+
+    <!-- ═══ IFRAME OVERLAY for separate process files ═══ -->
+    <div class="process-overlay" id="processIframeOverlay">
+        <iframe id="processIframe" class="process-iframe" src=""></iframe>
+    </div>
+
+    <!-- Process icons row -->
+    <div class="process-section">
+        <h2>תהליכי הון אנושי</h2>
+        <div class="process-grid">
+            <div class="process-tile" onclick="openProcess('tenders')">
+                <div class="process-icon"><img src="images/icon-tenders.png" alt="מכרזים"></div>
+                <div class="process-label">מכרזים</div>
+            </div>
+            <div class="process-tile" onclick="openProcess('exemptions')">
+                <div class="process-icon"><img src="images/icon-exemptions.png" alt="פטור ממכרז"></div>
+                <div class="process-label">פטור ממכרז ומסלולים חלופיים</div>
+            </div>
+            <div class="process-tile" onclick="openProcess('dismissal')">
+                <div class="process-icon"><img src="images/icon-dismissal.png" alt="סיום העסקה"></div>
+                <div class="process-label">סיום העסקה</div>
+            </div>
+            <div class="process-tile" onclick="openProcess('screening')">
+                <div class="process-icon"><img src="images/icon-screening.png" alt="תהליכי מיון"></div>
+                <div class="process-label">תהליכי מיון</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+function toggleSec(id) {
+    var sec = document.getElementById(id);
+    var isOpen = !sec.classList.contains('open');
+    document.querySelectorAll('.sec').forEach(function(s) {
+        if (isOpen) s.classList.add('open'); else s.classList.remove('open');
+        var label = s.querySelector('.sh-toggle span:first-child');
+        if (label) label.textContent = isOpen ? 'צמצום' : 'הרחבה';
+    });
+}
+var processFiles = {
+    tenders: null,
+    exemptions: 'process-exemptions.html',
+    dismissal: 'process-dismissal.html',
+    screening: 'infographic-screening.html'
+};
+function openProcess(id) {
+    if (processFiles[id]) {
+        var iframe = document.getElementById('processIframe');
+        iframe.src = processFiles[id];
+        document.getElementById('processIframeOverlay').classList.add('active');
+        return;
+    }
+    var overlay = document.getElementById('process-' + id);
+    if (overlay) {
+        overlay.classList.add('active');
+        overlay.scrollTop = 0;
+    } else {
+        console.log('No overlay yet for:', id);
+    }
+}
+function closeProcess() {
+    var overlays = document.querySelectorAll('.process-overlay.active');
+    overlays.forEach(function(el) { el.classList.remove('active'); });
+    var iframe = document.getElementById('processIframe');
+    if (iframe) iframe.src = '';
+}
+window.addEventListener('message', function(e) {
+    if (e.data === 'closeProcess') closeProcess();
+});
+</script>
+</body>
+</html>

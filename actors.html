@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>שחקנים מרכזיים</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Heebo', sans-serif;
+    background: #f0f2f5;
+    direction: rtl;
+    padding: 24px;
+    min-height: 100vh;
+}
+.page { max-width: 1100px; margin: 0 auto; }
+
+.back-btn {
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: #2c3e5a;
+    background: linear-gradient(180deg, #eaf0f7 0%, #d5deea 100%);
+    border: 1.5px solid #8a9ab0;
+    border-radius: 6px;
+    padding: 7px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 12px;
+}
+
+h1 { font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 4px; text-align: center; }
+.subtitle { font-size: 13px; color: #64748b; margin-bottom: 16px; text-align: center; }
+
+/* Layout: profile RIGHT (RTL start), circle LEFT (RTL end) */
+.main-layout {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+}
+
+/* Profile panel = first child = goes RIGHT in RTL */
+.profile-panel {
+    flex: 1;
+    min-height: 440px;
+    display: flex;
+    align-items: center;
+}
+
+/* Circle area = second child = goes LEFT in RTL */
+.circle-area {
+    flex-shrink: 0;
+    width: 480px;
+}
+.circle-wrap {
+    position: relative;
+    width: 480px; height: 440px;
+    margin-top: -20px;
+}
+
+/* Center */
+.circle-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 110px; height: 110px;
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: #fff; text-align: center;
+    box-shadow: 0 4px 20px rgba(13, 148, 136, 0.3);
+    z-index: 2;
+}
+.circle-center .cc-icon { font-size: 24px; margin-bottom: 3px; }
+.circle-center .cc-label { font-size: 11px; font-weight: 700; line-height: 1.3; }
+
+/* Dashed ring */
+.circle-wrap::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 370px; height: 370px;
+    border: 1.5px dashed #cbd5e1;
+    border-radius: 50%;
+    z-index: 0;
+}
+
+/* Actor nodes - positioned at center point, translate to center */
+.actor-node {
+    position: absolute;
+    text-align: center;
+    cursor: pointer;
+    z-index: 1;
+    transform: translate(-50%, -50%);
+    transition: filter 0.15s;
+}
+.actor-node:hover .node-icon { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+.actor-node.active .node-icon {
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    border-color: #0d9488;
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(13, 148, 136, 0.35);
+}
+
+/* Regular node icon */
+.node-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; color: #1e293b;
+    margin: 0 auto 3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    transition: all 0.2s;
+}
+.node-name {
+    font-size: 11.5px; font-weight: 700; color: #1e293b;
+    line-height: 1.2; white-space: nowrap;
+}
+
+/* BIG nodes */
+.actor-node.big .node-icon {
+    width: 64px; height: 64px;
+    font-size: 30px;
+    border: 2px solid #e2e8f0;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+.actor-node.big .node-name { font-size: 12.5px; }
+
+/* Profile card */
+.actor-profile {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-right: 4px solid #14b8a6;
+    border-radius: 10px;
+    padding: 18px 20px;
+    width: 100%;
+    display: none;
+    animation: fadeIn 0.25s ease;
+    margin-top: 0;
+}
+.actor-profile.visible { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Profile header with icon */
+.profile-header { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.profile-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: linear-gradient(135deg, #0f766e, #0d9488);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; color: #fff; flex-shrink: 0;
+}
+.actor-profile h3 { font-size: 16px; font-weight: 800; color: #1e293b; margin-bottom: 0; }
+.actor-profile .tagline { font-size: 12.5px; font-weight: 600; color: #0d9488; margin-bottom: 10px; }
+.actor-profile p { font-size: 12.5px; line-height: 1.7; color: #64748b; margin-bottom: 8px; }
+.actor-profile .more-text { display: block; }
+.expand-btn {
+    font-family: 'Heebo', sans-serif;
+    font-size: 11px; font-weight: 700; color: #0d9488;
+    background: rgba(13,148,136,0.1);
+    border: 1.5px solid rgba(13,148,136,0.3);
+    border-radius: 20px;
+    padding: 4px 14px;
+    cursor: pointer;
+    margin-top: 4px;
+}
+.triangle-section .triangle-toggle {
+    font-size: 11px; font-weight: 700; color: #0d9488;
+    display: inline-block; margin-top: 4px; cursor: pointer;
+    background: none; border: none; padding: 0;
+    font-family: 'Heebo', sans-serif;
+}
+.triangle-section.open .triangle-toggle { display: none; }
+.triangle-section .triangle-body {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+.triangle-section.open .triangle-body {
+    max-height: 800px;
+    padding-top: 6px; margin-top: 6px;
+}
+.triangle-box {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: #475569;
+}
+
+.profile-placeholder {
+    color: #94a3b8; font-size: 14px;
+    text-align: center; padding: 40px 20px; width: 100%;
+}
+.profile-placeholder i { font-size: 32px; display: block; margin-bottom: 8px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+    <h1>שחקנים מרכזיים</h1>
+    <p class="subtitle">לחצו על שחקן כדי לגלות מה תפקידו</p>
+
+    <div class="main-layout">
+
+        <!-- FIRST in RTL = RIGHT side = Profile panel -->
+        <div class="profile-panel">
+            <div class="profile-placeholder" id="profilePlaceholder" style="display:none">
+                <i class="ti ti-click"></i>
+                בחרו שחקן מהמעגל
+            </div>
+            <div class="actor-profile" id="actorProfile"></div>
+            <script>document.addEventListener('DOMContentLoaded', function() {
+                var node = document.querySelectorAll('.actor-node')[3];
+                showProfile(3, node);
+            });</script>
+        </div>
+
+        <!-- SECOND in RTL = LEFT side = Circle -->
+        <div class="circle-area">
+            <div class="circle-wrap">
+                <div class="circle-center">
+                    <i class="ti ti-users-group cc-icon"></i>
+                    <div class="cc-label">הון אנושי<br>בשירות המדינה</div>
+                </div>
+
+                <!-- 9 nodes, 40° apart. BIG at 0,3,6 (120° triangle) -->
+
+                <!-- 0: נציבות שה"מ (BIG) — -90° top -->
+                <div class="actor-node big" style="left:240px; top:55px;" onclick="showProfile(0,this)">
+                    <div class="node-icon"><i class="ti ti-shield-check"></i></div>
+                    <div class="node-name">נציבות<br>שירות המדינה</div>
+                </div>
+
+                <!-- 1: ממשלת ישראל — -50° -->
+                <div class="actor-node" style="left:359px; top:98px;" onclick="showProfile(1,this)">
+                    <div class="node-icon"><i class="ti ti-briefcase"></i></div>
+                    <div class="node-name">ממשלת ישראל</div>
+                </div>
+
+                <!-- 2: הכנסת — -10° -->
+                <div class="actor-node" style="left:422px; top:208px;" onclick="showProfile(2,this)">
+                    <div class="node-icon"><i class="ti ti-building-bank"></i></div>
+                    <div class="node-name">הכנסת</div>
+                </div>
+
+                <!-- 3: משרד האוצר (BIG) — 30° -->
+                <div class="actor-node big" style="left:400px; top:332px;" onclick="showProfile(3,this)">
+                    <div class="node-icon"><i class="ti ti-report-money"></i></div>
+                    <div class="node-name">משרד האוצר</div>
+                </div>
+
+                <!-- 4: משרדי הממשלה — 70° -->
+                <div class="actor-node" style="left:303px; top:414px;" onclick="showProfile(4,this)">
+                    <div class="node-icon"><i class="ti ti-building"></i></div>
+                    <div class="node-name">משרדי הממשלה</div>
+                </div>
+
+                <!-- 5: מערכת המשפט — 110° -->
+                <div class="actor-node" style="left:177px; top:414px;" onclick="showProfile(5,this)">
+                    <div class="node-icon"><i class="ti ti-scale"></i></div>
+                    <div class="node-name">מערכת המשפט</div>
+                </div>
+
+                <!-- 6: ארגוני עובדים (BIG) — 150° -->
+                <div class="actor-node big" style="left:80px; top:332px;" onclick="showProfile(6,this)">
+                    <div class="node-icon"><i class="ti ti-speakerphone"></i></div>
+                    <div class="node-name">ארגוני עובדים</div>
+                </div>
+
+                <!-- 7: מבקר המדינה — 190° -->
+                <div class="actor-node" style="left:58px; top:208px;" onclick="showProfile(7,this)">
+                    <div class="node-icon"><i class="ti ti-file-analytics"></i></div>
+                    <div class="node-name">מבקר המדינה</div>
+                </div>
+
+                <!-- 8: אקוסיסטם אזרחי — 230° -->
+                <div class="actor-node" style="left:121px; top:98px;" onclick="showProfile(8,this)">
+                    <div class="node-icon"><i class="ti ti-bulb"></i></div>
+                    <div class="node-name">אקוסיסטם אזרחי</div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+var actors = [
+    {
+        name: 'נציבות שירות המדינה',
+        icon: 'ti-shield-check',
+        tagline: 'ארגון המטה, הרגולטור והגוף המקצועי העליון',
+        text: 'פועלת כגורם המטה והרגולציה המרכזי בתחום ההון האנושי בשירות המדינה: היא מגדירה ומנחה את כללי המשחק, מאשרת ומסדירה היבטים מקצועיים של תקינה, סיווג משרות ומבנים ארגוניים, קובעת ומפקחת על תהליכי גיוס, מכרזים ומיון, מנחה ומבקרת את משרדי הממשלה ויחידות הסמך בניהול המשאב האנושי, ומובילה תהליכי פיתוח, בקרה ושיפור של ניהול ההון האנושי ברמת המערכת.',
+        more: 'בידי נציב שירות המדינה סמכויות שהוקנו בחוק, בחקיקת משנה ובהחלטות ממשלה, והנציב ממונה על עובדי המדינה וממונה בידי הממשלה. תחת הנציבות פועלות, בין היתר: אגף בכיר בחינות ומכרזים; האגף הבכיר למשרדי הממשלה ויחידות הסמך; מינהל הסגל הבכיר; אגף בכיר חקירות ואגף המשמעת; וכן אגף בכיר למערכות מידע.<br><br>נציבות שירות המדינה נחשבת קודקוד אחד ממה שמכונה <strong>"משולש כוח האדם"</strong> בשירות המדינה.<br><div class="triangle-section" onclick="this.classList.toggle(\'open\')"><span class="triangle-toggle">הרחבה ▼</span><div class="triangle-body"><div class="triangle-box">"שלושת גופי המטה המרכזיים האחראים על ניהול ההון האנושי בשירות המדינה, המכונים יחדיו ״משולש כוח האדם״ הממשלתי. הגוף הראשון הוא נציבות שירות המדינה, המופקד על ניהול העסקת עובדי המדינה, ניהול התקנים, קליטה ומינוי עובדים, קביעת מסלולי קידום והנחיית תהליכי הגיוס בשירות המדינה. הגוף השני הוא אגף שכר והסכמי עבודה במשרד האוצר, האחראי על התוויית מדיניות השכר במגזר הציבורי, יישומה וניהול יחסי העבודה. הגוף השלישי, המשלים את המשולש, הוא אגף תקציבים במשרד האוצר, המופקד על גיבוש תקציב המדינה והמדיניות הכלכלית והפיסקלית של הממשלה, ובכלל זה על תקצוב תקני כוח האדם וקידום צעדים לייעול המגזר הציבורי."<br><a href="https://www.gov.il/BlobFolder/news/press_25032026c/he/PressReleases_files_%D7%A9%D7%A2%D7%A8%20%D7%94%D7%9B%D7%A0%D7%99%D7%A1%D7%94%20%D7%9C%D7%A9%D7%99%D7%A8%D7%95%D7%AA%20%D7%94%D7%9E%D7%93%D7%99%D7%A0%D7%94%20-%20%D7%93%D7%95%D7%97%20%D7%9E%D7%A1%D7%9B%D7%9D.pdf" target="_blank" style="color:#0d9488;font-size:11px;">מקור: שער הכניסה לשירות המדינה - דוח מסכם</a></div></div></div>'
+    },
+    {
+        name: 'ממשלת ישראל',
+        icon: 'ti-briefcase',
+        tagline: 'החלטות ממשלה, רפורמות ומינויים',
+        text: 'הממשלה היא שחקן מרכזי בעיצוב תחום כוח האדם בשירות המדינה באמצעות החלטות ממשלה, רפורמות רוחב, קביעת סדרי עדיפויות, והענקת תוקף פוליטי ומוסדי לשינויים מבניים ותפעוליים.',
+        more: 'באמצעות אישור תקציב המדינה והתוכנית הכלכלית, הממשלה משפיעה גם על מסגרת המשאבים שבתוכה פועלת המערכת ובכך בעקיפין גם על היכולת להרחיב, לצמצם או לשנות משרות, תקנים, מסלולי העסקה ומנגנוני גיוס. השרים ממנים באופן ישיר משרות אמון כמו מנכ"לי המשרדים ואחראים לקביעת מדיניות, סדרי עדיפויות ויעדי פעולה של המשרדים. מבחינה חוקית, השרים אינם ממנים עובדי המדינה. עם זאת, לשרים יש השפעה משמעותית על המערכת דרך מינוי מנכ"ל המשרד, קביעת מבנה ארגוני וסדרי עדיפויות, קידום בקשות לתקנים ולמשאבים.'
+    },
+    {
+        name: 'הכנסת',
+        icon: 'ti-building-bank',
+        tagline: 'חקיקה וועדות פיקוח',
+        text: 'מחוקקת את המסגרת ומאשרת את תקציב המדינה. ועדות הכנסת פועלות כשחקן מרכזי בפיקוח על המשרדים ובאישור שינויים. ועדת הכספים ממלאת תפקיד חשוב באישור תקציב המדינה ובאישור שינויים תקציביים הכוללים גם רכיב משרות ומכרזים דרכם משרדים מיישמים חלק מתוכנית העבודה.'
+    },
+    {
+        name: 'משרד האוצר',
+        icon: 'ti-report-money',
+        tagline: 'הממונה על השכר ואגף התקציבים',
+        text: 'משרד האוצר משפיע על תחום כוח האדם בשירות המדינה באמצעות שני שחקנים עיקריים: הממונה על השכר והסכמי עבודה ואגף התקציבים.',
+        more: '<strong>הממונה על השכר</strong> מחזיק בסמכויות פיקוח ובקרה רחבות על תנאי השכר וההעסקה במגזר הציבורי מכוח חוק יסודות התקציב, מנהל משא ומתן קיבוצי וחותם על הסכמי שכר, ולכן משפיע באופן ישיר על מבנה התגמול, גמישות השכר והסדרי ההעסקה בשירות המדינה.<br><br><strong>אגף התקציבים</strong> במשרד האוצר משפיע על המסגרת התקציבית שבתוכה פועלים משרדי הממשלה. מאחר שכל מיקור חוץ או תקן ומשרה כרוכים בעלות תקציבית, תוספות הון אנושי, שינויי מבנה ארגוני או הרחבת פעילות דורשים תיאום ואישור תקציבי במסגרת תהליכי התקציב והשינויים התקציביים.<br><br>שני אגפים אלה נחשבים לשני הקודקודים הנוספים ב<strong>"משולש כוח האדם"</strong> בשירות המדינה, לצד נציבות שירות המדינה.<br><div class="triangle-section" onclick="this.classList.toggle(\'open\')"><span class="triangle-toggle">הרחבה ▼</span><div class="triangle-body"><div class="triangle-box">"שלושת גופי המטה המרכזיים האחראים על ניהול ההון האנושי בשירות המדינה, המכונים יחדיו ״משולש כוח האדם״ הממשלתי. הגוף הראשון הוא נציבות שירות המדינה, המופקד על ניהול העסקת עובדי המדינה, ניהול התקנים, קליטה ומינוי עובדים, קביעת מסלולי קידום והנחיית תהליכי הגיוס בשירות המדינה. הגוף השני הוא אגף שכר והסכמי עבודה במשרד האוצר, האחראי על התוויית מדיניות השכר במגזר הציבורי, יישומה וניהול יחסי העבודה. הגוף השלישי, המשלים את המשולש, הוא אגף תקציבים במשרד האוצר, המופקד על גיבוש תקציב המדינה והמדיניות הכלכלית והפיסקלית של הממשלה, ובכלל זה על תקצוב תקני כוח האדם וקידום צעדים לייעול המגזר הציבורי."<br><a href="https://www.gov.il/BlobFolder/news/press_25032026c/he/PressReleases_files_%D7%A9%D7%A2%D7%A8%20%D7%94%D7%9B%D7%A0%D7%99%D7%A1%D7%94%20%D7%9C%D7%A9%D7%99%D7%A8%D7%95%D7%AA%20%D7%94%D7%9E%D7%93%D7%99%D7%A0%D7%94%20-%20%D7%93%D7%95%D7%97%20%D7%9E%D7%A1%D7%9B%D7%9D.pdf" target="_blank" style="color:#0d9488;font-size:11px;">מקור: שער הכניסה לשירות המדינה - דוח מסכם</a></div></div></div>'
+    },
+    {
+        name: 'משרדי הממשלה',
+        icon: 'ti-building',
+        tagline: 'מנכ"לים ויחידות ההון האנושי - המעסיקים בשטח',
+        text: 'יחידת ההון האנושי המשרדית בראשות "סמנכ"ל בכיר למינהל והון אנושי" מנהלת בפועל את מעגל חיי העובד: מכרזים, קליטה, נוכחות, שכר שוטף, רווחה, ופיתוח. מעבר ליישום הנחיות, משרדי הממשלה פועלים גם כקבוצות לחץ פנימיות מתמידות מול נש"מ ומשרד האוצר לתקנים נוספים, גמישות שכר, שינויי מבנה, העברת תקנים בין יחידות.',
+        more: 'בנוסף, המנכ"ל יכול להמליץ להאריך תקופת כהונה של בכירים או לבקש לקצרה. כמו כן, מנכ"ל ראשי לשבת בוועדות בוחנים במינוי בכירים או למנות מישהו מטעמו ומשפיע על סדרי העדיפויות ותאור התפקיד של המכרזים (מהם נגזרים תנאי הסף).'
+    },
+    {
+        name: 'מערכת המשפט',
+        icon: 'ti-scale',
+        tagline: 'בתי הדין, בג"ץ והייעוץ המשפטי',
+        text: 'בתי הדין לעבודה, בג״ץ, והייעוץ המשפטי מעצבים את גבולות הפעולה של המערכת בפועל: פרשנות של חוקי העבודה והתקשי״ר, סכסוכי עבודה, מחלוקות על מינויים, חוזים, הסדרים קיבוציים ותקינות מנהלית. זה לא שחקן הון אנושי תפעולי, אבל הוא כן שחקן שמגדיר מה מותר, מה אסור, ומה קורה כשיש התנגשות בין צורכי המערכת לבין המסגרת המשפטית.'
+    },
+    {
+        name: 'ארגוני עובדים',
+        icon: 'ti-speakerphone',
+        tagline: 'הסכמים קיבוציים, משא ומתן וכוח ארגוני',
+        expandByDefault: true,
+        text: 'ארגוני העובדים, ובראשם ההסתדרות והסתדרות עובדי המדינה, הם שחקן מרכזי בעיצוב תנאי ההעסקה בשירות המדינה באמצעות הסכמים קיבוציים, משא ומתן על שכר ותנאים, ייצוג עובדים בסכסוכים ובהליכים משפטיים, והפעלת כוח ארגוני באמצעות סכסוכי עבודה ושביתות. לכן שינויים מהותיים בתנאי העסקה, בהסדרי שכר ולעיתים גם בשינויי ארגון ועבודה דורשים תיאום, הידברות, הסכמה קיבוצית או התמודדות עם התנגדות משפטית וארגונית.',
+        more: 'דוגמה טריה: לחשיבות ארגוני העובדים כשחקן וטו ניתן לראות בתגובה ל"שער הכניסה לשירות המדינה" - החלטה של נציבות שירות המדינה ומשרד האוצר לניסוי בשיפור גיוס הון אנושי לשירות המדינה.<br><a href="https://www.themarker.com/news/2026-04-05/ty-article/.premium/0000019d-57ee-d3ba-a19d-5ffe16640000" target="_blank" style="color:#0d9488;font-size:12px;">קישור לכתבה</a><br><a href="https://www.themarker.com/news/2026-04-05/ty-article/.premium/0000019d-57ee-d3ba-a19d-5ffe16640000" target="_blank"><img src="images/article-histadrut-reform.png" style="width:100%;border-radius:6px;border:1px solid #e2e8f0;margin-bottom:12px;" alt="אפילו הניסיון המזערי לקדם רפורמה בשירות המדינה נתקל במחסום צפוי - ההסתדרות"></a><a href="https://www.themarker.com/blogs/2026-04-05/ty-article/0000019d-5c76-d66c-a99f-7effb3600000" target="_blank" style="color:#0d9488;font-size:12px;">קישור לכתבה</a><br><a href="https://www.themarker.com/blogs/2026-04-05/ty-article/0000019d-5c76-d66c-a99f-7effb3600000" target="_blank"><img src="images/article-histadrut-response.png" style="width:100%;border-radius:6px;border:1px solid #e2e8f0;" alt="קל להציג את ההסתדרות כמי שחוברת לפוליטיקאים ומחבלת ברפורמות. זה לא המקרה"></a>'
+    },
+    {
+        name: 'מבקר המדינה',
+        icon: 'ti-file-analytics',
+        tagline: 'דוחות ביקורת ופיקוח',
+        text: 'מוציא דוחות תדירים המצביעים על כשלים בהטמעת רפורמות, בזבוז כספי ציבור, וליקויים באיוש משרות בכירות. הדוחות על <a href="https://library.mevaker.gov.il/sites/DigitalLibrary/Documents/special/2017-SherutHamedina-April2017/2017-SherutHamedina-100-HonEnoshi.pdf" target="_blank">הרפורמה בניהול ההון האנושי (2017)</a>, על <a href="https://library.mevaker.gov.il/sites/DigitalLibrary/Documents/2022/2022.11/2022.11-102-Employment-Taktzir.pdf" target="_blank">מבנה השכר (2022)</a>, ועל השירות לציבור בעיתות חירום (2024) הם מסמכים מהותיים להבנת הפערים בין התכנון למה שקורה בשטח. בכך מייצר בסיס לפיקוח של הכנסת וללחץ תקשורתי, ציבורי (ולעיתים חוקי) לתיקון ליקויים.'
+    },
+    {
+        name: 'אקוסיסטם אזרחי',
+        icon: 'ti-bulb',
+        tagline: 'אקדמיה, מכוני מחקר, עמותות ותקשורת',
+        text: 'אקדמיה, מכוני מחקר (המכון הישראלי לדמוקרטיה, מרכז טאוב וכד\'), עמותות (כמו התנועה לאיכות השלטון), ותקשורת. אין להם סמכות פורמלית, אך הם מזינים את השיח הציבורי, מפרסמים מחקרים, מסמכי מדיניות ונתונים חלופיים, ולעיתים מבצעים הכשרות ועותרים לבג"ץ במקרים של חשד למינויים פוליטיים.'
+    }
+];
+
+function showProfile(idx, node) {
+    document.querySelectorAll('.actor-node').forEach(function(n) { n.classList.remove('active'); });
+    node.classList.add('active');
+    document.getElementById('profilePlaceholder').style.display = 'none';
+    var a = actors[idx];
+    var html = '<div class="profile-header">';
+    html += '<div class="profile-icon"><i class="ti ' + a.icon + '"></i></div>';
+    html += '<div><h3>' + a.name + '</h3>';
+    html += '<div class="tagline">' + a.tagline + '</div></div></div>';
+    html += '<p>' + a.text + '</p>';
+    if (a.more) {
+        html += '<div class="more-text"><p>' + a.more + '</p></div>';
+    }
+    var el = document.getElementById('actorProfile');
+    el.innerHTML = html;
+    el.className = 'actor-profile visible';
+    if (a.expandByDefault) el.classList.add('expanded');
+}
+
+function toggleMore(btn) {
+    var profile = btn.closest('.actor-profile');
+    profile.classList.toggle('expanded');
+    btn.textContent = profile.classList.contains('expanded') ? 'צמצום ▲' : 'הרחבה ▼';
+}
+
+function toggleTriangle(btn) {
+    var section = btn.closest('.triangle-section');
+    section.classList.toggle('open');
+    var label = btn.querySelector('span:first-child');
+    label.textContent = section.classList.contains('open') ? 'סגור' : 'הרחבה';
+}
+</script>
+</body>
+</html>

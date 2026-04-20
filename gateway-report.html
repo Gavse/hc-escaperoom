@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>שער הכניסה לשירות המדינה — תקציר מנהלים</title>
+<link rel="stylesheet" href="heebo.css">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Heebo', system-ui, sans-serif;
+  background: #1e293b;
+  background-image:
+    radial-gradient(ellipse at top, rgba(255,255,255,0.04), transparent 60%),
+    radial-gradient(ellipse at bottom, rgba(13,115,119,0.05), transparent 50%);
+  min-height: 100vh;
+  padding: 48px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  color: #334155;
+}
+
+/* The "paper" document */
+.paper {
+  max-width: 720px;
+  width: 100%;
+  background: #f8f5ec;
+  box-shadow:
+    0 30px 80px rgba(0,0,0,0.5),
+    0 12px 30px rgba(0,0,0,0.3),
+    0 0 0 1px rgba(0,0,0,0.04);
+  padding: 72px 80px 56px;
+  position: relative;
+}
+
+/* Subtle paper grain */
+.paper::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 23% 31%, rgba(0,0,0,0.025) 0.5px, transparent 1px),
+    radial-gradient(circle at 71% 67%, rgba(0,0,0,0.018) 0.5px, transparent 1px),
+    radial-gradient(circle at 47% 89%, rgba(0,0,0,0.022) 0.5px, transparent 1px);
+  background-size: 64px 64px, 88px 88px, 52px 52px;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.paper > * { position: relative; }
+
+/* ═══ Header ═══ */
+.doc-header {
+  text-align: center;
+  padding-bottom: 28px;
+  border-bottom: 1px solid #d4cdb8;
+  margin-bottom: 40px;
+}
+
+.state-emblem {
+  display: block;
+  width: 72px;
+  height: auto;
+  margin: 0 auto 20px;
+  opacity: 0.94;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.08));
+}
+
+.divider-ornament {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 22px 0 26px;
+  color: #94a3b8;
+}
+
+.divider-ornament::before,
+.divider-ornament::after {
+  content: '';
+  height: 1px;
+  background: #c9c1a8;
+  width: 90px;
+}
+
+.divider-ornament .diamond {
+  width: 5px;
+  height: 5px;
+  background: #0d7377;
+  transform: rotate(45deg);
+  opacity: 0.7;
+}
+
+.doc-team {
+  font-size: 13px;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.doc-title {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.doc-subtitle {
+  font-size: 17px;
+  font-weight: 500;
+  color: #475569;
+  letter-spacing: 0.02em;
+}
+
+.doc-date {
+  margin-top: 18px;
+  font-size: 12px;
+  color: #94a3b8;
+  letter-spacing: 0.04em;
+}
+
+/* ═══ Section heading ═══ */
+.section-heading {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  text-align: center;
+  margin-bottom: 36px;
+  letter-spacing: 0.03em;
+  position: relative;
+  padding-bottom: 14px;
+}
+
+.section-heading::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 3px;
+  background: #0d7377;
+  border-radius: 2px;
+}
+
+/* ═══ Body text ═══ */
+p {
+  font-size: 15px;
+  line-height: 1.9;
+  color: #334155;
+  margin-bottom: 18px;
+  text-align: right;
+  letter-spacing: 0.005em;
+}
+
+p strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.lead-in {
+  font-weight: 600;
+  color: #0f172a;
+  margin: 32px 0 22px;
+  text-align: right;
+}
+
+/* ═══ Numbered components ═══ */
+.component {
+  background: rgba(13, 115, 119, 0.05);
+  border-right: 3px solid #0d7377;
+  padding: 20px 24px;
+  margin-bottom: 18px;
+  border-radius: 3px;
+  position: relative;
+}
+
+.component-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 800;
+  color: #0d7377;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+.component-title .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  background: #0d7377;
+  color: #f8f5ec;
+  border-radius: 50%;
+  font-size: 13px;
+  font-weight: 700;
+  flex-shrink: 0;
+  letter-spacing: 0;
+}
+
+.component p {
+  margin-bottom: 0;
+  font-size: 14.5px;
+  line-height: 1.85;
+  color: #334155;
+}
+
+/* ═══ Ministries block ═══ */
+.ministries-block {
+  background: #fbf9f3;
+  border: 1px solid #e8e0c9;
+  padding: 18px 24px;
+  margin: 28px 0 18px;
+  border-radius: 3px;
+}
+
+.ministries-block p {
+  margin-bottom: 0;
+  font-size: 14.5px;
+}
+
+.ministries-block strong {
+  color: #0d7377;
+}
+
+/* ═══ Footer ═══ */
+.doc-footer {
+  margin-top: 52px;
+  padding-top: 28px;
+  border-top: 1px solid #d4cdb8;
+  text-align: center;
+}
+
+.read-full {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 30px;
+  background: #0f172a;
+  color: #f8f5ec;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-radius: 3px;
+  transition: all 0.25s ease;
+  font-family: inherit;
+}
+
+.read-full:hover {
+  background: #0d7377;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(13,115,119,0.3);
+}
+
+.read-full .arrow {
+  font-size: 16px;
+  transition: transform 0.25s ease;
+}
+
+.read-full:hover .arrow {
+  transform: translateX(-4px);
+}
+
+/* ═══ Responsive ═══ */
+@media (max-width: 768px) {
+  body { padding: 24px 12px; }
+  .paper { padding: 48px 28px 40px; }
+  .state-emblem { width: 60px; }
+  .divider-ornament::before,
+  .divider-ornament::after { width: 60px; }
+  .doc-title { font-size: 22px; }
+  .section-heading { font-size: 19px; }
+  p { font-size: 14px; line-height: 1.85; }
+  .component { padding: 16px 18px; }
+  .component-title { font-size: 15px; }
+}
+</style>
+</head>
+<body>
+  <div class="paper">
+
+    <!-- ═══ HEADER ═══ -->
+    <div class="doc-header">
+      <img src="images/state-emblem.png" class="state-emblem" alt="סמל מדינת ישראל">
+      <div class="divider-ornament">
+        <span class="diamond"></span>
+      </div>
+      <div class="doc-team">צוות ניהול ההון האנושי</div>
+      <div class="doc-title">"שער הכניסה לשירות המדינה"</div>
+      <div class="doc-subtitle">דו"ח מסכם</div>
+      <div class="doc-date">ט"ו אדר תשפ"ו · מרץ 2026</div>
+    </div>
+
+    <!-- ═══ SECTION TITLE ═══ -->
+    <h2 class="section-heading">תקציר מנהלים</h2>
+
+    <!-- ═══ BODY ═══ -->
+    <p>דו"ח זה מציג את עבודתו של צוות ניהול ההון האנושי המשותף לנציבות שירות המדינה, אגף שכר והסכמי עבודה ואגף התקציבים במשרד האוצר. מטרת העל של הצוות היא להוביל שינוי מהותי בניהול ההון האנושי בממשלה ולחזק את איכות העובדים הנקלטים. הדו"ח מתמקד בשלב "שער הכניסה" לשירות המדינה, המהווה את התשתית הקריטית המזינה את המערכת כולה.</p>
+
+    <p>תמונת המצב הנוכחית מצביעה על ירידה באטרקטיביות השירות הציבורי אל מול המגזר הפרטי. האתגרים המרכזיים שזוהו, כוללים היעדר תשתית למיתוג משרות, הליכי גיוס ממושכים, קושי בתמרוץ מועמדים מצטיינים ומעורבות מוגבלת של המנהל המגייס בתהליך.</p>
+
+    <p>כדי להתמודד עם אתגרים אלו, גובשה תוכנית מקיפה המיושמת במתווה של פיילוט מבוקר. הפיילוט יופעל במודל של ארגז חול, המעניק למשרדים גמישות ניהולית רחבה ומרחב פעולה להתנסות בכלים חדשניים לצד קיומם של מנגנוני מעקב ובקרה.</p>
+
+    <p class="lead-in">המלצות הפיילוט המרכזיות נשענות על שלושה רכיבי ליבה:</p>
+
+    <div class="component">
+      <div class="component-title"><span class="num">1</span>מיתוג משרה ומשרד</div>
+      <p>הגדלת חשיפת המשרות והאטרקטיביות שלהן באמצעות העמדת תקן תוספתי למובילי גיוס ומיתוג בכל משרד המשתתף בפיילוט, הקצאת סל תקציבי ייעודי לניהול קמפיינים למשרות אסטרטגיות ומתן ליווי מקצועי לבניית מסעות גיוס מותאמים מראש.</p>
+    </div>
+
+    <div class="component">
+      <div class="component-title"><span class="num">2</span>מענקי מצטיינים</div>
+      <p>מנגנון תמרוץ שנועד למשוך הון אנושי איכותי ולצמצם את פערי השכר מול המגזר הפרטי. המענק, ינוע בטווח של עד 30,000-40,000 ש"ח, מותנה בהתחייבות העובד לשלוש שנות העסקה ובעמידה ביעדים. המשרדים יוכלו לבחור בין מספר מסלולי זכאות, בהם: מסלול אובייקטיבי המבוסס על ציון הצטיינות, ומסלולים המבוססים על ניסיון מקצועי עודף וייחודי.</p>
+    </div>
+
+    <div class="component">
+      <div class="component-title"><span class="num">3</span>מודלי גיוס וכלי מיון מותאמים</div>
+      <p>מתן גמישות למשרדים בעיצוב תהליכי מיון מותאמי משרה. המהלך כולל שימוש במודלי גיוס אסטרטגיים, כגון מאגרים משרדיים ומכרזים דינמיים, לצד כלי אבחון גמישים (מבחנים מקצועיים, מטלות בית, פרזנטציות וראיונות מצולמים). מטרת המהלך היא ייעול ההליך והגברת מעורבות המנהל המגייס כבר משלביו המוקדמים.</p>
+    </div>
+
+    <p>הפיילוט יימשך שישה וחצי חודשים ויכלול בקרה שוטפת ומדידת הצלחה. המדדים המרכזיים שייבחנו הם הגדלת היקף המועמדים, קיצור זמני הגיוס ושביעות רצון המשתתפים בתהליך.</p>
+
+    <div class="ministries-block">
+      <p><strong>חמשת המשרדים המשתתפים</strong> נבחרו ליצירת תמהיל ארגוני מגוון (מבחינת גודל, תחום פעילות ואתגרי גיוס), שישמש תשתית להרחבת המודל לכלל משרדי הממשלה בעתיד. המשרדים הם: משרד המשפטים, משרד העבודה, משרד הרווחה והביטחון החברתי, משרד האנרגיה והתשתיות ומשרד התקשורת.</p>
+    </div>
+
+    <p>בעוד שהמלצות הדו"ח הנוכחי מתמקדות בשער הכניסה לשירות המדינה, בכוונתנו להמשיך בפעילותנו ולהעמיק יותר את השלבים המרכזיים במחזור חיי העובד, לרבות מנגנוני קידום ומוביליות, ניהול ביצועים וסיום העסקה. מטרתם של מהלכים משלימים אלו, היא להבטיח בניית תשתית איתנה ורציפה לניהול ההון האנושי לאורך כל תקופת ההעסקה בשירות הציבורי.</p>
+
+    <!-- ═══ FOOTER ═══ -->
+    <div class="doc-footer">
+      <a href="https://www.gov.il/BlobFolder/news/press_25032026c/he/PressReleases_files_%D7%A9%D7%A2%D7%A8%20%D7%94%D7%9B%D7%A0%D7%99%D7%A1%D7%94%20%D7%9C%D7%A9%D7%99%D7%A8%D7%95%D7%AA%20%D7%94%D7%9E%D7%93%D7%99%D7%A0%D7%94%20-%20%D7%93%D7%95%D7%97%20%D7%9E%D7%A1%D7%9B%D7%9D.pdf" target="_blank" rel="noopener" class="read-full">
+        <span>לקריאת הדו"ח המלא</span>
+        <span class="arrow">←</span>
+      </a>
+    </div>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>חדר בריחה - הון אנושי בשירות המדינה</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="mobileNotice" role="alert" aria-label="mobile notice">
+  <span>החוויה מעוצבת למחשב. על מסך קטן - חוויה חלקית.</span>
+  <button type="button" onclick="document.getElementById('mobileNotice').style.display='none'" aria-label="close">×</button>
+</div>
+
+<!-- MAIN ROOM VIEW -->
+<div id="room-container">
+<div class="view active" id="main">
+  <img src="images/room.webp" alt="חדר בריחה" fetchpriority="high" decoding="async" />
+
+  <!-- Drawers area (cabinet front, lower half of table) -->
+  <div class="hotspot" id="hs-drawers" style="left:30%; top:55%; width:40%; height:20%;"
+       data-label="בסיס חוקי נורמטיבי" onclick="openLegal()"></div>
+
+  <!-- Table top (full length, thin — just the wooden surface) → דוח שער הכניסה -->
+  <div class="hotspot" id="hs-tabletop" style="left:18%; top:52%; width:62%; height:5%;"
+       data-label='דו"ח שער הכניסה לשירות המדינה' onclick="openGateway()"></div>
+
+  <!-- Globe (right side) -->
+  <div class="hotspot" id="hs-globe" style="left:80%; top:28%; width:14%; height:22%;"
+       onclick="openGlobe()"></div>
+
+  <!-- Whiteboard (center wall) -->
+  <div class="hotspot" id="hs-board" style="left:30%; top:5%; width:30%; height:30%;"
+       data-label="דשבורד נתונים" onclick="showView('board')"></div>
+
+  <!-- Office chairs (behind table, flanking drawers) — נש"מ vs הון אנושי משרדי -->
+  <div class="hotspot" id="hs-chair-blue" style="left:22%; top:58%; width:16%; height:22%; z-index:2;"
+       data-label="הון אנושי - חלוקה ותהליכים" onclick="openChairs()"></div>
+  <div class="hotspot" id="hs-chair-brown" style="left:52%; top:56%; width:16%; height:24%; z-index:2;"
+       data-label="הון אנושי - חלוקה ותהליכים" onclick="openChairs()"></div>
+
+  <!-- Figures around table — שחקנים מרכזיים (people sitting behind table) -->
+  <div class="hotspot" id="hs-actors" style="left:12%; top:38%; width:76%; height:14%; z-index:1;"
+       data-label="השחקנים המרכזיים" onclick="openActors()"></div>
+
+  <!-- Window (left side) — מגמות עתידיות -->
+  <div class="hotspot" id="hs-window" style="left:2%; top:2%; width:20%; height:32%;"
+       data-label="מגמות עתידיות" onclick="openTrends()"></div>
+</div>
+</div>
+
+<!-- Zoom Controls -->
+<div class="zoom-controls">
+  <button class="zoom-btn zoom-in" onclick="zoomRoom(1)">+</button>
+  <button class="zoom-btn zoom-out" onclick="zoomRoom(-1)">−</button>
+</div>
+
+<!-- Assistant chat button (opens NotebookLM in popup window) -->
+<button class="assistant-btn" id="assistantBtn" onclick="openAssistant()" aria-label="שאלו אותי">
+  <span class="assistant-icon">💬</span>
+  <span class="assistant-label">שאלו אותי</span>
+</button>
+<script>
+  // Paste the NotebookLM public share URL here after creating the notebook:
+  const NOTEBOOKLM_URL = 'https://notebooklm.google.com/notebook/52e98108-8797-43bc-bbf5-ffa9f0ca2c14';
+  function openAssistant() {
+    if (NOTEBOOKLM_URL.includes('PASTE-ID-HERE')) {
+      alert('עוזר/ת המחקר עדיין לא הוגדר/ה. (קישור NotebookLM טרם שובץ)');
+      return;
+    }
+    // Always open as a 500×720 popup pinned to the right side.
+    // Named target so browsers that can reuse will; otherwise user manages their own windows.
+    const w = 500, h = 720;
+    const left = Math.max(20, screen.availWidth - w - 20);
+    const top = Math.max(20, Math.floor((screen.availHeight - h) / 2));
+    window.open(NOTEBOOKLM_URL, 'hc-assistant-window',
+      `width=${w},height=${h},left=${left},top=${top},resizable=yes,scrollbars=yes`);
+  }
+</script>
+
+<!-- DRAWERS ZOOM -->
+<div class="view" id="drawers">
+  <img src="images/zoom-drawers-labeled.webp" alt="מגירות" style="cursor:pointer" onclick="openLegal()" />
+  <button class="back-btn" onclick="showView('main')">← חזרה לחדר</button>
+</div>
+
+<!-- Legal foundation overlay (בסיס חוקי) -->
+<div class="card-zoomed" id="legalZoom" onclick="if(event.target===this)closeLegal()">
+  <div class="chairs-inner">
+    <button class="card-close" onclick="closeLegal()">← חזרה לחדר</button>
+    <iframe data-src="legal-foundation.html?v=20260418" class="card-iframe"></iframe>
+  </div>
+</div>
+
+<!-- TABLE/LAPTOP ZOOM -->
+<div class="view" id="table">
+  <img src="images/zoom-table.webp" alt="המחשב" />
+  <button class="back-btn" onclick="showView('main')">← חזרה לחדר</button>
+</div>
+
+<!-- GLOBE ZOOM - השוואה בין-לאומית (iframe to globe-comparison.html) -->
+<div class="card-zoomed" id="globeZoom" onclick="if(event.target===this)closeGlobe()">
+  <div class="chairs-inner">
+    <button class="card-close" onclick="closeGlobe()">← חזרה לחדר</button>
+    <iframe data-src="globe-comparison.html?v=20260418" class="card-iframe" style="background:transparent;"></iframe>
+  </div>
+</div>
+
+<!-- BOARD/WHITEBOARD ZOOM -->
+<div class="view" id="board">
+  <img src="images/zoom-board.png" alt="לוח - נושאי ליבה" />
+  <!-- Hotspot: תמונת מצב (top left in image = left on screen) -->
+  <div class="hotspot" style="left:5%; top:5%; width:30%; height:52%;"
+       onclick="showView('board-snapshot')"></div>
+  <!-- Hotspot: ייצוג הולם (center top icon) -->
+  <div class="hotspot" style="left:33%; top:5%; width:34%; height:52%;"
+       onclick="showView('board-representation')"></div>
+  <!-- Hotspot: נתוני שכר (bottom right on screen) -->
+  <div class="hotspot" style="left:50%; top:52%; width:35%; height:46%;"
+       onclick="showView('board-salary')"></div>
+  <!-- Hotspot: נתוני גיוס (top right icon on board) -->
+  <div class="hotspot" style="left:67%; top:5%; width:30%; height:52%;"
+       onclick="showView('board-recruitment')"></div>
+  <!-- Hotspot: שימור עובדים (bottom left on screen) -->
+  <div class="hotspot" style="left:15%; top:52%; width:35%; height:46%;"
+       onclick="showView('board-retention')"></div>
+  <button class="back-btn" onclick="showView('main')">← חזרה לחדר</button>
+</div>
+
+<!-- BOARD SUB-VIEW: ייצוג הולם data on whiteboard (scrollable) -->
+<div class="view board-sub" id="board-representation">
+  <div class="board-scroll">
+    <div class="whiteboard-composite">
+      <img src="images/whiteboard-clear.png" alt="לוח לבן" />
+      <iframe data-src="representation-overview.html?v=20260418" class="wb-iframe"></iframe>
+      <div class="scroll-hint">👇 גלגלו למטה כדי לראות מגמות בנתוני ייצוג הולם 👇</div>
+    </div>
+    <div class="whiteboard-composite">
+      <img src="images/whiteboard-clear.png" alt="לוח לבן" />
+      <img src="images/מגמות ייצוג פסיפס.jpg" class="wb-overlay" style="top:44%" alt="מגמות ייצוג בשירות המדינה" />
+      <div class="wb-source" style="bottom:12%">מקורות: נציבות שירות המדינה (מאי 2024). <a href="https://www.gov.il/BlobFolder/reports/diversity-representation-report2024/he/diversity-representation-report2024.pdf" target="_blank">דוח גיוון וייצוג בשירות המדינה לשנת תשפ"ב-תשפ"ג, 2023</a> ❯ נציבות שירות המדינה. <a href="https://lookerstudio.google.com/u/0/reporting/10180a3d-b694-45c1-ad89-3bee6d1270eb" target="_blank">דשבורד אוכלוסיות גיוון - מערכת אמו"ן</a>, נתוני 2024. כניסה אחרונה ב-3 באפריל 2026.</div>
+      <div class="scroll-hint">👇 גלגלו למטה כדי לראות מגמות בנתוני ייצוג הולם 👇</div>
+    </div>
+    <div class="whiteboard-composite">
+      <img src="images/whiteboard-clear.png" alt="לוח לבן" />
+      <img src="images/representation_by_rank.png" class="wb-overlay" style="top:44%" alt="ייצוג אוכלוסיות מגוונות לפי מדרג ומערכת 2023" />
+      <div class="wb-source" style="bottom:12%">מקור: נציבות שירות המדינה (מאי 2024). <a href="https://www.gov.il/BlobFolder/reports/diversity-representation-report2024/he/diversity-representation-report2024.pdf" target="_blank">דוח גיוון וייצוג בשירות המדינה לשנת תשפ"ב-תשפ"ג, 2023</a></div>
+    </div>
+  </div>
+  <button class="back-btn board-back" onclick="this.closest('.view').classList.remove('active')">← חזרה לנתונים</button>
+</div>
+
+<!-- BOARD SUB-VIEW: תמונת מצב (snapshot dashboard on whiteboard) -->
+<div class="view board-sub" id="board-snapshot">
+  <div class="board-scroll">
+    <div class="whiteboard-composite">
+      <img src="images/whiteboard-clear.png" alt="לוח לבן" />
+      <iframe data-src="snapshot-overview.html?v=20260418" class="wb-iframe"></iframe>
+    </div>
+  </div>
+  <button class="back-btn board-back" onclick="this.closest('.view').classList.remove('active')">← חזרה ללוח</button>
+</div>
+
+<!-- BOARD SUB-VIEW: נתוני שכר (salary dashboard on whiteboard) -->
+<div class="view board-sub" id="board-salary">
+  <div class="board-scroll">
+    <div class="whiteboard-composite">
+      <img src="images/whiteboard-clear.png" alt="לוח לבן" />
+      <iframe data-src="salary-data.html?v=20260418" class="wb-iframe"></iframe>
+    </div>
+  </div>
+  <button class="back-btn board-back" onclick="this.closest('.view').classList.remove('active')">← חזרה ללוח</button>
+</div>
+
+<!-- BOARD SUB-VIEW: גיוס ומיון (recruitment data on whiteboard) -->
+<div class="view board-sub" id="board-recruitment">
+  <div class="board-scroll">
+    <div class="whiteboard-composite">
+      <img src="images/whiteboard-clear.png" alt="לוח לבן" />
+      <iframe data-src="recruitment-data.html?v=20260418" class="wb-iframe"></iframe>
+    </div>
+  </div>
+  <button class="back-btn board-back" onclick="this.closest('.view').classList.remove('active')">← חזרה ללוח</button>
+</div>
+
+<!-- BOARD SUB-VIEW: שימור עובדים (retention data on whiteboard) -->
+<div class="view board-sub" id="board-retention">
+  <div class="board-scroll">
+    <div class="whiteboard-composite">
+      <img src="images/whiteboard-clear.png" alt="לוח לבן" />
+      <iframe data-src="retention-data.html?v=20260418" class="wb-iframe"></iframe>
+    </div>
+  </div>
+  <button class="back-btn board-back" onclick="this.closest('.view').classList.remove('active')">← חזרה ללוח</button>
+</div>
+
+<!-- Global back-to-room button for board sub-views (outside transform context) -->
+<button class="card-close" id="boardBackToRoom" onclick="showView('main')">← חזרה לחדר</button>
+
+<!-- Chairs infographic overlay (נציבות vs הון אנושי משרדי) -->
+<div class="card-zoomed" id="chairsZoom" onclick="if(event.target===this)closeChairs()">
+  <div class="chairs-inner">
+    <button class="card-close" onclick="closeChairs()">← חזרה לחדר</button>
+    <iframe data-src="infographic-chairs.html?v=20260418" class="card-iframe"></iframe>
+  </div>
+</div>
+
+<!-- Screening process overlay (תהליך מיון) -->
+<div class="card-zoomed" id="screeningZoom" onclick="if(event.target===this)closeScreening()">
+  <div class="chairs-inner">
+    <button class="card-close" onclick="closeScreening()">← חזרה לחדר</button>
+    <iframe data-src="infographic-screening.html?v=20260418" class="card-iframe"></iframe>
+  </div>
+</div>
+
+<!-- Future trends overlay (מגמות עתידיות — window) -->
+<div class="card-zoomed" id="trendsZoom" onclick="if(event.target===this)closeTrends()">
+  <div class="chairs-inner">
+    <button class="card-close" onclick="closeTrends()">← חזרה לחדר</button>
+    <iframe data-src="future-trends.html?v=20260418" class="card-iframe"></iframe>
+  </div>
+</div>
+
+<!-- Actors circle overlay (שחקנים מרכזיים) -->
+<div class="card-zoomed" id="actorsZoom" onclick="if(event.target===this)closeActors()">
+  <div class="chairs-inner">
+    <button class="card-close" onclick="closeActors()">← חזרה לחדר</button>
+    <iframe data-src="actors.html?v=20260418" class="card-iframe"></iframe>
+  </div>
+</div>
+
+<!-- Gateway report overlay (דוח שער הכניסה — על השולחן) -->
+<div class="card-zoomed" id="gatewayZoom" onclick="if(event.target===this)closeGateway()">
+  <div class="chairs-inner">
+    <button class="card-close" onclick="closeGateway()">← חזרה לחדר</button>
+    <iframe data-src="gateway-report.html?v=20260418" class="card-iframe"></iframe>
+  </div>
+</div>
+
+<!-- Welcome overlay — shown on first load, dismissed by clicking outside or the employee card -->
+<div class="card-zoomed" id="welcomeZoom" onclick="if(event.target===this)closeWelcome()">
+  <div class="chairs-inner">
+    <iframe data-src="welcome.html?v=20260418" class="card-iframe" style="background:transparent;"></iframe>
+  </div>
+</div>
+
+<!-- Employee Card — thumbnail image (clickable, opens overlay) -->
+<div class="employee-card" onclick="openCardFromRoom()">
+  <img src="images/card-thumbnail.png" alt="כרטיס עובד" />
+</div>
+<div class="card-hint">
+  <span class="card-hint-icon">👆</span>
+  <span class="card-hint-text">לחצו להנחיות</span>
+</div>
+
+<!-- Employee Card — zoomed overlay (room visible behind dark backdrop) -->
+<div class="card-zoomed" id="cardZoom" style="z-index:50" onclick="if(event.target===this)this.classList.remove('active')">
+  <div class="card-zoomed-inner">
+    <button class="card-close" onclick="document.getElementById('cardZoom').classList.remove('active')">← סגור כרטיס</button>
+    <iframe data-src="card.html?v=20260418" class="card-iframe"></iframe>
+  </div>
+</div>
+
+<!-- Backdrop for zoom views — click to close -->
+<div class="zoom-backdrop" id="zoomBackdrop" onclick="showView('main')"></div>
+
+<script>
+const MIN_ZOOM = window.matchMedia('(pointer: coarse)').matches ? 50 : 90;
+let currentZoom = 100;
+
+function zoomRoom(dir) {
+  currentZoom = Math.max(MIN_ZOOM, Math.min(250, currentZoom + dir * 10));
+  var scale = currentZoom / 100;
+
+  // Card overlay (highest z-index, check first)
+  var cardEl = document.getElementById('cardZoom');
+  if (cardEl.classList.contains('active')) {
+    var inner = cardEl.querySelector('.card-zoomed-inner');
+    inner.style.zoom = scale;
+    // Mobile browsers (iOS Safari) don't always cascade CSS zoom into iframes
+    // — apply zoom directly to iframe as well
+    inner.querySelectorAll('iframe').forEach(function(f) { f.style.zoom = scale; });
+    if (scale > 1) {
+      cardEl.style.overflow = 'auto';
+      cardEl.style.alignItems = 'flex-start';
+      cardEl.style.paddingTop = '50px';
+    } else {
+      cardEl.style.overflow = '';
+      cardEl.style.alignItems = '';
+      cardEl.style.paddingTop = '';
+    }
+    document.querySelector('.zoom-out').disabled = (currentZoom <= MIN_ZOOM);
+    document.querySelector('.zoom-in').disabled = (currentZoom >= 250);
+    return;
+  }
+
+  // Infographic overlays (chairs, trends, actors, screening)
+  var activeOverlay = document.querySelector('.card-zoomed.active');
+  if (activeOverlay) {
+    var inner = activeOverlay.querySelector('.chairs-inner');
+    if (inner) { inner.style.zoom = scale; }
+    // Mobile fallback: also zoom iframes directly (CSS zoom on wrapper
+    // doesn't scale iframe content on iOS Safari)
+    activeOverlay.querySelectorAll('iframe').forEach(function(f) { f.style.zoom = scale; });
+    if (scale > 1) {
+      activeOverlay.style.overflow = 'auto';
+    } else {
+      activeOverlay.style.overflow = '';
+    }
+    document.querySelector('.zoom-out').disabled = (currentZoom <= MIN_ZOOM);
+    document.querySelector('.zoom-in').disabled = (currentZoom >= 250);
+    return;
+  }
+
+  // Regular views
+  var views = document.querySelectorAll('.view.active');
+  var top = views[views.length - 1];
+
+  if (!top || top.id === 'main') {
+    document.getElementById('main').style.width = currentZoom + '%';
+  } else if (top.classList.contains('board-sub')) {
+    // All board sub-views (representation, snapshot, salary, recruitment)
+    var bs = top.querySelector('.board-scroll');
+    if (bs) { bs.style.zoom = scale; if (scale > 1) bs.style.maxHeight = 'none'; }
+    // Mobile fallback: zoom iframes directly (board sub-views embed
+    // snapshot/salary/recruitment/retention/representation via iframe)
+    top.querySelectorAll('iframe').forEach(function(f) { f.style.zoom = scale; });
+  } else {
+    top.querySelectorAll(':scope > img').forEach(function(img) {
+      img.style.maxWidth = Math.round(83 * scale) + 'vw';
+      img.style.maxHeight = Math.round(90 * scale) + 'vh';
+    });
+    top.querySelectorAll('iframe').forEach(function(f) {
+      f.style.zoom = scale;
+    });
+  }
+  // Blanket catch-all: scale every iframe in the document. Hidden iframes
+  // get the style but don't visually render, so no side effect. Runs AFTER
+  // per-container branches so it's additive — ensures snapshot-overview,
+  // infographic-chairs, etc. shrink even if their container selector didn't match.
+  document.querySelectorAll('iframe').forEach(function(f) { f.style.zoom = scale; });
+  document.querySelector('.zoom-out').disabled = (currentZoom <= MIN_ZOOM);
+  document.querySelector('.zoom-in').disabled = (currentZoom >= 250);
+}
+
+function resetZoom() {
+  currentZoom = 100;
+  document.getElementById('main').style.width = '';
+  document.querySelectorAll('.view:not(#main) > img').forEach(function(img) {
+    img.style.maxWidth = ''; img.style.maxHeight = '';
+  });
+  document.querySelectorAll('.view:not(#main) iframe').forEach(function(f) {
+    f.style.zoom = '';
+  });
+  document.querySelectorAll('.board-scroll').forEach(function(s) {
+    s.style.zoom = ''; s.style.maxHeight = '';
+  });
+  document.querySelectorAll('.card-zoomed').forEach(function(el) {
+    var inner = el.querySelector('.chairs-inner');
+    if (inner) inner.style.zoom = '';
+    el.style.overflow = '';
+  });
+  // Clear any iframe-level zoom we applied for the mobile fallback
+  document.querySelectorAll('.card-zoomed iframe, .board-sub iframe').forEach(function(f) {
+    f.style.zoom = '';
+  });
+  var cardEl = document.getElementById('cardZoom');
+  var inner = cardEl.querySelector('.card-zoomed-inner');
+  inner.style.zoom = '';
+  inner.querySelectorAll('iframe').forEach(function(f) { f.style.zoom = ''; });
+  cardEl.style.overflow = '';
+  cardEl.style.alignItems = '';
+  cardEl.style.paddingTop = '';
+  // Blanket catch-all: clear iframe zoom across the entire document so no
+  // iframe is left scaled from a previous zoom session, regardless of which
+  // overlay/sub-view hosted it.
+  document.querySelectorAll('iframe').forEach(function(f) { f.style.zoom = ''; });
+  document.querySelector('.zoom-out').disabled = false;
+  document.querySelector('.zoom-in').disabled = false;
+}
+
+function activateIframe(iframe) {
+  if (!iframe || iframe.src) return false;
+  var dsrc = iframe.getAttribute('data-src');
+  if (!dsrc) return false;
+  iframe.src = dsrc;
+  return true;
+}
+
+function ensureIframe(iframe, callback) {
+  if (!iframe) { if (callback) callback(); return; }
+  if (iframe.src) { if (callback) callback(); return; }
+  var dsrc = iframe.getAttribute('data-src');
+  if (!dsrc) { if (callback) callback(); return; }
+  var done = false;
+  function finish() {
+    if (done) return;
+    done = true;
+    if (callback) callback();
+  }
+  iframe.addEventListener('load', finish, { once: true });
+  iframe.src = dsrc;
+  setTimeout(finish, 3000);
+}
+
+function resetIframe(el) {
+  var iframe = el.querySelector('iframe');
+  if (!iframe) return;
+  if (iframe.src) {
+    iframe.src = iframe.src;
+  } else {
+    activateIframe(iframe);
+  }
+}
+function openChairs() {
+  var el = document.getElementById('chairsZoom');
+  resetIframe(el);
+  el.classList.add('active');
+}
+function closeChairs() {
+  document.getElementById('chairsZoom').classList.remove('active');
+}
+function openScreening() {
+  var el = document.getElementById('screeningZoom');
+  resetIframe(el);
+  el.classList.add('active');
+}
+function closeScreening() {
+  document.getElementById('screeningZoom').classList.remove('active');
+}
+function openLegal() {
+  var el = document.getElementById('legalZoom');
+  resetIframe(el);
+  el.classList.add('active');
+}
+function closeLegal() {
+  document.getElementById('legalZoom').classList.remove('active');
+  showView('main');
+}
+function closeProcess() {
+  closeLegal();
+}
+function closeActors() {
+  document.getElementById('actorsZoom').classList.remove('active');
+  showView('main');
+}
+function openActors() {
+  var el = document.getElementById('actorsZoom');
+  resetIframe(el);
+  el.classList.add('active');
+}
+function openTrends() {
+  var el = document.getElementById('trendsZoom');
+  resetIframe(el);
+  el.classList.add('active');
+}
+function closeTrends() {
+  document.getElementById('trendsZoom').classList.remove('active');
+  showView('main');
+}
+function openGateway() {
+  var el = document.getElementById('gatewayZoom');
+  resetIframe(el);
+  el.classList.add('active');
+}
+function closeGateway() {
+  document.getElementById('gatewayZoom').classList.remove('active');
+  showView('main');
+}
+function openGlobe() {
+  var el = document.getElementById('globeZoom');
+  resetIframe(el);
+  el.classList.add('active');
+}
+function closeGlobe() {
+  document.getElementById('globeZoom').classList.remove('active');
+  showView('main');
+}
+
+function showView(id) {
+  resetZoom();
+  var globalBtn = document.getElementById('boardBackToRoom');
+  if (id === 'main') {
+    document.querySelectorAll('.view').forEach(function(v) { v.classList.remove('active'); });
+    document.querySelectorAll('.card-zoomed').forEach(function(v) { v.classList.remove('active'); });
+    document.querySelectorAll('.board-sub').forEach(function(v) { v.classList.remove('active'); });
+    document.getElementById('main').classList.add('active');
+    document.getElementById('zoomBackdrop').classList.remove('active');
+    globalBtn.style.display = 'none';
+  } else {
+    var target = document.getElementById(id);
+    target.classList.add('active');
+    target.querySelectorAll('iframe[data-src]').forEach(function(f) {
+      activateIframe(f);
+    });
+    document.getElementById('zoomBackdrop').classList.add('active');
+    // Show global back button for board sub-views
+    if (id.indexOf('board-') === 0 && id !== 'board') {
+      globalBtn.style.display = 'block';
+    } else {
+      globalBtn.style.display = 'none';
+    }
+  }
+}
+
+// ===== WELCOME OVERLAY (first-load) =====
+function closeWelcome() {
+  document.getElementById('welcomeZoom').classList.remove('active');
+  localStorage.setItem('welcomeSeen', '1');
+}
+
+// Opens the employee card from the room — also dismisses welcome overlay if showing
+function openCardFromRoom() {
+  var welcomeEl = document.getElementById('welcomeZoom');
+  if (welcomeEl && welcomeEl.classList.contains('active')) {
+    welcomeEl.classList.remove('active');
+    localStorage.setItem('welcomeSeen', '1');
+  }
+  var cardIframe = document.querySelector('#cardZoom iframe');
+  activateIframe(cardIframe);
+  document.getElementById('cardZoom').classList.add('active');
+}
+
+// Show welcome on first visit + sequential iframe loader
+window.addEventListener('DOMContentLoaded', function() {
+  var isFirstVisit = !localStorage.getItem('welcomeSeen');
+  if (isFirstVisit) {
+    var w = document.getElementById('welcomeZoom');
+    if (w) w.classList.add('active');
+  }
+
+  // Load iframes one at a time to avoid gov proxy throttling
+  var queue = [];
+  var welcomeIframe = document.querySelector('#welcomeZoom iframe');
+  var cardIframe = document.querySelector('#cardZoom iframe');
+
+  if (isFirstVisit && welcomeIframe) queue.push(welcomeIframe);
+  if (cardIframe) queue.push(cardIframe);
+
+  document.querySelectorAll('iframe[data-src]').forEach(function(f) {
+    if (queue.indexOf(f) === -1) queue.push(f);
+  });
+
+  var idx = 0;
+  function loadNext() {
+    if (idx >= queue.length) return;
+    ensureIframe(queue[idx], function() { idx++; loadNext(); });
+  }
+  loadNext();
+});
+
+</script>
+</body>
+</html>

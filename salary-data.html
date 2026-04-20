@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>נתוני שכר - שירות המדינה</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Heebo', sans-serif;
+    direction: rtl;
+    background: transparent;
+    padding: 10px 10px;
+}
+
+.page { max-width: 100%; margin: 0 auto; }
+
+.page-title {
+    text-align: center;
+    margin-bottom: 10px;
+}
+.page-title h1 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.charts-row {
+    display: flex;
+    gap: 0;
+    margin-bottom: 10px;
+}
+.charts-row .chart-box + .chart-box {
+    border-right: 1px solid #e5e7eb;
+    padding-right: 12px;
+    margin-right: 12px;
+}
+.chart-box {
+    flex: 1;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 10px 8px 6px;
+}
+.chart-title {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 6px;
+}
+.chart-wrap {
+    position: relative;
+    width: 100%;
+}
+.chart-wrap svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Legend */
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 6px;
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    color: #475569;
+}
+.legend-dot {
+    width: 10px;
+    height: 3px;
+    border-radius: 1px;
+}
+
+/* Bottom section */
+.sec-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    margin-top: 10px;
+}
+.sec-head .sh-icon {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+.sec-head h2 {
+    font-size: 14px;
+    font-weight: 800;
+    color: #1e293b;
+}
+.sec-head .line {
+    flex: 1;
+    height: 1.5px;
+    background: #d1d5db;
+}
+
+.bottom-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
+.data-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 12px;
+    border: 1px solid #e5e7eb;
+    border-right: 4px solid;
+}
+.data-card.warn { border-right-color: #e76f51; }
+.data-card.alert { border-right-color: #dc2626; }
+
+.data-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.data-title i { font-size: 14px; }
+.data-card.warn .data-title i { color: #e76f51; }
+.data-card.alert .data-title i { color: #dc2626; }
+
+.data-text {
+    font-size: 11px;
+    color: #475569;
+    line-height: 1.55;
+}
+.stat-red { font-weight: 800; color: #dc2626; }
+.stat-blue { font-weight: 800; color: #0A69A5; }
+
+.mini-chart { margin: 6px 0 2px; }
+.mini-row {
+    display: grid;
+    grid-template-columns: 72px 1fr 34px;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 3px;
+}
+.mini-label { font-size: 10px; font-weight: 600; color: #475569; text-align: right; }
+.mini-track { height: 14px; background: #f1f5f9; border-radius: 3px; }
+.mini-bar { height: 100%; border-radius: 3px; background: #dc2626; }
+.mini-bar.faded { background: #fca5a5; }
+.mini-val { font-size: 10px; font-weight: 800; color: #dc2626; font-feature-settings: 'tnum'; }
+.mini-val.dim { color: #94a3b8; }
+
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 4px;
+    margin-top: 4px;
+}
+.rank-badge.alert { background: #fef2f2; color: #b91c1c; }
+.rank-badge.warn { background: #fff7ed; color: #c2410c; }
+
+.sources {
+    font-size: 12px;
+    color: #5a6577;
+    direction: rtl;
+    text-align: right;
+    margin-top: 12px;
+    padding-top: 8px;
+    border-top: 1px solid #e5e7eb;
+}
+.sources a {
+    color: #4a90a4;
+    text-decoration: underline;
+}
+.sources a:hover { color: #2c6e7e; }
+
+/* ── Charts section (single box) ── */
+.charts-section {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    padding: 10px 10px 10px;
+    margin-bottom: 10px;
+}
+.charts-section .chart-box {
+    border: none;
+    padding: 0;
+    border-radius: 0;
+}
+.explain-text {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 8px;
+    margin-top: 6px;
+}
+.explain-text p {
+    font-size: 11.5px;
+    color: #475569;
+    line-height: 1.6;
+    margin-bottom: 6px;
+}
+.explain-text p:last-child { margin-bottom: 0; }
+.explain-text strong { color: #1e293b; }
+.explain-text .cite {
+    font-size: 10px;
+    color: #94a3b8;
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+.explain-text .cite a { color: #0d9488; text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="page">
+    <div class="page-title">
+        <h1>שכר בשירות המדינה לעומת המשק</h1>
+    </div>
+
+    <div class="charts-section">
+        <div class="charts-row">
+            <!-- Chart 1: All workers -->
+            <div class="chart-box">
+                <div class="chart-title">שכר ממוצע חודשי (2010-2023)</div>
+                <div class="chart-wrap" id="chart1"></div>
+            </div>
+            <!-- Chart 2: BA holders -->
+            <div class="chart-box">
+                <div class="chart-title">שכר ממוצע חודשי - בעלי תואר ראשון (2010-2023)</div>
+                <div class="chart-wrap" id="chart2"></div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <span class="legend-item"><span class="legend-dot" style="background:#0A69A5"></span>משרדי ממשלה</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#0d9488"></span>המגזר הציבורי</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#d4a039"></span>המגזר הפרטי</span>
+            <span class="legend-item"><span class="legend-dot" style="background:#b0b0b0"></span>עצמאיים</span>
+        </div>
+
+        <div class="explain-text">
+        <p>"השכר הממוצע בשנת 2023 במשרדי הממשלה עמד על 14,488 ש"ח לחודש, בעוד שבמגזר הפרטי השכר עמד על 13,728 - <strong>פער של כ-6%</strong> בין המגזרים. בין השנים 2010-2023 השכר במשרדי הממשלה עלה בכ-47% ובמגזר הפרטי בכ-54%. עם זאת, יש לתת את הדעת על השונות בפרופיל המשרות: עובדי משרדי הממשלה מאופיינים בשיעור גבוה של משרות עתירות ידע הדורשות השכלה וכישורים מוגדרים, ואילו המגזר הפרטי הטרוגני יותר וכולל נתח משמעותי של משרות שאינן דורשות מיומנות אקדמית ושכרן נמוך יחסית. בהתאם, השוואה בין בעלי תואר ראשון נותנת תמונה מדויקת יותר של פערי השכר במשרות דומות - ובחתך זה מתקבלת תמונה שונה, לפיה <strong>השכר במגזר הפרטי גבוה בכ-7%</strong>."</p>
+        <p>מעבר לכך, לפי דוח של ה-OECD מ-2021, מבנה השכר במגזר הציבורי בישראל דחוס ומתגמל ביתר תפקידים אדמיניסטרטיביים בעלי מיומנויות נמוכות, אך ככל שעולים בדרג או שנדרשות מיומנויות מבוקשות יותר (כמו הנדסה ודיגיטל), השכר הציבורי אינו תחרותי ביחס לשוק הפרטי.</p>
+        </div>
+
+        <div class="sources">מקורות: נציבות שירות המדינה, אגף בכיר לתכנון אסטרטגי ומדיניות (2025). <a href="https://www.gov.il/BlobFolder/news/press_25032026c/he/PressReleases_files_%D7%A9%D7%A2%D7%A8%20%D7%94%D7%9B%D7%A0%D7%99%D7%A1%D7%94%20%D7%9C%D7%A9%D7%99%D7%A8%D7%95%D7%AA%20%D7%94%D7%9E%D7%93%D7%99%D7%A0%D7%94%20-%20%D7%93%D7%95%D7%97%20%D7%9E%D7%A1%D7%9B%D7%9D.pdf" target="_blank"><em>שער הכניסה לשירות המדינה - דוח מסכם</em></a>. עיבודי אגף שכר והסכמי עבודה לנתוני הלמ"ס ❯ <a href="https://www.oecd.org/content/dam/oecd/en/publications/reports/2021/07/the-public-sector-pay-system-in-israel_9f1e0ca2/3b6ad37f-en.pdf" target="_blank">OECD (2021), <em>The Public Sector Pay System in Israel</em></a>.</div>
+    </div>
+
+</div>
+
+<script>
+function drawLineChart(containerId, data, yMax) {
+    var container = document.getElementById(containerId);
+    var W = 480, H = 260;
+    var margin = { top: 10, right: 70, bottom: 30, left: 45 };
+    var w = W - margin.left - margin.right;
+    var h = H - margin.top - margin.bottom;
+
+    var years = data[0].values.map(function(d) { return d[0]; });
+    var yMin = 4000;
+
+    function xPos(year) { return margin.left + (year - 2010) / (2023 - 2010) * w; }
+    function yPos(val) { return margin.top + (1 - (val - yMin) / (yMax - yMin)) * h; }
+
+    var svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" xmlns="http://www.w3.org/2000/svg">';
+
+    // Grid lines
+    var gridSteps = [];
+    for (var g = 6000; g <= yMax; g += 2000) gridSteps.push(g);
+    for (var i = 0; i < gridSteps.length; i++) {
+        var gy = yPos(gridSteps[i]);
+        svg += '<line x1="' + margin.left + '" y1="' + gy + '" x2="' + (W - margin.right) + '" y2="' + gy + '" stroke="#e5e7eb" stroke-width="0.5"/>';
+        svg += '<text x="' + (margin.left - 4) + '" y="' + (gy + 3) + '" text-anchor="end" font-size="8" fill="#94a3b8" font-family="Heebo">' + (gridSteps[i] / 1000).toFixed(0) + 'K</text>';
+    }
+
+    // X axis labels
+    for (var j = 0; j < years.length; j++) {
+        var xx = xPos(years[j]);
+        svg += '<text x="' + xx + '" y="' + (H - 6) + '" text-anchor="middle" font-size="8" font-weight="700" fill="#475569" font-family="Heebo">' + years[j] + '</text>';
+    }
+
+    // Lines + end labels
+    for (var s = 0; s < data.length; s++) {
+        var series = data[s];
+        var points = '';
+        for (var k = 0; k < series.values.length; k++) {
+            var px = xPos(series.values[k][0]);
+            var py = yPos(series.values[k][1]);
+            points += (k === 0 ? 'M' : 'L') + px.toFixed(1) + ',' + py.toFixed(1);
+        }
+        svg += '<path d="' + points + '" fill="none" stroke="' + series.color + '" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
+
+        // End label
+        var lastVal = series.values[series.values.length - 1][1];
+        var lastY = yPos(lastVal);
+        var labelBg = series.color;
+        var textColor = '#fff';
+        if (series.color === '#b0b0b0') { labelBg = '#e0e0e0'; textColor = '#555'; }
+
+        svg += '<rect x="' + (W - margin.right + 4) + '" y="' + (lastY - 8) + '" width="52" height="16" rx="3" fill="' + labelBg + '"/>';
+        svg += '<text x="' + (W - margin.right + 30) + '" y="' + (lastY + 3) + '" text-anchor="middle" font-size="9" font-weight="800" fill="' + textColor + '" font-family="Heebo">' + lastVal.toLocaleString() + '</text>';
+    }
+
+    svg += '</svg>';
+    container.innerHTML = svg;
+}
+
+// Chart 1: All workers
+drawLineChart('chart1', [
+    { name: 'ממשלה', color: '#0A69A5', values: [[2010,9500],[2011,9800],[2012,10200],[2013,11000],[2014,11200],[2015,11500],[2016,11700],[2017,12000],[2018,12500],[2019,12800],[2020,13000],[2021,13200],[2022,13800],[2023,14488]] },
+    { name: 'ציבורי', color: '#0d9488', values: [[2010,8800],[2011,9200],[2012,9800],[2013,10500],[2014,10600],[2015,10800],[2016,11000],[2017,11300],[2018,11800],[2019,12000],[2020,12000],[2021,12500],[2022,13200],[2023,13728]] },
+    { name: 'פרטי', color: '#d4a039', values: [[2010,8200],[2011,8500],[2012,9000],[2013,9500],[2014,9600],[2015,10000],[2016,10200],[2017,10500],[2018,11500],[2019,12000],[2020,12500],[2021,13200],[2022,12800],[2023,12216]] },
+    { name: 'עצמאיים', color: '#b0b0b0', values: [[2010,5500],[2011,5600],[2012,5800],[2013,6000],[2014,6200],[2015,7200],[2016,6800],[2017,6900],[2018,7000],[2019,7200],[2020,7500],[2021,8000],[2022,8500],[2023,9057]] }
+], 16000);
+
+// Chart 2: BA holders
+drawLineChart('chart2', [
+    { name: 'פרטי', color: '#d4a039', values: [[2010,9800],[2011,10000],[2012,10500],[2013,11000],[2014,11200],[2015,12200],[2016,12500],[2017,13000],[2018,14000],[2019,14800],[2020,16000],[2021,17000],[2022,19000],[2023,20331]] },
+    { name: 'ממשלה', color: '#0A69A5', values: [[2010,10000],[2011,10500],[2012,11200],[2013,12500],[2014,12600],[2015,13000],[2016,13200],[2017,13500],[2018,14500],[2019,15000],[2020,15000],[2021,15500],[2022,16500],[2023,18992]] },
+    { name: 'ציבורי', color: '#0d9488', values: [[2010,9500],[2011,9800],[2012,10500],[2013,11500],[2014,11600],[2015,12000],[2016,12200],[2017,12500],[2018,13000],[2019,13200],[2020,13500],[2021,14000],[2022,15000],[2023,16133]] },
+    { name: 'עצמאיים', color: '#b0b0b0', values: [[2010,5800],[2011,5900],[2012,6100],[2013,6500],[2014,6600],[2015,7500],[2016,7200],[2017,7000],[2018,7000],[2019,7200],[2020,7500],[2021,8500],[2022,10000],[2023,10921]] }
+], 22000);
+</script>
+
+</body>
+</html>

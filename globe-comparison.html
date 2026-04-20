@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<title>השוואה בין-לאומית - גלובוס</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body {
+    height: 100%;
+    background: transparent;
+}
+body {
+    font-family: 'Heebo', sans-serif;
+    direction: rtl;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.globe-stage {
+    position: relative;
+    width: 100%;
+    max-width: min(100vw, calc(100vh * 1.486));
+    aspect-ratio: 2520 / 1696;
+}
+.globe-stage img.globe-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.78) blur(1.5px);
+}
+.coming-soon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-1deg);
+    background: #fff9c4;
+    border: 1px solid #e6d88a;
+    padding: 30px 42px 32px;
+    box-shadow: 6px 8px 20px rgba(0,0,0,0.5);
+    max-width: 58%;
+    text-align: center;
+    z-index: 5;
+}
+.coming-soon .badge {
+    display: inline-block;
+    background: #0A69A5;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+    letter-spacing: 0.5px;
+}
+.coming-soon .main {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1e293b;
+    line-height: 1.4;
+    margin-bottom: 10px;
+}
+.coming-soon .hook {
+    font-size: 17px;
+    font-weight: 700;
+    color: #0A69A5;
+    line-height: 1.5;
+}
+</style>
+</head>
+<body>
+
+<div class="globe-stage">
+    <img src="images/zoom-globe.webp" alt="גלובוס - השוואה בינלאומית" class="globe-img">
+    <div class="coming-soon">
+        <div class="badge">בקרוב</div>
+        <div class="main">העמוד הזה יתמלא בסיום ההתנסות.</div>
+        <div class="hook">מה תגלו? תלוי בכם :)</div>
+    </div>
+</div>
+
+</body>
+</html>

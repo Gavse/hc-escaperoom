@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>כרטיס עובד - חדר בריחה</title>
+<link rel="stylesheet" href="style.css">
+<style>
+/* ==================== CARD PAGE OVERRIDES ==================== */
+body {
+  background: transparent;
+  padding: 50px 24px;
+}
+
+/* ==================== CARD SHELL (full-size, non-namespaced) ==================== */
+.card {
+  width: 900px;
+  max-width: 100%;
+  border-radius: 16px;
+  overflow: visible;
+  box-shadow: var(--shadow);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  background: linear-gradient(180deg, #f0ebe3 0%, #e8e2d8 100%);
+  height: 52px;
+  position: relative;
+  z-index: 20;
+  border-radius: 16px 16px 0 0;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-right: 14px;
+}
+.header-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: linear-gradient(135deg, #c8c0b4, #a8a090);
+  border: 2px solid #d4cdc2;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+.header-avatar svg { width: 18px; height: 18px; opacity: 0.45; color: #6b6050; }
+
+.header-icons {
+  position: absolute; top: 12px; left: 18px;
+  display: flex; gap: 8px; z-index: 2;
+  color: #8a8070; font-size: 16px;
+}
+.header-icon {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(0,0,0,0.05);
+  display: flex; align-items: center; justify-content: center;
+  cursor: default; transition: background var(--transition);
+}
+.header-icon:hover { background: rgba(0,0,0,0.1); }
+.header-title {
+  color: #6b6050;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.5px;
+}
+
+.card-body {
+  display: flex; height: 448px; direction: rtl;
+  border-radius: 0 0 16px 16px; overflow: visible;
+  background: linear-gradient(175deg, #2c3650 0%, #1e2740 40%, #1a2035 60%, #151b2a 100%);
+}
+
+.main-area {
+  flex: 1; position: relative; overflow-y: auto; overflow-x: hidden;
+  display: flex; align-items: flex-start; justify-content: center;
+  -webkit-overflow-scrolling: touch;
+  padding: 16px 20px;
+}
+.main-area::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 40% 25%, rgba(232,196,124,0.06) 0%, transparent 55%);
+  pointer-events: none; z-index: 0;
+}
+.main-area::after {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at center, transparent 50%, rgba(10,12,20,0.3) 100%);
+  pointer-events: none; z-index: 0;
+}
+
+/* ==================== SIDEBAR ==================== */
+.sidebar {
+  width: 33.33%; padding: 0 20px 18px 0;
+  overflow: visible; display: flex; flex-direction: column;
+  align-items: center; flex-shrink: 0;
+  border-left: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+}
+.avatar { display: none; }
+.avatar-silhouette { display: none; }
+
+.sidebar-title {
+  font-size: 12px; font-weight: 700;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 10px; margin-top: 14px;
+  padding-bottom: 7px; border-bottom: 2px solid rgba(255,255,255,0.15);
+  display: inline-block; letter-spacing: 0.3px;
+  align-self: flex-start;
+}
+
+.task-list { list-style: none; display: flex; flex-direction: column; gap: 2px; width: 100%; }
+.task-item {
+  display: flex; align-items: flex-start; gap: 7px;
+  padding: 5px 9px; border-radius: 8px;
+  cursor: pointer; transition: all var(--transition);
+  position: relative; border-right: 3px solid transparent;
+}
+.task-item:hover:not(.disabled-task) { background: rgba(255,255,255,0.05); }
+.task-item.active { background: rgba(255,255,255,0.06); border-right-color: #5b9bd5; }
+.task-item.active .task-text { font-weight: 600; color: rgba(255,255,255,0.95); }
+.task-item.completed .task-text { color: rgba(232, 213, 163, 0.9); }
+.task-item.completed .task-check { opacity: 1; transform: scale(1); }
+.task-item.disabled-task { cursor: default; opacity: 0.45; }
+.task-item.disabled-task .task-text { color: rgba(255,255,255,0.55); }
+
+.task-badge {
+  font-size: 8px; font-weight: 600;
+  color: rgba(255,255,255,0.35);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px; padding: 1px 5px;
+  margin-right: auto; flex-shrink: 0;
+  white-space: nowrap; margin-top: 3px;
+}
+
+.task-bullet {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(255,255,255,0.4);
+  margin-top: 7px; flex-shrink: 0;
+  transition: all var(--transition);
+}
+.task-item.active .task-bullet { background: #5b9bd5; box-shadow: 0 0 6px rgba(91,155,213,0.4); }
+.task-item.completed .task-bullet { background: #4caf76; }
+.task-item.disabled-task .task-bullet { background: rgba(255,255,255,0.2); }
+
+.task-text {
+  font-size: 10.5px; line-height: 1.45;
+  color: rgba(255,255,255,0.75);
+  transition: all var(--transition); flex: 1;
+}
+.task-check {
+  font-size: 13px; color: #4caf76;
+  opacity: 0; transform: scale(0.5);
+  transition: all var(--transition);
+  flex-shrink: 0; margin-top: 2px;
+}
+
+.text-answer-wrap {
+  margin: 10px 0;
+}
+.text-answer {
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: rgba(255,255,255,0.9);
+  resize: vertical;
+  direction: rtl;
+  line-height: 1.6;
+}
+.text-answer:focus {
+  outline: none;
+  border-color: rgba(91,155,213,0.6);
+  background: rgba(255,255,255,0.12);
+}
+.text-answer:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Text-multi question (2-3 structured items) */
+.text-multi-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 10px 0;
+}
+.text-multi-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+.text-multi-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.85);
+  margin-bottom: 4px;
+  direction: rtl;
+}
+.text-multi-basis-label {
+  margin-top: 8px;
+  font-weight: 400;
+  font-size: 11px;
+  opacity: 0.75;
+}
+.text-multi-input {
+  width: 100%;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: var(--font);
+  font-size: 13px;
+  color: rgba(255,255,255,0.9);
+  resize: vertical;
+  direction: rtl;
+  line-height: 1.5;
+  box-sizing: border-box;
+}
+.text-multi-input:focus {
+  outline: none;
+  border-color: rgba(91,155,213,0.6);
+  background: rgba(255,255,255,0.12);
+}
+.text-multi-input:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Ranking question */
+.ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 10px 0;
+}
+.ranking-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  border-radius: 10px;
+  padding: 10px 12px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.ranking-item:hover {
+  background: rgba(255,255,255,0.12);
+  border-color: rgba(91,155,213,0.5);
+}
+.ranking-select {
+  flex-shrink: 0;
+  width: 48px;
+  height: 32px;
+  background: rgba(91,155,213,0.25);
+  color: #fff;
+  border: 1.5px solid rgba(91,155,213,0.5);
+  border-radius: 8px;
+  font-family: var(--font);
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  text-align-last: center;
+  cursor: pointer;
+  padding: 0 4px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.ranking-select:hover:not(:disabled) {
+  background: rgba(91,155,213,0.4);
+  border-color: rgba(91,155,213,0.8);
+}
+.ranking-select:focus {
+  outline: none;
+  border-color: rgba(91,155,213,0.9);
+}
+.ranking-select:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.ranking-select option {
+  background: #1e3a5f;
+  color: #fff;
+}
+.ranking-text {
+  flex: 1;
+  font-size: 13px;
+  color: rgba(255,255,255,0.92);
+  line-height: 1.4;
+}
+.ranking-followup-wrap {
+  margin: 12px 0 10px;
+}
+.ranking-followup-label {
+  display: block;
+  font-size: 12px;
+  color: rgba(255,255,255,0.75);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+/* Rating grid (matrix question) */
+.grid-scale-hint {
+  font-size: 11px;
+  color: rgba(255,255,255,0.6);
+  text-align: center;
+  margin: 6px 0;
+}
+.rating-grid-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 4px;
+  margin: 10px 0;
+  direction: rtl;
+}
+.rating-grid-table th,
+.rating-grid-table td {
+  padding: 0;
+  vertical-align: middle;
+}
+.rating-grid-table thead th {
+  background: rgba(91,155,213,0.15);
+  color: rgba(255,255,255,0.85);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 6px 4px;
+  border-radius: 6px;
+  text-align: center;
+  line-height: 1.2;
+}
+.grid-row-label {
+  background: rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 8px 10px !important;
+  text-align: right;
+  max-width: 130px;
+}
+.grid-row-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.95);
+  line-height: 1.3;
+}
+.grid-row-desc {
+  font-size: 10px;
+  color: rgba(255,255,255,0.55);
+  margin-top: 2px;
+  line-height: 1.3;
+}
+.grid-cell {
+  text-align: center;
+}
+.grid-select {
+  width: 44px;
+  height: 30px;
+  background: rgba(91,155,213,0.22);
+  color: #fff;
+  border: 1.5px solid rgba(91,155,213,0.45);
+  border-radius: 7px;
+  font-family: var(--font);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  text-align-last: center;
+  cursor: pointer;
+  padding: 0 2px;
+}
+.grid-select:hover:not(:disabled) {
+  background: rgba(91,155,213,0.4);
+}
+.grid-select:focus {
+  outline: none;
+  border-color: rgba(91,155,213,0.9);
+}
+.grid-select:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.grid-select option {
+  background: #1e3a5f;
+  color: #fff;
+}
+.option-radio {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.3);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ==================== SCENARIO BAR ==================== */
+
+.scenario-bar {
+  display: flex; gap: 8px; align-items: flex-start;
+  background: rgba(91, 155, 213, 0.12);
+  border: 1px solid rgba(91, 155, 213, 0.25);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+}
+.scenario-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+.scenario-text {
+  font-size: 12.5px; line-height: 1.55;
+  color: rgba(255,255,255,0.85);
+  font-weight: 500;
+}
+
+/* ==================== NAV BUTTONS ==================== */
+
+.nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 10px;
+}
+.nav-buttons .next-btn { display: none; }
+.nav-buttons.visible .next-btn { display: inline-flex; }
+.prev-btn-nav {
+  background: rgba(255,255,255,0.08);
+  border: 1.5px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  padding: 9px 18px;
+  font-family: var(--font);
+  font-size: 12px; font-weight: 700;
+  color: rgba(255,255,255,0.7);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.prev-btn-nav:hover {
+  background: rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.9);
+}
+
+/* ==================== GLASSMORPHISM QUESTION PANEL ==================== */
+.question-overlay {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 520px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(24px) saturate(1.3);
+  -webkit-backdrop-filter: blur(24px) saturate(1.3);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  padding: 16px 16px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.08);
+  overflow-y: visible;
+}
+
+/* Progress */
+.progress-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.progress-text { font-size: 11px; font-weight: 400; color: #b0b8c8; }
+.progress-dots { display: flex; gap: 6px; }
+.progress-dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: all 0.4s ease; }
+.progress-dot.active { background: #5b9bd5; box-shadow: 0 0 8px rgba(91,155,213,0.4); }
+.progress-dot.done { background: #4caf76; }
+
+/* Question container */
+.question-container { display: flex; flex-direction: column; gap: 0; animation: fadeSlideIn 0.4s ease forwards; }
+@keyframes fadeSlideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Instruction */
+.instruction-section {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 10px 12px; background: rgba(91, 155, 213, 0.1);
+  border-radius: 10px; border-right: 3px solid #5b9bd5; margin-bottom: 10px;
+}
+.instruction-icon { font-size: 15px; line-height: 1.7; flex-shrink: 0; }
+.instruction-content { flex: 1; }
+.instruction-label { font-size: 11px; font-weight: 700; color: #7cb8e8; letter-spacing: 0.5px; margin-bottom: 4px; }
+.instruction-text { font-size: 13px; font-weight: 700; color: #f0f0f0; line-height: 1.7; }
+
+/* Question text */
+.q-question::before { content: 'שאלה'; display: block; font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.45); letter-spacing: 0.5px; margin-bottom: 4px; }
+.q-question { font-size: 12.5px; font-weight: 600; color: #fff; line-height: 1.5; margin-bottom: 6px; }
+.q-subtitle { font-size: 11px; color: #b0b8c8; font-weight: 400; margin-top: 3px; }
+
+/* Options */
+.options-list { display: flex; flex-direction: column; gap: 4px; margin-bottom: 0; }
+.option-btn {
+  display: flex; align-items: center; gap: 9px;
+  padding: 7px 10px; border-radius: 9px;
+  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  cursor: pointer; transition: all 0.25s ease;
+  font-family: var(--font); font-size: 12px;
+  color: #f0f0f0; line-height: 1.5;
+  text-align: right; width: 100%; position: relative;
+}
+.option-btn:hover:not(.disabled) { background: rgba(255,255,255,0.09); border-color: rgba(255,255,255,0.18); }
+.option-checkbox {
+  width: 17px; height: 17px; border-radius: 4px;
+  border: 2px solid rgba(255,255,255,0.28);
+  background: transparent; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.25s ease; position: relative;
+}
+.option-checkbox svg { width: 11px; height: 11px; opacity: 0; transition: opacity 0.2s ease; }
+.option-checkbox svg.x-icon { display: none; }
+.option-checkbox svg.check-icon { display: block; }
+
+.option-btn.selected { border-color: #5b9bd5; background: rgba(91, 155, 213, 0.12); }
+.option-btn.selected .option-checkbox { background: #5b9bd5; border-color: #5b9bd5; }
+.option-btn.selected .option-checkbox svg { opacity: 1; }
+
+.option-btn.correct-checked { border-color: #4caf76; background: rgba(76, 175, 118, 0.18); }
+.option-btn.correct-checked .option-checkbox { background: #4caf76; border-color: #4caf76; }
+.option-btn.correct-checked .option-checkbox svg { opacity: 1; }
+
+.option-btn.correct-missed { border-color: #4caf76; border-width: 2px; background: rgba(76, 175, 118, 0.06); }
+.option-btn.correct-missed .option-checkbox { border-color: #4caf76; background: transparent; }
+
+.option-btn.wrong-checked { border-color: #e05555; background: rgba(224, 85, 85, 0.15); }
+.option-btn.wrong-checked .option-checkbox { background: #e05555; border-color: #e05555; }
+.option-btn.wrong-checked .option-checkbox svg { opacity: 1; }
+.option-btn.wrong-checked .option-checkbox svg.check-icon { display: none; }
+.option-btn.wrong-checked .option-checkbox svg.x-icon { display: block; opacity: 1; }
+
+.option-btn.disabled { cursor: default; pointer-events: none; }
+.option-result { margin-right: auto; font-size: 14px; opacity: 0; transition: opacity var(--transition); flex-shrink: 0; }
+.option-btn.correct-checked .option-result,
+.option-btn.correct-missed .option-result,
+.option-btn.wrong-checked .option-result { opacity: 1; }
+
+/* "Other" free-text input (Google Forms style) */
+.other-option {
+  display: flex; align-items: center; gap: 10px;
+  margin-top: 8px; padding: 12px 14px; border-radius: 10px;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  transition: all 0.2s ease;
+}
+.other-option.active { border-color: rgba(91,155,213,0.5); background: rgba(91,155,213,0.08); }
+.other-option.correct-checked { border-color: #4caf76; background: rgba(76, 175, 118, 0.18); }
+.other-option.correct-checked .other-option-label { color: #fff; }
+.other-option-label { font-weight: 600; color: rgba(255,255,255,0.85); font-size: 14px; flex-shrink: 0; }
+.other-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  color: #f0f0f0; font-family: inherit; font-size: 14px;
+  padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.25);
+}
+.other-input:focus { border-bottom-color: #5b9bd5; }
+.other-input:disabled { border-bottom-color: rgba(255,255,255,0.15); cursor: default; }
+.other-input::placeholder { color: rgba(255,255,255,0.4); }
+
+/* True/False */
+.tf-options { display: flex; gap: 14px; margin-bottom: 0; }
+.tf-btn {
+  flex: 1; max-width: 45%; padding: 14px 8px; border-radius: 12px;
+  border: 2px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.06);
+  cursor: pointer; transition: all 0.25s ease;
+  font-family: var(--font); font-size: 15px; font-weight: 600;
+  color: #f0f0f0; text-align: center;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.tf-btn:hover:not(.disabled) { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.3); transform: translateY(-1px); }
+.tf-btn .tf-icon { font-size: 18px; opacity: 0.7; }
+.tf-btn.selected { border-color: #5b9bd5; background: rgba(91, 155, 213, 0.15); }
+.tf-btn.correct-answer { border-color: #4caf76; background: rgba(76, 175, 118, 0.18); }
+.tf-btn.correct-answer .tf-icon { opacity: 1; }
+.tf-btn.wrong-answer { border-color: #e05555; background: rgba(224, 85, 85, 0.15); }
+.tf-btn.wrong-answer .tf-icon { opacity: 1; }
+.tf-btn.disabled { cursor: default; pointer-events: none; }
+.tf-btn.unselected-neutral { opacity: 0.4; }
+
+/* Check button */
+.check-btn-wrap { margin-top: 8px; display: flex; justify-content: flex-end; }
+.check-btn {
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  padding: 8px 26px; border-radius: 10px; border: none;
+  background: linear-gradient(135deg, #5b9bd5 0%, #4a8ac4 100%);
+  color: #fff; cursor: pointer; transition: all 0.25s ease;
+  letter-spacing: 0.3px; box-shadow: 0 4px 15px rgba(91,155,213,0.3);
+}
+.check-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(91,155,213,0.4); }
+.check-btn:active { transform: translateY(0); }
+.check-btn:disabled { opacity: 0.5; cursor: default; transform: none; box-shadow: none; }
+
+/* Explanation */
+.explanation { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.5s ease, opacity 0.4s ease 0.1s, margin 0.4s ease; margin-top: 0; }
+.explanation.visible { max-height: 2000px; opacity: 1; margin-top: 8px; }
+/* Default (short mode): blue side-line, no summary */
+.explanation-inner { background: rgba(91, 155, 213, 0.10); border-right: 3px solid #7cb8e8; border-radius: 6px 10px 10px 6px; padding: 12px 14px; }
+/* With summary (long mode): no side-line, summary carries the accent */
+.explanation-inner--with-summary { background: rgba(91, 155, 213, 0.08); border-right: none; border-radius: 10px; padding: 14px 16px; }
+/* AI summary box — cream, only rendered when q.summary is present */
+.ai-summary-box { background: rgba(232, 213, 163, 0.10); border-right: 2px solid rgba(232, 213, 163, 0.55); border-radius: 4px 8px 8px 4px; padding: 8px 11px; margin-bottom: 12px; }
+.ai-summary-tag { font-size: 10px; font-weight: 600; letter-spacing: 0.02em; color: rgba(232, 213, 163, 0.75); font-style: italic; direction: ltr; display: block; text-align: right; margin-bottom: 3px; }
+.ai-summary-text { font-size: 12.5px; line-height: 1.6; color: rgba(232, 213, 163, 0.92); }
+.explanation-header { display: flex; align-items: center; gap: 7px; margin-bottom: 6px; font-size: 12px; font-weight: 600; color: #7cb8e8; }
+.explanation-icon { font-size: 14px; line-height: 1; }
+.explanation-text { font-size: 13px; line-height: 1.75; color: rgba(255,255,255,0.9); }
+.explanation-text strong { color: #fff; }
+.explanation-text ul { margin: 6px 0; padding: 0 14px 0 0; list-style: none; }
+.explanation-text li { padding: 4px 0; position: relative; padding-right: 12px; }
+.explanation-text li::before { content: ''; position: absolute; right: 0; top: 11px; width: 6px; height: 6px; border-radius: 50%; background: rgba(232,213,163,0.75); }
+.explanation-text .exp-sep { height: 1px; background: linear-gradient(to left, transparent 0%, rgba(255,255,255,0.28) 50%, transparent 100%); margin: 14px 0; border: 0; }
+.explanation-text .b-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: rgba(232, 213, 163, 0.75); font-size: 0; color: transparent; vertical-align: middle; margin: 0 0 1px 3px; }
+.explanation-text a { color: #7cb8e8; text-decoration: underline; }
+.explanation-text a:hover { color: #a8d4f5; }
+
+.sync-toast { position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); background: rgba(30,40,60,0.92); color: #e8d5a3; padding: 10px 20px; border-radius: 20px; font-size: 13px; font-family: 'Heebo', sans-serif; z-index: 100; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+.sync-toast.visible { opacity: 1; }
+
+/* Group responses (live from Apps Script web app) */
+.group-responses { margin-top: 14px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12); }
+.group-responses-head { font-size: 11px; font-weight: 700; color: #7cb8e8; margin-bottom: 6px; letter-spacing: 0.04em; }
+.group-bars { display: flex; flex-direction: column; gap: 5px; }
+.group-bar-row { display: grid; grid-template-columns: 1fr 90px 46px; gap: 8px; align-items: center; font-size: 11.5px; }
+.group-bar-label { color: rgba(255,255,255,0.88); line-height: 1.35; }
+.group-bar-track { height: 8px; background: rgba(255,255,255,0.08); border-radius: 4px; overflow: hidden; }
+.group-bar-fill { height: 100%; background: rgba(232,213,163,0.7); border-radius: 4px; transition: width 0.5s ease; }
+.group-bar-count { font-size: 10.5px; color: rgba(232,213,163,0.75); font-variant-numeric: tabular-nums; text-align: left; }
+.group-responses-empty { font-size: 11px; opacity: 0.6; font-style: italic; }
+
+/* Next button */
+.next-btn-wrap { margin-top: 8px; display: flex; justify-content: flex-start; opacity: 0; transform: translateY(8px); transition: all var(--transition); pointer-events: none; }
+.next-btn-wrap.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+.next-btn {
+  font-family: var(--font); font-size: 13px; font-weight: 600;
+  padding: 8px 26px; border-radius: 10px; border: none;
+  background: linear-gradient(135deg, #5b9bd5 0%, #4a8ac4 100%);
+  color: #fff; cursor: pointer; transition: all 0.25s ease;
+  letter-spacing: 0.3px; box-shadow: 0 4px 15px rgba(91,155,213,0.3);
+}
+.next-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(91,155,213,0.4); }
+.next-btn:active { transform: translateY(0); }
+
+/* Completion */
+.completion-msg { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 0; gap: 10px; animation: fadeSlideIn 0.5s ease forwards; }
+.completion-icon { font-size: 36px; margin-bottom: 4px; }
+.completion-title { font-size: 16px; font-weight: 700; color: #fff; }
+.completion-sub { font-size: 12.5px; color: #b0b8c8; line-height: 1.6; }
+.restart-btn {
+  font-family: var(--font); font-size: 12px; font-weight: 600;
+  padding: 8px 24px; border-radius: 8px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  background: transparent; color: #f0f0f0;
+  cursor: pointer; transition: all var(--transition); margin-top: 4px;
+}
+.restart-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.5); }
+
+/* Bottom progress bar */
+.card-progress { position: absolute; bottom: 0; right: 0; left: 0; height: 3px; background: rgba(255,255,255,0.06); border-radius: 0 0 16px 16px; overflow: hidden; z-index: 20; }
+.card-progress-fill { height: 100%; background: #5b9bd5; border-radius: 0 3px 3px 0; transition: width 0.5s ease; width: 0%; }
+
+/* Scrollbar */
+.question-overlay::-webkit-scrollbar { width: 4px; }
+.question-overlay::-webkit-scrollbar-track { background: transparent; }
+.question-overlay::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+
+/* Back link for standalone */
+.page-back {
+  position: fixed; top: 20px; left: 20px; z-index: 50;
+}
+
+/* Responsive */
+@media (max-width: 950px) {
+  .card { width: 100%; }
+  .card-header { height: 48px; }
+  .avatar { width: 64px; height: 64px; margin-top: -32px; }
+  .avatar-silhouette { width: 30px; height: 30px; }
+  .sidebar { width: 35%; padding: 0 16px 16px 0; }
+  .main-area { padding: 14px 14px; }
+  .task-text { font-size: 10px; }
+  .question-overlay { max-width: 100%; padding: 14px 14px; }
+  .q-question { font-size: 12.5px; }
+  .option-btn { font-size: 11.5px; padding: 7px 10px; }
+  .instruction-text { font-size: 11px; }
+}
+@media (max-width: 640px) {
+  body { padding: 12px; }
+  .card-body { flex-direction: column; height: auto; min-height: 500px; }
+  .sidebar { width: 100%; border-left: none; border-bottom: 1px solid rgba(255,255,255,0.08); padding: 0 16px 14px; align-items: flex-start; }
+  .avatar { width: 54px; height: 54px; margin-top: -27px; }
+  .sidebar-title { margin-top: 6px; }
+  .task-list { flex-direction: row; flex-wrap: wrap; gap: 4px; }
+  .task-item { padding: 4px 8px; border-right: none; border-bottom: 2px solid transparent; }
+  .task-item.active { border-right-color: transparent; border-bottom-color: #5b9bd5; }
+  .task-text { font-size: 10px; }
+  .main-area { min-height: 420px; padding: 16px 12px; }
+  .card-header { height: 46px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Back to room (hidden when in iframe, visible when standalone) -->
+<div class="page-back" id="pageBack">
+  <a href="index.html" class="back-btn">← חזרה לחדר</a>
+</div>
+<script>
+// Hide back button when loaded inside iframe
+if (window !== window.top) {
+  document.getElementById('pageBack').style.display = 'none';
+}
+</script>
+
+<div class="card">
+  <div class="card-header">
+    <div class="header-avatar"><svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="8" r="4" opacity="0.6"/><path d="M12 14c-6 0-8 3-8 5v1h16v-1c0-2-2-5-8-5z" opacity="0.5"/></svg></div>
+    <div class="header-title">כרטיס עובד: מנהל.ת אגף</div>
+    <div class="header-icons">
+      <div class="header-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M5.5 21a8.38 8.38 0 0 1 13 0"/></svg></div>
+      <div class="header-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></div>
+    </div>
+  </div>
+
+  <div class="card-body">
+    <div class="sidebar">
+      <div class="avatar">
+        <svg class="avatar-silhouette" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="8" r="4" opacity="0.6"/>
+          <path d="M12 14c-6 0-8 3-8 5v1h16v-1c0-2-2-5-8-5z" opacity="0.5"/>
+        </svg>
+      </div>
+      <div class="sidebar-title">משימות על סדר היום</div>
+      <ul class="task-list" id="taskList"></ul>
+    </div>
+
+    <div class="main-area">
+      <div class="question-overlay">
+        <div class="progress-bar">
+          <span class="progress-text" id="progressText">שאלה 1 מתוך 3</span>
+          <div class="progress-dots" id="progressDots"></div>
+        </div>
+        <div class="question-container" id="questionContainer"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card-progress">
+    <div class="card-progress-fill" id="progressFill"></div>
+  </div>
+</div>
+
+<script src="tasks-data.js"></script>
+<script>
+// ==================== DATA ====================
+
+let currentTaskIndex = 0;
+let activeTask = allTasks.find(t => t.enabled && t.questions) || allTasks[0];
+let totalQuestions = activeTask.questions ? activeTask.questions.length : 0;
+
+// ==================== STATE ====================
+
+let currentQuestionIndex = 0;
+let answered = false;
+let selectedOptions = new Set();
+let tfSelected = null;
+let completedQuestions = new Set();
+let taskCompleted = false;
+let completedTasks = new Set(JSON.parse(localStorage.getItem('completedTasks') || '[]'));
+let missionAnswers = {}; // {taskId: {qIdx: {type, ...answerData}}}
+let isReplaying = false; // skip POST + delays during replay
+let rankingOrder = []; // current ordering (array of original indices)
+let gridRatings = []; // 2D array [rowIdx][colIdx] = rating value (0-5 or null)
+
+// ==================== SVG TEMPLATES ====================
+
+// ==================== GOOGLE FORMS SILENT POST ====================
+
+const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLScxdTFPSPwdmpU5YttksA8xzFfXhxxxnX30Zvdt01xIILjg_A/formResponse';
+
+// Keyed by [taskId][qIdx]. See tasks-data.js for task ids (0,1,2,6,3,4,5 across missions 1-7).
+// For rating-grid: { cells: [[entryId per row] per col] }  — cells[colIdx][rowIdx]
+// For checkbox+other: { main: entryId, other: entryId }
+// For ranking+followup: { ranking: entryId, followup: entryId }
+const ENTRY_IDS = {
+  0: {  // M1 — טיפול ב-3 תקנים לא מאוישים
+    0: 'entry.237986081',          // M1Q1 text
+    1: 'entry.274759964',    // M1Q2 truefalse
+    2: 'entry.864177272',        // M1Q3 checkbox
+    3: 'entry.2136757749',         // M1Q4 checkbox
+    4: 'entry.1785824053',          // M1Q5 checkbox
+    5: 'entry.1769817462'           // M1Q6 radio
+  },
+  1: {  // M2 — סיום העסקה
+    0: 'entry.289752158',          // M2Q1 text
+    1: 'entry.1186079543'       // M2Q2 checkbox
+  },
+  2: {  // M3 — מבקר המדינה / ייצוג הולם
+    0: 'entry.1868294558',           // M3Q1 checkbox
+    1: 'entry.2050182056',     // M3Q2 checkbox
+    2: 'entry.1525985263',          // M3Q3 truefalse
+    3: 'entry.126100404'        // M3Q4 checkbox
+  },
+  6: {  // M4 — ועדת בוחנים / תהליך המיון
+    0: {  // M4Q1 checkbox + other
+      main:  'entry.524081429',
+      other: 'entry.1851229073'
+    },
+    1: {  // M4Q2 rating-grid 3 cols × 4 rows — cells[colIdx][rowIdx]
+      cells: [
+        ['entry.1476487938', 'entry.1832848135', 'entry.1464701257', 'entry.1146050364'],
+        ['entry.649685056', 'entry.1995665938', 'entry.271600926', 'entry.1998647175'],
+        ['entry.500589639', 'entry.423978330', 'entry.52320004', 'entry.787975321']
+      ]
+    },
+    2: {  // M4Q3 rating-grid 3 cols × 4 rows — cells[colIdx][rowIdx]
+      cells: [
+        ['entry.764434953', 'entry.1537320777', 'entry.1548699405', 'entry.763659834'],
+        ['entry.2008775556', 'entry.1509871992', 'entry.1164207363', 'entry.150568463'],
+        ['entry.343786247', 'entry.1047942234', 'entry.156716420', 'entry.924728669']
+      ]
+    }
+  },
+  3: {  // M5 — תקנים לא תואמים עומס האגף
+    0: {  // M5Q1 ranking + followup
+      ranking:  'entry.1605775931',
+      followup: 'entry.1119897347'
+    }
+  },
+  4: {  // M6 — עובד מצטיין שוקל לעזוב
+    0: 'entry.1004084556'        // M6Q1 checkbox pick-3
+  },
+  5: {  // M7 — בונוס נציב חדש
+    0: 'entry.881786653'               // M7Q1 text-multi flat
+  }
+};
+
+// Composite dispatch: called with taskId + qIdx. answerObj shape depends on type.
+function submitToForms(taskId, qIdx, answerObj) {
+  var taskMap = ENTRY_IDS[taskId];
+  if (!taskMap) return;
+  var qMap = taskMap[qIdx];
+  if (!qMap) return;
+  var params = new URLSearchParams();
+  if (typeof qMap === 'string') {
+    // Simple: single entry ID. Append every value (supports multi-value checkbox).
+    (answerObj.values || []).forEach(function(v) { if (v != null && v !== '') params.append(qMap, String(v)); });
+  } else if (qMap.cells) {
+    // Rating grid: answerObj.ratings is [row][col]; map keeps cells[col][row].
+    var ratings = answerObj.ratings || [];
+    for (var r = 0; r < ratings.length; r++) {
+      for (var c = 0; c < (ratings[r] || []).length; c++) {
+        var val = ratings[r][c];
+        if (val != null && qMap.cells[c] && qMap.cells[c][r]) params.append(qMap.cells[c][r], String(val));
+      }
+    }
+  } else if (qMap.main) {
+    // Checkbox with free-text 'other'
+    (answerObj.values || []).forEach(function(v) { if (v != null && v !== '') params.append(qMap.main, String(v)); });
+    if (answerObj.otherText) params.append(qMap.other, answerObj.otherText);
+  } else if (qMap.ranking) {
+    // Ranking + followup
+    if (answerObj.orderString) params.append(qMap.ranking, answerObj.orderString);
+    if (answerObj.followup) params.append(qMap.followup, answerObj.followup);
+  }
+  // URLSearchParams serialisation is UTF-8 safe, no charset fiddling needed.
+  doFormPost(params);
+}
+
+function doFormPost(params, attempt) {
+  attempt = attempt || 1;
+  fetch(FORM_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    body: params
+  }).then(function() {
+    retryQueue();
+  }).catch(function() {
+    if (attempt < 3) {
+      setTimeout(function() { doFormPost(params, attempt + 1); }, 2000);
+    } else {
+      saveToRetryQueue(typeof params === 'string' ? params : params.toString());
+      showSyncToast();
+    }
+  });
+}
+
+function saveToRetryQueue(bodyStr) {
+  var q = JSON.parse(localStorage.getItem('formRetryQueue') || '[]');
+  q.push(bodyStr);
+  localStorage.setItem('formRetryQueue', JSON.stringify(q));
+}
+
+function retryQueue() {
+  var q = JSON.parse(localStorage.getItem('formRetryQueue') || '[]');
+  if (!q.length) return;
+  var item = q.shift();
+  localStorage.setItem('formRetryQueue', JSON.stringify(q));
+  fetch(FORM_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+    body: item
+  }).catch(function() {
+    q.unshift(item);
+    localStorage.setItem('formRetryQueue', JSON.stringify(q));
+  });
+}
+
+function showSyncToast() {
+  var el = document.getElementById('syncToast');
+  if (!el) return;
+  el.textContent = '\u26A0 התשובה נשמרה מקומית, תסונכרן כשהרשת תחזור';
+  el.classList.add('visible');
+  setTimeout(function() { el.classList.remove('visible'); }, 5000);
+}
+
+// ==================== SVG TEMPLATES ====================
+
+const checkSvg = `<svg class="check-icon" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="2 6 5 9 10 3"/></svg>`;
+const xSvg = `<svg class="x-icon" viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="10" y2="10"/><line x1="10" y1="2" x2="2" y2="10"/></svg>`;
+
+// ==================== SCENARIO BAR (persistent above questions) ====================
+
+function scenarioBar() {
+  var scenario = activeTask.scenario;
+  if (!scenario) return '';
+  return `
+    <div class="scenario-bar">
+      <span class="scenario-icon">\uD83D\uDCCB</span>
+      <div class="scenario-text">${scenario}</div>
+    </div>
+  `;
+}
+
+function prevQuestion() {
+  if (currentQuestionIndex > 0) {
+    currentQuestionIndex--;
+    renderQuestion();
+    document.querySelector('.question-overlay').scrollTop = 0;
+  }
+}
+
+function navButtons() {
+  var prevBtn = currentQuestionIndex > 0
+    ? `<button class="nav-btn prev-btn-nav" onclick="prevQuestion()">\u2192 \u05D4\u05E7\u05D5\u05D3\u05DD</button>`
+    : '';
+  var nextLabel = currentQuestionIndex < totalQuestions - 1 ? '\u05D4\u05D1\u05D0 \u2190' : '\u05E1\u05D9\u05D5\u05DD';
+  var nextBtn = `<button class="next-btn" onclick="nextQuestion()">${nextLabel}</button>`;
+  return `
+    <div class="nav-buttons" id="nextBtnWrap">
+      ${prevBtn}
+      ${nextBtn}
+    </div>
+  `;
+}
+
+const RESPONSES_URL = 'https://script.google.com/macros/s/AKfycbwajEV0eOHxFObIW2VkzRQNqQc_PWommiS7sxiBPITWTMHC2HYsa0YZYdZFn_yie1eW/exec';
+const GROUP_RESPONSE_QUESTIONS = new Set(['M4Q2', 'M4Q3', 'M5Q1', 'M6Q1']);
+
+function groupKeyForQuestion(taskId, qIdx) {
+  var idToMission = {0:1, 1:2, 2:3, 6:4, 3:5, 4:6, 5:7};
+  var m = idToMission[taskId];
+  return m ? ('M' + m + 'Q' + (qIdx + 1)) : null;
+}
+
+function fetchGroupResponses(qKey) {
+  return fetch(RESPONSES_URL + '?q=' + encodeURIComponent(qKey))
+    .then(function(r) { return r.json(); })
+    .catch(function(e) { console.warn('group responses fetch failed', e); return null; });
+}
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, function(c) {
+    return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+  });
+}
+
+function renderBars(rows) {
+  // rows: [{ label, fillPct, badge, sortHint }]
+  if (!rows.length) return '';
+  var html = '<div class="group-bars">';
+  rows.forEach(function(r) {
+    html += '<div class="group-bar-row">'
+      + '<div class="group-bar-label">' + escHtml(r.label) + '</div>'
+      + '<div class="group-bar-track"><div class="group-bar-fill" style="width:' + r.fillPct + '%"></div></div>'
+      + '<div class="group-bar-count">' + r.badge + '</div>'
+      + '</div>';
+  });
+  html += '</div>';
+  return html;
+}
+
+function renderCheckboxData(data) {
+  var counts = data.counts || {};
+  var total = data.submissions_answering || 0;
+  var entries = Object.keys(counts).map(function(k){return [k, counts[k]]}).sort(function(a,b){return b[1]-a[1]});
+  if (!entries.length) return '';
+  var maxCount = entries[0][1];
+  return renderBars(entries.map(function(p) {
+    var pct = Math.round((p[1]/total)*100);
+    return { label: p[0], fillPct: Math.round((p[1]/maxCount)*100), badge: p[1] + ' (' + pct + '%)' };
+  }));
+}
+
+function renderGridData(data) {
+  var cells = data.cells || [];
+  if (!cells.length) return '';
+  return renderBars(cells.map(function(c) {
+    var pct = Math.round(((c.avg - 1) / 4) * 100);
+    return { label: c.label, fillPct: Math.max(0, pct), badge: c.avg.toFixed(1) + ' (' + c.count + ')' };
+  }));
+}
+
+function renderRankingData(data) {
+  var options = data.options || [];
+  if (!options.length) return '';
+  return renderBars(options.map(function(o) {
+    var pct = Math.round(((5 - o.avg) / 4) * 100);
+    return { label: o.label, fillPct: Math.max(0, pct), badge: '#' + o.avg.toFixed(1) + ' (' + o.count + ')' };
+  }));
+}
+
+function maybeRenderGroupResponses() {
+  if (!activeTask) return;
+  var qIdx = currentQuestionIndex;
+  var qKey = groupKeyForQuestion(activeTask.id, qIdx);
+  if (!qKey || !GROUP_RESPONSE_QUESTIONS.has(qKey)) return;
+
+  var exp = document.getElementById('explanation');
+  if (!exp) return;
+  var inner = exp.querySelector('.explanation-inner');
+  if (!inner) return;
+  var container = inner.querySelector('.group-responses');
+  if (!container) {
+    container = document.createElement('div');
+    container.className = 'group-responses';
+    container.innerHTML = '<div class="group-responses-empty">\u05D8\u05D5\u05E2\u05DF...</div>';
+    inner.appendChild(container);
+  }
+
+  fetchGroupResponses(qKey).then(function(data) {
+    if (!data) {
+      container.innerHTML = '<div class="group-responses-empty">\u05DC\u05D0 \u05E0\u05D9\u05EA\u05DF \u05DC\u05D8\u05E2\u05D5\u05DF \u05EA\u05E9\u05D5\u05D1\u05D5\u05EA \u05DB\u05E8\u05D2\u05E2</div>';
+      return;
+    }
+    var answered = data.submissions_answering || 0;
+    if (!answered) {
+      container.innerHTML = '<div class="group-responses-empty">\u05E2\u05D3\u05D9\u05D9\u05DF \u05D0\u05D9\u05DF \u05EA\u05E9\u05D5\u05D1\u05D5\u05EA \u05DE\u05D4\u05E7\u05D1\u05D5\u05E6\u05D4</div>';
+      return;
+    }
+    var body = '';
+    if (data.type === 'checkbox') body = renderCheckboxData(data);
+    else if (data.type === 'grid')    body = renderGridData(data);
+    else if (data.type === 'ranking') body = renderRankingData(data);
+    else body = '<div class="group-responses-empty">(\u05E1\u05D5\u05D2 \u05E9\u05D0\u05DC\u05D4 \u05DC\u05D0 \u05E0\u05EA\u05DE\u05DA \u05E2\u05D3\u05D9\u05D9\u05DF)</div>';
+
+    var html = '<div class="group-responses-head">\u05EA\u05E9\u05D5\u05D1\u05D5\u05EA \u05D4\u05E7\u05D1\u05D5\u05E6\u05D4 (' + answered + ' \u05DE\u05E9\u05EA\u05EA\u05E4\u05D9\u05DD)</div>' + body;
+    container.innerHTML = html;
+  });
+}
+
+function explanationBlock(q, headerLabel) {
+  var content = q.explanation || q.sampleAnswer || '';
+  var label = headerLabel || '\u05D4\u05E1\u05D1\u05E8';
+  var summary = q.summary && q.summary.trim ? q.summary.trim() : '';
+  var hasSummary = summary.length > 0;
+  var summaryHtml = hasSummary
+    ? '<div class="ai-summary-box"><div class="ai-summary-tag">*summarised by AI</div><div class="ai-summary-text">' + summary + '</div></div>'
+    : '';
+  var innerClass = 'explanation-inner' + (hasSummary ? ' explanation-inner--with-summary' : '');
+  return `
+    <div class="explanation" id="explanation">
+      <div class="${innerClass}">
+        ${summaryHtml}
+        <div class="explanation-header">
+          <span class="explanation-icon">\u2139\uFE0F</span>
+          <span>${label}</span>
+        </div>
+        <div class="explanation-text">${content}</div>
+      </div>
+    </div>
+  `;
+}
+
+
+// ==================== RENDER ====================
+
+function renderProgressDots() {
+  const dotsContainer = document.getElementById('progressDots');
+  dotsContainer.innerHTML = activeTask.questions.map((q, i) => {
+    let cls = '';
+    if (completedQuestions.has(i)) cls = 'done';
+    else if (i === currentQuestionIndex) cls = 'active';
+    const clickable = completedQuestions.has(i) && i !== currentQuestionIndex;
+    const attrs = clickable ? `onclick="jumpToQuestion(${i})" style="cursor:pointer"` : '';
+    return `<div class="progress-dot ${cls}" ${attrs}></div>`;
+  }).join('');
+}
+
+function jumpToQuestion(idx) {
+  if (idx === currentQuestionIndex) return;
+  if (!completedQuestions.has(idx) && idx !== currentQuestionIndex) return;
+  currentQuestionIndex = idx;
+  renderQuestion();
+  document.querySelector('.question-overlay').scrollTop = 0;
+}
+
+function renderTaskList() {
+  const list = document.getElementById('taskList');
+  list.innerHTML = allTasks.map((t) => {
+    let cls = '';
+    if (!t.enabled || !t.questions) cls = 'disabled-task';
+    else if (t.id === activeTask.id) cls = 'active';
+    if (completedTasks.has(t.id)) cls += ' completed';
+    const badge = (!t.enabled || !t.questions) ? `<span class="task-badge">\u05D1\u05E7\u05E8\u05D5\u05D1</span>` : '';
+    const clickable = t.enabled && t.questions && t.id !== activeTask.id;
+    const attrs = clickable ? `onclick="switchTask(${t.id})" style="cursor:pointer"` : '';
+    return `
+      <li class="task-item ${cls}" data-id="${t.id}" ${attrs}>
+        <span class="task-bullet"></span>
+        <span class="task-text">${t.task}</span>
+        ${badge}
+        <span class="task-check">\u2713</span>
+      </li>
+    `;
+  }).join('');
+}
+
+function triggerAnimation() {
+  const container = document.getElementById('questionContainer');
+  container.style.animation = 'none';
+  container.offsetHeight;
+  container.style.animation = 'fadeSlideIn 0.4s ease forwards';
+}
+
+function renderQuestion() {
+  const container = document.getElementById('questionContainer');
+  const q = activeTask.questions[currentQuestionIndex];
+  answered = false;
+  selectedOptions.clear();
+  tfSelected = null;
+  triggerAnimation();
+
+  if (q.type === 'checkbox') renderCheckboxQuestion(container, q);
+  else if (q.type === 'truefalse') renderTrueFalseQuestion(container, q);
+  else if (q.type === 'text') renderTextQuestion(container, q);
+  else if (q.type === 'radio') renderRadioQuestion(container, q);
+  else if (q.type === 'ranking') renderRankingQuestion(container, q);
+  else if (q.type === 'rating-grid') renderRatingGridQuestion(container, q);
+  else if (q.type === 'text-multi') renderTextMultiQuestion(container, q);
+
+  document.getElementById('progressText').textContent = `\u05E9\u05D0\u05DC\u05D4 ${currentQuestionIndex + 1} \u05DE\u05EA\u05D5\u05DA ${totalQuestions}`;
+  renderTaskList();
+  renderProgressDots();
+  updateProgress();
+  replayAnswer();
+}
+
+function replayAnswer() {
+  const taskAnswers = missionAnswers[activeTask.id];
+  if (!taskAnswers) return;
+  const stored = taskAnswers[currentQuestionIndex];
+  if (!stored) return;
+  isReplaying = true;
+  try {
+    if (stored.type === 'checkbox') {
+      stored.selected.forEach(function(i) {
+        selectedOptions.add(i);
+        var btn = document.querySelectorAll('.option-btn')[i];
+        if (btn) btn.classList.add('selected');
+      });
+      if (stored.otherText) {
+        var input = document.getElementById('otherInput');
+        if (input) {
+          input.value = stored.otherText;
+          onOtherInputChange();
+        }
+      }
+      checkAnswers();
+    } else if (stored.type === 'tf') {
+      selectTF(stored.value);
+    } else if (stored.type === 'text') {
+      var ta = document.getElementById('textAnswer');
+      if (ta) ta.value = stored.value;
+      submitText();
+    } else if (stored.type === 'radio') {
+      selectRadio(stored.index);
+    } else if (stored.type === 'ranking') {
+      rankingOrder = stored.order.slice();
+      renderRankingList();
+      var ta = document.getElementById('rankingFollowup');
+      if (ta) ta.value = stored.followup || '';
+      submitRanking();
+    } else if (stored.type === 'rating-grid') {
+      gridRatings = stored.ratings.map(function(row) { return row.slice(); });
+      renderGridSelects();
+      submitRatingGrid();
+    } else if (stored.type === 'text-multi') {
+      stored.values.forEach(function(v, i) {
+        var itemEl = document.querySelector('.text-multi-input[data-idx="' + i + '"][data-kind="item"]');
+        var basisEl = document.querySelector('.text-multi-input[data-idx="' + i + '"][data-kind="basis"]');
+        if (itemEl) itemEl.value = v.item || '';
+        if (basisEl) basisEl.value = v.basis || '';
+      });
+      submitTextMulti();
+    }
+  } finally {
+    isReplaying = false;
+  }
+}
+
+function renderCheckboxQuestion(container, q) {
+  container.innerHTML = `
+    ${scenarioBar()}
+    <div class="instruction-section">
+      <span class="instruction-icon">\uD83D\uDD0D</span>
+      <div class="instruction-content">
+        <div class="instruction-label">\u05D4\u05E0\u05D7\u05D9\u05D4</div>
+        <div class="instruction-text">${q.instruction}</div>
+      </div>
+    </div>
+    <div class="q-question">
+      ${q.question}
+      <div class="q-subtitle">${q.subtitle}</div>
+    </div>
+    <div class="options-list" id="optionsList">
+      ${q.options.map((opt, i) => `
+        <button class="option-btn" data-index="${i}" onclick="toggleOption(${i})">
+          <span class="option-checkbox">${checkSvg}${xSvg}</span>
+          <span>${opt.text}</span>
+          <span class="option-result"></span>
+        </button>
+      `).join('')}
+    </div>
+    ${q.otherOption ? `
+    <div class="other-option" id="otherOption">
+      <span class="other-option-label">\u05D0\u05D7\u05E8:</span>
+      <input type="text" class="other-input" id="otherInput" placeholder="\u05DB\u05EA\u05D1\u05D5 \u05D2\u05D5\u05E8\u05DD \u05D0\u05D7\u05E8..." oninput="onOtherInputChange()">
+    </div>
+    ` : ''}
+    <div class="check-btn-wrap" id="checkBtnWrap">
+      <button class="check-btn" id="checkBtn" onclick="checkAnswers()">\u05D1\u05D3\u05D5\u05E7 \u05EA\u05E9\u05D5\u05D1\u05D5\u05EA</button>
+    </div>
+    ${explanationBlock(q)}
+    ${navButtons()}
+  `;
+}
+
+function renderTrueFalseQuestion(container, q) {
+  container.innerHTML = `
+    ${scenarioBar()}
+    <div class="instruction-section">
+      <span class="instruction-icon">\uD83D\uDD0D</span>
+      <div class="instruction-content">
+        <div class="instruction-label">\u05D4\u05E0\u05D7\u05D9\u05D4</div>
+        <div class="instruction-text">${q.instruction}</div>
+      </div>
+    </div>
+    <div class="q-question">${q.question}</div>
+    <div class="tf-options" id="tfOptions">
+      <button class="tf-btn" data-value="true" onclick="selectTF(true)">
+        <span class="tf-icon">\u2713</span>
+        <span>\u05E0\u05DB\u05D5\u05DF</span>
+      </button>
+      <button class="tf-btn" data-value="false" onclick="selectTF(false)">
+        <span class="tf-icon">\u2717</span>
+        <span>\u05DC\u05D0 \u05E0\u05DB\u05D5\u05DF</span>
+      </button>
+    </div>
+    ${explanationBlock(q)}
+    ${navButtons()}
+  `;
+}
+
+function renderTextQuestion(container, q) {
+  container.innerHTML = `
+    ${scenarioBar()}
+    <div class="instruction-section">
+      <span class="instruction-icon">\uD83D\uDD0D</span>
+      <div class="instruction-content">
+        <div class="instruction-label">\u05D4\u05E0\u05D7\u05D9\u05D4</div>
+        <div class="instruction-text">${q.instruction}</div>
+      </div>
+    </div>
+    <div class="q-question">${q.question}</div>
+    <div class="text-answer-wrap">
+      <textarea class="text-answer" id="textAnswer" rows="4" placeholder="\u05DB\u05EA\u05D1\u05D5 \u05DB\u05D0\u05DF..."></textarea>
+    </div>
+    <div class="check-btn-wrap" id="checkBtnWrap">
+      <button class="check-btn" id="checkBtn" onclick="submitText()">\u05E9\u05DC\u05D7 \u05EA\u05E9\u05D5\u05D1\u05D4</button>
+    </div>
+    ${explanationBlock(q, '\u05D3\u05D5\u05D2\u05DE\u05D0 \u05DC\u05EA\u05E9\u05D5\u05D1\u05D4')}
+    ${navButtons()}
+  `;
+}
+
+function submitText() {
+  if (answered) return;
+  answered = true;
+  var text = document.getElementById('textAnswer').value;
+  document.getElementById('textAnswer').disabled = true;
+  document.getElementById('checkBtnWrap').style.display = 'none';
+  if (!isReplaying) {
+    submitToForms(activeTask.id, currentQuestionIndex, {values: [text]});
+    if (!missionAnswers[activeTask.id]) missionAnswers[activeTask.id] = {};
+    missionAnswers[activeTask.id][currentQuestionIndex] = {type: 'text', value: text};
+  }
+  completedQuestions.add(currentQuestionIndex);
+  var d1 = isReplaying ? 0 : 300;
+  var d2 = isReplaying ? 0 : 500;
+  setTimeout(function() { document.getElementById('explanation').classList.add('visible'); maybeRenderGroupResponses(); }, d1);
+  setTimeout(function() { document.getElementById('nextBtnWrap').classList.add('visible'); }, d2);
+  renderProgressDots();
+  updateProgress();
+}
+
+function renderTextMultiQuestion(container, q) {
+  var minItems = q.minItems || 2;
+  var maxItems = q.maxItems || 3;
+  var itemLabel = q.itemLabel || '\u05E8\u05E2\u05D9\u05D5\u05DF';
+  var basisLabel = q.basisLabel || '\u05D1\u05E1\u05D9\u05E1';
+  var itemsHtml = '';
+  for (var i = 0; i < maxItems; i++) {
+    var isOptional = i >= minItems;
+    var optionalText = isOptional ? ' (\u05D0\u05D5\u05E4\u05E6\u05D9\u05D5\u05E0\u05DC\u05D9)' : '';
+    itemsHtml +=
+      '<div class="text-multi-item">' +
+        '<label class="text-multi-label">' + itemLabel + ' ' + (i + 1) + optionalText + '</label>' +
+        '<textarea class="text-multi-input" data-idx="' + i + '" data-kind="item" rows="2"></textarea>' +
+        '<label class="text-multi-label text-multi-basis-label">' + basisLabel + '</label>' +
+        '<textarea class="text-multi-input" data-idx="' + i + '" data-kind="basis" rows="2"></textarea>' +
+      '</div>';
+  }
+  container.innerHTML = `
+    ${scenarioBar()}
+    <div class="instruction-section">
+      <span class="instruction-icon">\uD83D\uDD0D</span>
+      <div class="instruction-content">
+        <div class="instruction-label">\u05D4\u05E0\u05D7\u05D9\u05D4</div>
+        <div class="instruction-text">${q.instruction}</div>
+      </div>
+    </div>
+    <div class="q-question">${q.question}</div>
+    <div class="text-multi-wrap">${itemsHtml}</div>
+    <div class="check-btn-wrap" id="checkBtnWrap">
+      <button class="check-btn" id="checkBtn" onclick="submitTextMulti()">\u05E9\u05DC\u05D7 \u05EA\u05E9\u05D5\u05D1\u05D4</button>
+    </div>
+    ${explanationBlock(q, '\u05D3\u05D5\u05D2\u05DE\u05D0 \u05DC\u05EA\u05E9\u05D5\u05D1\u05D4')}
+    ${navButtons()}
+  `;
+}
+
+function submitTextMulti() {
+  if (answered) return;
+  answered = true;
+  var inputs = document.querySelectorAll('.text-multi-input');
+  var values = [];
+  inputs.forEach(function(el) {
+    el.disabled = true;
+    var idx = parseInt(el.getAttribute('data-idx'));
+    var kind = el.getAttribute('data-kind');
+    if (!values[idx]) values[idx] = {item: '', basis: ''};
+    values[idx][kind] = el.value;
+  });
+  document.getElementById('checkBtnWrap').style.display = 'none';
+  if (!isReplaying) {
+    var flat = values.map(function(v, i) {
+      return (i + 1) + '. ' + (v.item || '-') + ' | \u05D1\u05E1\u05D9\u05E1: ' + (v.basis || '-');
+    }).join(' || ');
+    submitToForms(activeTask.id, currentQuestionIndex, {values: [flat]});
+    if (!missionAnswers[activeTask.id]) missionAnswers[activeTask.id] = {};
+    missionAnswers[activeTask.id][currentQuestionIndex] = {type: 'text-multi', values: values};
+  }
+  completedQuestions.add(currentQuestionIndex);
+  var d1 = isReplaying ? 0 : 300;
+  var d2 = isReplaying ? 0 : 500;
+  setTimeout(function() { document.getElementById('explanation').classList.add('visible'); maybeRenderGroupResponses(); }, d1);
+  setTimeout(function() { document.getElementById('nextBtnWrap').classList.add('visible'); }, d2);
+  renderProgressDots();
+  updateProgress();
+}
+
+function renderRankingQuestion(container, q) {
+  rankingOrder = q.options.map(function(_, i) { return i; });
+  container.innerHTML = `
+    ${scenarioBar()}
+    <div class="instruction-section">
+      <span class="instruction-icon">\uD83D\uDD0D</span>
+      <div class="instruction-content">
+        <div class="instruction-label">\u05D4\u05E0\u05D7\u05D9\u05D4</div>
+        <div class="instruction-text">${q.instruction}</div>
+      </div>
+    </div>
+    <div class="q-question">${q.question}</div>
+    <div class="ranking-list" id="rankingList"></div>
+    <div class="ranking-followup-wrap">
+      <label class="ranking-followup-label">${q.followupPrompt}</label>
+      <textarea class="text-answer" id="rankingFollowup" rows="2" placeholder="\u05DB\u05EA\u05D1\u05D5 \u05D7\u05D9\u05E1\u05E8\u05D5\u05DF..."></textarea>
+    </div>
+    <div class="check-btn-wrap" id="checkBtnWrap">
+      <button class="check-btn" id="checkBtn" onclick="submitRanking()">\u05E9\u05DC\u05D7 \u05EA\u05E9\u05D5\u05D1\u05D4</button>
+    </div>
+    ${explanationBlock(q, '\u05D3\u05D5\u05D2\u05DE\u05D0 \u05DC\u05EA\u05E9\u05D5\u05D1\u05D4')}
+    ${navButtons()}
+  `;
+  renderRankingList();
+}
+
+function renderRankingList() {
+  var q = activeTask.questions[currentQuestionIndex];
+  var list = document.getElementById('rankingList');
+  if (!list) return;
+  var n = q.options.length;
+  list.innerHTML = q.options.map(function(optText, origIdx) {
+    var currentRank = rankingOrder.indexOf(origIdx) + 1;
+    var optsHtml = '';
+    for (var r = 1; r <= n; r++) {
+      var sel = r === currentRank ? ' selected' : '';
+      optsHtml += '<option value="' + r + '"' + sel + '>' + r + '</option>';
+    }
+    var disabled = answered ? 'disabled' : '';
+    return `
+      <div class="ranking-item">
+        <select class="ranking-select" onchange="setRankingRank(${origIdx}, parseInt(this.value))" ${disabled}>
+          ${optsHtml}
+        </select>
+        <span class="ranking-text">${optText}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function setRankingRank(origIdx, newRank) {
+  if (answered) return;
+  var currentPos = rankingOrder.indexOf(origIdx);
+  var newPos = newRank - 1;
+  if (currentPos === newPos) return;
+  var tmp = rankingOrder[currentPos];
+  rankingOrder[currentPos] = rankingOrder[newPos];
+  rankingOrder[newPos] = tmp;
+  renderRankingList();
+}
+
+function submitRanking() {
+  if (answered) return;
+  answered = true;
+  var q = activeTask.questions[currentQuestionIndex];
+  var followup = document.getElementById('rankingFollowup').value;
+  document.getElementById('rankingFollowup').disabled = true;
+  document.querySelectorAll('.ranking-btn').forEach(function(b) { b.disabled = true; });
+  document.getElementById('checkBtnWrap').style.display = 'none';
+  if (!isReplaying) {
+    var orderedLabels = rankingOrder.map(function(i) { return (rankingOrder.indexOf(i) + 1) + '. ' + q.options[i]; });
+    submitToForms(activeTask.id, currentQuestionIndex, {orderString: orderedLabels.join(' | '), followup: followup});
+    if (!missionAnswers[activeTask.id]) missionAnswers[activeTask.id] = {};
+    missionAnswers[activeTask.id][currentQuestionIndex] = {type: 'ranking', order: rankingOrder.slice(), followup: followup};
+  }
+  completedQuestions.add(currentQuestionIndex);
+  var d1 = isReplaying ? 0 : 300;
+  var d2 = isReplaying ? 0 : 500;
+  setTimeout(function() { document.getElementById('explanation').classList.add('visible'); maybeRenderGroupResponses(); }, d1);
+  setTimeout(function() { document.getElementById('nextBtnWrap').classList.add('visible'); }, d2);
+  renderProgressDots();
+  updateProgress();
+}
+
+function renderRatingGridQuestion(container, q) {
+  var scaleMin = (typeof q.scaleMin === 'number') ? q.scaleMin : 1;
+  var scaleMax = (typeof q.scaleMax === 'number') ? q.scaleMax : 5;
+  gridRatings = q.rows.map(function() {
+    return q.columns.map(function() { return null; });
+  });
+  var headerCells = q.columns.map(function(col) {
+    return '<th class="grid-col-label">' + col + '</th>';
+  }).join('');
+  var bodyRows = q.rows.map(function(row, rIdx) {
+    var cells = q.columns.map(function(_, cIdx) {
+      var optsHtml = '<option value="">\u2013</option>';
+      for (var v = scaleMin; v <= scaleMax; v++) {
+        optsHtml += '<option value="' + v + '">' + v + '</option>';
+      }
+      return '<td class="grid-cell"><select class="grid-select" data-row="' + rIdx + '" data-col="' + cIdx + '" onchange="setGridRating(' + rIdx + ',' + cIdx + ',this.value)">' + optsHtml + '</select></td>';
+    }).join('');
+    var descHtml = row.desc ? '<div class="grid-row-desc">' + row.desc + '</div>' : '';
+    return '<tr><th class="grid-row-label"><div class="grid-row-name">' + row.name + '</div>' + descHtml + '</th>' + cells + '</tr>';
+  }).join('');
+  var scaleHint = q.scaleHint || (scaleMin + ' = \u05DB\u05DC\u05DC \u05DC\u05D0 \u00B7 ' + scaleMax + ' = \u05DE\u05E6\u05D5\u05D9\u05DF');
+  container.innerHTML = `
+    ${scenarioBar()}
+    <div class="instruction-section">
+      <span class="instruction-icon">\uD83D\uDD0D</span>
+      <div class="instruction-content">
+        <div class="instruction-label">\u05D4\u05E0\u05D7\u05D9\u05D4</div>
+        <div class="instruction-text">${q.instruction}</div>
+      </div>
+    </div>
+    <div class="q-question">${q.question}</div>
+    <div class="grid-scale-hint">${scaleHint}</div>
+    <table class="rating-grid-table">
+      <thead><tr><th></th>${headerCells}</tr></thead>
+      <tbody>${bodyRows}</tbody>
+    </table>
+    <div class="check-btn-wrap" id="checkBtnWrap">
+      <button class="check-btn" id="checkBtn" onclick="submitRatingGrid()">\u05E9\u05DC\u05D7 \u05EA\u05E9\u05D5\u05D1\u05D4</button>
+    </div>
+    ${explanationBlock(q, '\u05D3\u05D5\u05D2\u05DE\u05D0 \u05DC\u05EA\u05E9\u05D5\u05D1\u05D4')}
+    ${navButtons()}
+  `;
+}
+
+function renderGridSelects() {
+  document.querySelectorAll('.grid-select').forEach(function(sel) {
+    var r = parseInt(sel.getAttribute('data-row'));
+    var c = parseInt(sel.getAttribute('data-col'));
+    var val = gridRatings[r] && gridRatings[r][c];
+    sel.value = val == null ? '' : String(val);
+  });
+}
+
+function setGridRating(rowIdx, colIdx, value) {
+  if (answered) return;
+  gridRatings[rowIdx][colIdx] = value === '' ? null : parseInt(value);
+}
+
+function submitRatingGrid() {
+  if (answered) return;
+  answered = true;
+  document.querySelectorAll('.grid-select').forEach(function(s) { s.disabled = true; });
+  document.getElementById('checkBtnWrap').style.display = 'none';
+  if (!isReplaying) {
+    var flat = [];
+    gridRatings.forEach(function(row, rIdx) {
+      row.forEach(function(v, cIdx) {
+        flat.push('r' + rIdx + 'c' + cIdx + '=' + (v == null ? '-' : v));
+      });
+    });
+    submitToForms(activeTask.id, currentQuestionIndex, {ratings: gridRatings});
+    if (!missionAnswers[activeTask.id]) missionAnswers[activeTask.id] = {};
+    missionAnswers[activeTask.id][currentQuestionIndex] = {type: 'rating-grid', ratings: gridRatings.map(function(row) { return row.slice(); })};
+  }
+  completedQuestions.add(currentQuestionIndex);
+  var d1 = isReplaying ? 0 : 300;
+  var d2 = isReplaying ? 0 : 500;
+  setTimeout(function() { document.getElementById('explanation').classList.add('visible'); maybeRenderGroupResponses(); }, d1);
+  setTimeout(function() { document.getElementById('nextBtnWrap').classList.add('visible'); }, d2);
+  renderProgressDots();
+  updateProgress();
+}
+
+function renderRadioQuestion(container, q) {
+  container.innerHTML = `
+    ${scenarioBar()}
+    <div class="instruction-section">
+      <span class="instruction-icon">\uD83D\uDD0D</span>
+      <div class="instruction-content">
+        <div class="instruction-label">\u05D4\u05E0\u05D7\u05D9\u05D4</div>
+        <div class="instruction-text">${q.instruction}</div>
+      </div>
+    </div>
+    <div class="q-question">${q.question}</div>
+    <div class="options-list" id="optionsList">
+      ${q.options.map((opt, i) => `
+        <button class="option-btn" data-index="${i}" onclick="selectRadio(${i})">
+          <span class="option-radio"></span>
+          <span>${opt.text}</span>
+          <span class="option-result"></span>
+        </button>
+      `).join('')}
+    </div>
+    ${explanationBlock(q)}
+    ${navButtons()}
+  `;
+}
+
+function selectRadio(index) {
+  if (answered) return;
+  answered = true;
+  var q = activeTask.questions[currentQuestionIndex];
+  var buttons = document.querySelectorAll('.option-btn');
+  buttons.forEach(function(btn, i) {
+    btn.classList.add('disabled');
+    var isCorrect = q.options[i].correct;
+    var isSelected = (i === index);
+    if (isCorrect) { btn.classList.add('correct-checked'); btn.querySelector('.option-result').textContent = '\u2714'; }
+    else if (isSelected && !isCorrect) { btn.classList.add('wrong-checked'); btn.querySelector('.option-result').textContent = '\u2718'; }
+  });
+  if (!isReplaying) {
+    submitToForms(activeTask.id, currentQuestionIndex, {values: [q.options[index].text]});
+    if (!missionAnswers[activeTask.id]) missionAnswers[activeTask.id] = {};
+    missionAnswers[activeTask.id][currentQuestionIndex] = {type: 'radio', index: index};
+  }
+  completedQuestions.add(currentQuestionIndex);
+  var d1 = isReplaying ? 0 : 300;
+  var d2 = isReplaying ? 0 : 500;
+  setTimeout(function() { document.getElementById('explanation').classList.add('visible'); maybeRenderGroupResponses(); }, d1);
+  setTimeout(function() { document.getElementById('nextBtnWrap').classList.add('visible'); }, d2);
+  renderProgressDots();
+  updateProgress();
+}
+
+function toggleOption(index) {
+  if (answered) return;
+  const btn = document.querySelectorAll('.option-btn')[index];
+  if (selectedOptions.has(index)) {
+    selectedOptions.delete(index);
+    btn.classList.remove('selected');
+  } else {
+    selectedOptions.add(index);
+    btn.classList.add('selected');
+  }
+}
+
+function selectTF(value) {
+  if (answered) return;
+  answered = true;
+  tfSelected = value;
+  const q = activeTask.questions[currentQuestionIndex];
+  const isCorrect = (value === q.correctAnswer);
+  const buttons = document.querySelectorAll('.tf-btn');
+  buttons.forEach(btn => {
+    btn.classList.add('disabled');
+    const btnValue = btn.dataset.value === 'true';
+    if (btnValue === q.correctAnswer) btn.classList.add('correct-answer');
+    else if (btnValue === value && !isCorrect) btn.classList.add('wrong-answer');
+    else btn.classList.add('unselected-neutral');
+  });
+  if (!isReplaying) {
+    submitToForms(activeTask.id, currentQuestionIndex, {values: [value ? 'נכון' : 'לא נכון']});
+    if (!missionAnswers[activeTask.id]) missionAnswers[activeTask.id] = {};
+    missionAnswers[activeTask.id][currentQuestionIndex] = {type: 'tf', value: value};
+  }
+  completedQuestions.add(currentQuestionIndex);
+  const d1 = isReplaying ? 0 : 300;
+  const d2 = isReplaying ? 0 : 500;
+  setTimeout(() => { document.getElementById('explanation').classList.add('visible'); maybeRenderGroupResponses(); }, d1);
+  setTimeout(() => { document.getElementById('nextBtnWrap').classList.add('visible'); }, d2);
+  renderProgressDots();
+  updateProgress();
+}
+
+function onOtherInputChange() {
+  var input = document.getElementById('otherInput');
+  var wrap = document.getElementById('otherOption');
+  if (!input || !wrap) return;
+  if (input.value.trim()) wrap.classList.add('active');
+  else wrap.classList.remove('active');
+}
+
+function checkAnswers() {
+  if (answered) return;
+  answered = true;
+  const q = activeTask.questions[currentQuestionIndex];
+  const buttons = document.querySelectorAll('.option-btn');
+  document.getElementById('checkBtnWrap').style.display = 'none';
+  var selectedTexts = [];
+  buttons.forEach((btn, i) => {
+    const isCorrect = q.options[i].correct;
+    const isSelected = selectedOptions.has(i);
+    if (isSelected) selectedTexts.push(q.options[i].text);
+    btn.classList.add('disabled');
+    if (q.noFeedback) return;
+    btn.classList.remove('selected');
+    if (isCorrect && isSelected) { btn.classList.add('correct-checked'); btn.querySelector('.option-result').textContent = '\u2714'; }
+    else if (isCorrect && !isSelected) { btn.classList.add('correct-missed'); btn.querySelector('.option-result').textContent = '\u2714'; }
+    else if (!isCorrect && isSelected) { btn.classList.add('wrong-checked'); btn.querySelector('.option-result').textContent = '\u2718'; }
+  });
+  // Capture "אחר" free-text value if present
+  var otherInput = document.getElementById('otherInput');
+  var otherText = '';
+  if (otherInput) {
+    otherText = otherInput.value.trim();
+    if (otherText) {
+      var otherWrap = document.getElementById('otherOption');
+      if (otherWrap) otherWrap.classList.add('correct-checked');
+    }
+    otherInput.disabled = true;
+  }
+  if (!isReplaying) {
+    submitToForms(activeTask.id, currentQuestionIndex, {values: selectedTexts, otherText: otherText});
+    if (!missionAnswers[activeTask.id]) missionAnswers[activeTask.id] = {};
+    missionAnswers[activeTask.id][currentQuestionIndex] = {type: 'checkbox', selected: Array.from(selectedOptions), otherText: otherText};
+  }
+  completedQuestions.add(currentQuestionIndex);
+  const d1 = isReplaying ? 0 : 300;
+  const d2 = isReplaying ? 0 : 500;
+  setTimeout(() => { document.getElementById('explanation').classList.add('visible'); maybeRenderGroupResponses(); }, d1);
+  setTimeout(() => { document.getElementById('nextBtnWrap').classList.add('visible'); }, d2);
+  renderTaskList();
+  renderProgressDots();
+  updateProgress();
+}
+
+function nextQuestion() {
+  if (currentQuestionIndex < totalQuestions - 1) {
+    currentQuestionIndex++;
+    renderQuestion();
+    document.querySelector('.question-overlay').scrollTop = 0;
+  } else {
+    taskCompleted = true;
+    showCompletion();
+  }
+}
+
+function showCompletion() {
+  completedTasks.add(activeTask.id);
+  localStorage.setItem('completedTasks', JSON.stringify([...completedTasks]));
+  const container = document.getElementById('questionContainer');
+  triggerAnimation();
+  var nextTask = allTasks.find(t => t.enabled && t.questions && !completedTasks.has(t.id));
+  var nextBtn = nextTask
+    ? `<button class="next-btn" onclick="switchTask(${nextTask.id})" style="margin-top:10px">\u05DE\u05E9\u05D9\u05DE\u05D4 \u05D4\u05D1\u05D0\u05D4: ${nextTask.task} \u2190</button>`
+    : '';
+  var factText = activeTask.completionFact || 'החשב הכללי החליט להעלות את הסיבוס מ-22ש"ח ל-30ש"ח ליום';
+  container.innerHTML = `
+    <div class="completion-msg">
+      <div class="completion-icon">\u2728</div>
+      <div class="completion-title">כל הכבוד, המשימה הושלמה!</div>
+      <div class="completion-sub">${factText}</div>
+      ${nextBtn}
+    </div>
+  `;
+  renderTaskList();
+  updateProgress();
+}
+
+function switchTask(taskId) {
+  activeTask = allTasks.find(t => t.id === taskId);
+  totalQuestions = activeTask.questions.length;
+  currentQuestionIndex = 0;
+  completedQuestions.clear();
+  if (missionAnswers[taskId]) {
+    Object.keys(missionAnswers[taskId]).forEach(function(k) { completedQuestions.add(parseInt(k)); });
+  }
+  selectedOptions.clear();
+  tfSelected = null;
+  taskCompleted = false;
+  answered = false;
+  if (completedQuestions.size > 0) {
+    renderQuestion();
+  } else {
+    renderIntro();
+  }
+}
+
+function restart() {
+  currentQuestionIndex = 0;
+  completedQuestions.clear();
+  selectedOptions.clear();
+  tfSelected = null;
+  taskCompleted = false;
+  answered = false;
+  introShown = false;
+  renderIntro();
+}
+
+function updateProgress() {
+  const pct = (completedQuestions.size / totalQuestions) * 100;
+  document.getElementById('progressFill').style.width = pct + '%';
+}
+
+// ==================== INTRO SCREEN ====================
+
+let introShown = false;
+
+function renderIntro() {
+  const container = document.getElementById('questionContainer');
+  triggerAnimation();
+  document.getElementById('progressText').textContent = '';
+  document.getElementById('progressDots').innerHTML = '';
+
+  var scenarioText = activeTask.scenario || '';
+  container.innerHTML = `
+    <div class="instruction-section" style="margin-bottom: 16px; padding: 14px 14px;">
+      <span class="instruction-icon" style="font-size: 20px;">\uD83D\uDCCB</span>
+      <div class="instruction-content">
+        <div class="instruction-label" style="font-size: 12px; margin-bottom: 6px;">\u05EA\u05E8\u05D7\u05D9\u05E9</div>
+        <div class="instruction-text" style="font-size: 13.5px;">${scenarioText}</div>
+      </div>
+    </div>
+    <div style="display: flex; justify-content: flex-start;">
+      <button class="next-btn" onclick="startQuestions()" style="padding: 9px 28px; font-size: 13px;">\u05D9\u05D0\u05DC\u05DC\u05D4, \u05D1\u05D5\u05D0\u05D5 \u05E0\u05EA\u05D7\u05D9\u05DC \u2190</button>
+    </div>
+  `;
+
+  renderTaskList();
+}
+
+function startQuestions() {
+  introShown = true;
+  renderQuestion();
+  document.querySelector('.question-overlay').scrollTop = 0;
+}
+
+// ==================== INIT ====================
+
+renderIntro();
+</script>
+<div id="syncToast" class="sync-toast"></div>
+
+</body>
+</html>

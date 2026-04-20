@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>ייצוג הולם - תמונת מצב</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Heebo', sans-serif;
+    direction: rtl;
+    background: transparent;
+    padding: 6px 8px;
+}
+.page { max-width: 100%; }
+
+.page-title {
+    text-align: center;
+    margin-bottom: 4px;
+}
+.page-title h1 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.chart-img {
+    display: block;
+    width: 92%;
+    margin: 0 auto 8px;
+}
+
+.hero-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 0 4%;
+    margin-bottom: 6px;
+}
+
+.hero-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 10px 12px 8px;
+    border: 1px solid #e5e7eb;
+    position: relative;
+    overflow: hidden;
+}
+.hero-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 4px; height: 100%;
+}
+.hero-card.blue::after { background: #0A69A5; }
+.hero-card.coral::after { background: #e76f51; }
+
+.hero-num {
+    font-size: 30px;
+    font-weight: 900;
+    line-height: 1.1;
+    font-feature-settings: 'tnum';
+    margin-bottom: 2px;
+}
+.hero-card.blue .hero-num { color: #0A69A5; }
+.hero-card.coral .hero-num { color: #e76f51; }
+
+.hero-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+}
+.hero-sub {
+    font-size: 10.5px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+.highlight-coral {
+    color: #e76f51;
+    font-weight: 800;
+}
+.highlight-blue {
+    color: #0A69A5;
+    font-weight: 800;
+}
+
+.sources {
+    font-size: 11px;
+    color: #5a6577;
+    text-align: right;
+    padding: 4px 4% 0;
+}
+.sources a {
+    color: #4a90a4;
+    text-decoration: underline;
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+    <img src="images/data-representation.png" class="chart-img" alt="תמונת מצב לייצוג אוכלוסיות מרקע מגוון בשירות המדינה 2024" />
+
+    <div class="hero-row">
+        <div class="hero-card blue">
+            <div class="hero-num">~63%</div>
+            <div class="hero-title">נשים מכלל העובדים</div>
+            <div class="hero-sub">נשים מהוות כ-63% מכלל העובדים בשירות המדינה.</div>
+        </div>
+        <div class="hero-card coral">
+            <div class="hero-num">9%</div>
+            <div class="hero-title">נשים בדרג השכר הגבוה ביותר</div>
+            <div class="hero-sub">כ-46% בניהול בכיר, כ-40% בדרג מוביל (היעד 50%), <span class="highlight-coral">רק 9% בדרג 130</span>.</div>
+        </div>
+        <div class="hero-card coral">
+            <div class="hero-num">83.5%</div>
+            <div class="hero-title">יחס שכר נשים לגברים</div>
+            <div class="hero-sub"><span class="highlight-blue">שיפור מ-73% ב-2005</span> - אבל עדיין <span class="highlight-coral">פער של 16.5%</span> ב-2023.</div>
+        </div>
+    </div>
+
+    <div class="sources">
+        מקור - ייצוג אוכלוסיות מגוונות: <a href="https://lookerstudio.google.com/u/0/reporting/10180a3d-b694-45c1-ad89-3bee6d1270eb" target="_blank">נציבות שירות המדינה, דשבורד אוכלוסיות גיוון - מערכת אמו"ן</a>, נתוני 2024.<br>
+        מקור - נתוני נשים: <a href="https://www.gov.il/BlobFolder/dynamiccollectorresultitem/salary-supervisor-report-gov-offices-2023/he/salary-supervisor-reports_salary-supervisor-report-gov-offices-2023-full-version.pdf" target="_blank">דוח הממונה על השכר (2025, נתוני 2023), עמ' 20</a> - יחס שכר נשים/גברים; דשבורד אמו"ן; שקוף, <a href="https://shakuf.co.il/59654" target="_blank">"9% נשים בדרג הבכיר ביותר"</a>.
+    </div>
+</div>
+
+</body>
+</html>

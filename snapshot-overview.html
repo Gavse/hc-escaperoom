@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>תמונת מצב: שירות המדינה בישראל</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Heebo', sans-serif;
+    direction: rtl;
+    background: transparent;
+    padding: 10px 10px;
+    min-height: 100vh;
+}
+
+.page { max-width: 100%; margin: 0 auto; }
+
+/* ── Page Title ── */
+.page-title {
+    text-align: center;
+    margin-bottom: 12px;
+}
+.page-title h1 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1e293b;
+}
+.page-title .sub {
+    font-size: 13px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+/* ── Section Headers ── */
+.sec-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    margin-top: 14px;
+}
+.sec-head .sh-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+.sec-head h2 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #1e293b;
+}
+.sec-head .line {
+    flex: 1;
+    height: 1.5px;
+    background: #d1d5db;
+}
+
+/* ── Hero Cards (Internal) ── */
+.hero-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.hero-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 14px 14px 12px;
+    border: 1px solid #e5e7eb;
+    position: relative;
+    overflow: hidden;
+}
+.hero-card::after {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 4px; height: 100%;
+}
+.hero-card.blue::after { background: #0A69A5; }
+.hero-card.amber::after { background: #d97706; }
+
+.hero-num {
+    font-size: 40px;
+    font-weight: 900;
+    line-height: 1.1;
+    font-feature-settings: 'tnum';
+    margin-bottom: 4px;
+}
+.hero-card.blue .hero-num { color: #0A69A5; }
+.hero-card.amber .hero-num { color: #b45309; }
+
+.hero-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 2px;
+}
+.hero-sub {
+    font-size: 11.5px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+.hero-cite {
+    display: inline-block;
+    font-size: 10.5px;
+    color: #0d9488;
+    font-weight: 500;
+    text-decoration: underline;
+}
+.hero-cite:hover { color: #0f766e; }
+.stat-tiers {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+.tier-row {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+}
+.tier-num {
+    font-size: 16px;
+    font-weight: 800;
+    color: #0A69A5;
+    font-feature-settings: 'tnum';
+    white-space: nowrap;
+}
+.tier-lbl {
+    font-size: 11px;
+    color: #475569;
+    line-height: 1.35;
+}
+.tier-cite {
+    color: #0d9488;
+    font-weight: 500;
+    text-decoration: underline;
+}
+.tier-cite:hover { color: #0f766e; }
+/* ── Salary rows ── */
+.salary-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.salary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 4px 0;
+    border-bottom: 1px dashed #e5e7eb;
+}
+.salary-row:last-child { border-bottom: none; }
+.salary-row.highlight {
+    background: #e8f1fe;
+    margin: 0 -8px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    border-bottom: none;
+}
+.sal-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+}
+.sal-val {
+    font-size: 18px;
+    font-weight: 900;
+    color: #0A69A5;
+    font-feature-settings: 'tnum';
+}
+
+.hero-badge {
+    display: inline-block;
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 10.5px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 6px;
+}
+
+/* ── OECD Section ── */
+.oecd-row {
+    display: grid;
+    grid-template-columns: 1.15fr 0.9fr 1.15fr;
+    gap: 12px;
+}
+
+.oecd-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 12px 12px 10px;
+    border: 1px solid #d5e4c4;
+    border-right: 4px solid #97BF0D;
+}
+
+.oecd-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #334155;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.oecd-title i { font-size: 15px; color: #0A69A5; }
+
+/* ── Comparison Bars ── */
+.cmp-rows { display: flex; flex-direction: column; gap: 7px; margin-bottom: 8px; }
+
+.cmp-row {
+    display: grid;
+    grid-template-columns: 64px 1fr 40px;
+    align-items: center;
+    gap: 6px;
+}
+.cmp-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #475569;
+    text-align: right;
+}
+.cmp-track {
+    height: 20px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    position: relative;
+}
+.cmp-bar {
+    height: 100%;
+    border-radius: 4px;
+    min-width: 2px;
+}
+.cmp-bar.il { background: #0A69A5; }
+.cmp-bar.avg { background: #0d9488; }
+.cmp-bar.med { background: #97BF0D; }
+.cmp-bar.il-warn { background: #e76f51; }
+
+.cmp-val {
+    font-size: 13px;
+    font-weight: 800;
+    text-align: left;
+    font-feature-settings: 'tnum';
+}
+.cmp-val.il { color: #0A69A5; }
+.cmp-val.avg { color: #0d9488; }
+.cmp-val.med { color: #6a8a0a; }
+.cmp-val.warn { color: #e76f51; }
+
+.cmp-note {
+    font-size: 11px;
+    color: #6b7280;
+    line-height: 1.5;
+    margin-top: 4px;
+}
+
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #fef2f2;
+    color: #b91c1c;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    margin-bottom: 4px;
+}
+.rank-badge i { font-size: 13px; }
+.rank-badge.neutral {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+/* ── Big stat (centralization) ── */
+.big-stat {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+.big-stat .num {
+    font-size: 38px;
+    font-weight: 900;
+    color: #dc2626;
+    line-height: 1;
+    font-feature-settings: 'tnum';
+}
+.big-stat .unit {
+    font-size: 13px;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.oecd-note {
+    font-size: 11px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* ── Age Profile (OECD stacked bar style) ── */
+.age-chart { margin-bottom: 6px; }
+
+.age-row {
+    display: grid;
+    grid-template-columns: 55px 1fr;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+}
+.age-row-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #334155;
+    text-align: right;
+}
+.age-stack {
+    display: flex;
+    height: 28px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+.age-seg {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+    min-width: 28px;
+}
+/* Young (18-34): OECD green */
+.age-seg.young { background: #97BF0D; }
+/* Middle (35-54): OECD blue */
+.age-seg.mid { background: #0A69A5; }
+/* Older (55+): warm coral */
+.age-seg.old { background: #e76f51; }
+
+.age-legend {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    margin-top: 6px;
+}
+.age-legend span {
+    font-size: 10px;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.age-legend .dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+}
+.dot-young { background: #97BF0D; }
+.dot-mid { background: #0A69A5; }
+.dot-old { background: #e76f51; }
+
+.age-insight {
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #6a8a0a;
+    margin-top: 6px;
+}
+
+/* ── Sources ── */
+.sources {
+    margin-top: 20px;
+    padding-top: 12px;
+    border-top: 1px solid #e5e7eb;
+}
+.src-section {
+    font-size: 11px;
+    color: #6b7280;
+    line-height: 1.6;
+    direction: rtl;
+}
+.src-section a {
+    color: #0d9488;
+    text-decoration: underline;
+}
+.src-section a:hover { color: #0f766e; }
+</style>
+</head>
+<body>
+
+<div class="page">
+    <div class="page-title">
+        <h1>תמונת מצב: שירות המדינה בישראל</h1>
+    </div>
+
+    <!-- ═══ Section 1: Internal ═══ -->
+    <div class="sec-head">
+        <div class="sh-icon" style="background:#e8f1fe; color:#0A69A5;"><i class="ti ti-building-community"></i></div>
+        <h2>מבט פנימי</h2>
+        <div class="line"></div>
+    </div>
+
+    <div class="hero-row">
+        <div class="hero-card blue">
+            <div class="hero-num">84,740</div>
+            <div class="hero-title">עובדים בשירות המדינה</div>
+            <div class="hero-sub">משרדי ממשלה, יחידות סמך ומערכת הבריאות <a class="hero-cite" href="https://govextra.gov.il/civil-service-commission/diversity/home/" target="_blank">(דשבורד אמו"ן, 2024)</a></div>
+            <div class="stat-tiers">
+                <div class="tier-row">
+                    <span class="tier-num">35,817</span>
+                    <span class="tier-lbl">במשרדי הממשלה בלבד <a class="tier-cite" href="https://www.gov.il/BlobFolder/news/press_25032026c/he/PressReleases_files_%D7%A9%D7%A2%D7%A8%20%D7%94%D7%9B%D7%A0%D7%99%D7%A1%D7%94%20%D7%9C%D7%A9%D7%99%D7%A8%D7%95%D7%AA%20%D7%94%D7%9E%D7%93%D7%99%D7%A0%D7%94%20-%20%D7%93%D7%95%D7%97%20%D7%9E%D7%A1%D7%9B%D7%9D.pdf" target="_blank">(שער הכניסה, 2026)</a></span>
+                </div>
+                <div class="tier-row">
+                    <span class="tier-num">119,400</span>
+                    <span class="tier-lbl">משרות שכיר בפיקוח נש"מ - כולל גם מערכת הביטחון, תאגידים ומקומיים ישראלים <a class="tier-cite" href="https://www.cbs.gov.il/he/publications/DocLib/2025/y_labor0325/e3_02.pdf" target="_blank">(הלמ"ס, 2022)</a></span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-card blue">
+            <div class="hero-num">~27%</div>
+            <div class="hero-title">חוזים מיוחדים</div>
+            <div class="hero-sub">כלכלנים, משפטנים, מומחים ועובדים חיוניים - שלא בהסכם קיבוצי <a class="hero-cite" href="https://www.gov.il/BlobFolder/dynamiccollectorresultitem/salary-supervisor-report-gov-offices-2023/he/salary-supervisor-reports_salary-supervisor-report-gov-offices-2023-full-version.pdf" target="_blank">(דוח הממונה על השכר, 2023)</a></div>
+        </div>
+        <div class="hero-card blue">
+            <div class="hero-title" style="margin-bottom:8px">שכר למשרה</div>
+            <div class="salary-rows">
+                <div class="salary-row">
+                    <span class="sal-label">שכר ממוצע</span>
+                    <span class="sal-val">₪19,736</span>
+                </div>
+                <div class="salary-row">
+                    <span class="sal-label">שכר חציוני</span>
+                    <span class="sal-val">₪17,482</span>
+                </div>
+                <div class="salary-row highlight">
+                    <span class="sal-label">עלות העסקה ממוצעת</span>
+                    <span class="sal-val">₪25,329</span>
+                </div>
+            </div>
+            <div class="hero-sub" style="margin-top:8px"><a class="hero-cite" href="https://www.gov.il/BlobFolder/dynamiccollectorresultitem/salary-supervisor-report-gov-offices-2023/he/salary-supervisor-reports_salary-supervisor-report-gov-offices-2023-full-version.pdf" target="_blank">(דוח הממונה על השכר, 2023)</a></div>
+        </div>
+    </div>
+
+    <!-- ═══ Section 2: OECD ═══ -->
+    <div class="sec-head">
+        <div class="sh-icon" style="background:#f1f7e2; color:#6a8a0a;"><i class="ti ti-world"></i></div>
+        <h2>השוואה בינלאומית - ישראל מול ה-OECD</h2>
+        <div class="line"></div>
+    </div>
+
+    <div class="oecd-row">
+        <!-- Card A: Employment share — scale 10-28% to amplify gaps -->
+        <div class="oecd-card">
+            <div class="oecd-title"><i class="ti ti-users-group"></i> תעסוקה בממשל כללי <span style="font-size:10px; font-weight:500; color:#94a3b8;">(2022)</span></div>
+            <div class="cmp-rows">
+                <div class="cmp-row">
+                    <div class="cmp-label">ישראל</div>
+                    <div class="cmp-track">
+                        <!-- 20.1% on scale 10-28: (20.1-10)/(28-10) = 56.1% -->
+                        <div class="cmp-bar il-warn" style="width:56.1%"></div>
+                    </div>
+                    <div class="cmp-val warn">20.1%</div>
+                </div>
+                <div class="cmp-row">
+                    <div class="cmp-label">ממוצע OECD</div>
+                    <div class="cmp-track">
+                        <!-- 18.4%: (18.4-10)/18 = 46.7% -->
+                        <div class="cmp-bar avg" style="width:46.7%"></div>
+                    </div>
+                    <div class="cmp-val avg">18.4%</div>
+                </div>
+                <div class="cmp-row">
+                    <div class="cmp-label">חציון OECD</div>
+                    <div class="cmp-track">
+                        <!-- 16.8%: (16.8-10)/18 = 37.8% -->
+                        <div class="cmp-bar med" style="width:37.8%"></div>
+                    </div>
+                    <div class="cmp-val med">16.8%</div>
+                </div>
+            </div>
+            <div class="rank-badge" style="background:#fff7ed; color:#c2410c;"><i class="ti ti-sort-ascending-2"></i> מקום 11 מתוך 35 מדינות OECD</div>
+            <div class="cmp-note">כאחד מכל חמישה מועסקים בישראל עובד בגוף ממשל כלשהו (כולל כלל רמות הממשל - מרכזי, מקומי וכו').</div>
+        </div>
+
+        <!-- Card B: Centralization -->
+        <div class="oecd-card">
+            <div class="oecd-title"><i class="ti ti-hierarchy-3"></i> ריכוזיות התעסוקה בממשל <span style="font-size:10px; font-weight:500; color:#94a3b8;">(2019)</span></div>
+            <div class="big-stat">
+                <span class="num">~80%</span>
+                <span class="unit">בממשל המרכזי</span>
+            </div>
+            <div class="rank-badge"><i class="ti ti-alert-triangle"></i> שלישית בין מדינות ה-OECD</div>
+            <div class="oecd-note">מהגבוהות ביותר ב-OECD גם מבין המדינות היוניטריות, אחרי טורקיה ואירלנד.</div>
+        </div>
+
+        <!-- Card C: Age profile (OECD stacked bar style) -->
+        <div class="oecd-card">
+            <div class="oecd-title"><i class="ti ti-calendar-stats"></i> פרופיל גיל <span style="font-size:10px; font-weight:500; color:#94a3b8;">(2023)</span></div>
+            <div class="age-chart">
+                <div class="age-row">
+                    <div class="age-row-label">ישראל</div>
+                    <div class="age-stack">
+                        <div class="age-seg young" style="width:30%">30%</div>
+                        <div class="age-seg mid" style="width:50%">50%</div>
+                        <div class="age-seg old" style="width:20%">20%</div>
+                    </div>
+                </div>
+                <div class="age-row">
+                    <div class="age-row-label">ממוצע OECD</div>
+                    <div class="age-stack">
+                        <div class="age-seg young" style="width:19%">19%</div>
+                        <div class="age-seg mid" style="width:54%">54%</div>
+                        <div class="age-seg old" style="width:27%">27%</div>
+                    </div>
+                </div>
+            </div>
+            <div class="age-legend">
+                <span><span class="dot dot-young"></span> 18-34</span>
+                <span><span class="dot dot-mid"></span> 35-54</span>
+                <span><span class="dot dot-old"></span> 55+</span>
+            </div>
+            <div class="rank-badge" style="background:#f1f7e2; color:#6a8a0a;"><i class="ti ti-leaf"></i> שירות המדינה בישראל צעיר יותר מממוצע ה-OECD</div>
+        </div>
+    </div>
+
+    <!-- Sources -->
+    <div class="sources">
+        <div class="src-section">מבט פנימי: <a href="https://govextra.gov.il/civil-service-commission/diversity/home/" target="_blank">דשבורד אמו"ן, נציבות שירות המדינה (נתוני 2024)</a> · <a href="https://www.gov.il/BlobFolder/news/press_25032026c/he/PressReleases_files_%D7%A9%D7%A2%D7%A8%20%D7%94%D7%9B%D7%A0%D7%99%D7%A1%D7%94%20%D7%9C%D7%A9%D7%99%D7%A8%D7%95%D7%AA%20%D7%94%D7%9E%D7%93%D7%99%D7%A0%D7%94%20-%20%D7%93%D7%95%D7%97%20%D7%9E%D7%A1%D7%9B%D7%9D.pdf" target="_blank">שער הכניסה לשירות המדינה — דוח מסכם, צוות משותף: נציבות שירות המדינה, אגף שכר והסכמי עבודה ואגף תקציבים במשרד האוצר, מרץ 2026</a> · <a href="https://www.cbs.gov.il/he/publications/DocLib/2025/y_labor0325/e3_02.pdf" target="_blank">הלמ"ס לוח 3.2, עובדי מדינה בפיקוח נש"מ (2022)</a> · <a href="https://www.gov.il/BlobFolder/dynamiccollectorresultitem/salary-supervisor-report-gov-offices-2023/he/salary-supervisor-reports_salary-supervisor-report-gov-offices-2023-full-version.pdf" target="_blank">דוח הממונה על השכר במשרדי הממשלה 2023, אגף שכר והסכמי עבודה, משרד האוצר</a>.</div>
+        <div class="src-section">השוואה בינלאומית: <a href="https://www.oecd.org/en/publications/government-at-a-glance-2025_0efd0bcd-en/full-report.html" target="_blank">OECD (2025), <i>Government at a Glance 2025</i>, OECD Publishing, Paris</a>.</div>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>ברוכים הבאים - חדר הבריחה הווירטואלי</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+    --paper-top: #fdfaf4;
+    --paper-bottom: #f5ede0;
+    --paper-edge: #c9b896;
+    --teal: #0d9488;
+    --teal-dark: #0b7a70;
+    --teal-deep: #054d48;
+    --teal-ink: #0b6b64;
+    --rust-soft: #d66a44;
+    --accent-gold: #c49a5a;
+    --ink: #1e293b;
+    --ink-soft: #334155;
+    --muted: #64748b;
+}
+
+body {
+    font-family: 'Heebo', sans-serif;
+    background: transparent;
+    direction: rtl;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+}
+
+.welcome-card {
+    max-width: 620px;
+    width: 100%;
+    background: linear-gradient(180deg, var(--paper-top) 0%, var(--paper-bottom) 100%);
+    border: 1.5px solid var(--paper-edge);
+    border-radius: 14px;
+    box-shadow:
+        0 24px 60px rgba(40, 28, 14, 0.4),
+        0 2px 0 rgba(255, 255, 255, 0.6) inset;
+    padding: 32px 36px 32px;
+    position: relative;
+}
+
+.welcome-card::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0; left: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--teal-ink) 0%, var(--accent-gold) 50%, var(--teal-ink) 100%);
+    border-radius: 14px 14px 0 0;
+}
+
+h1 {
+    font-size: 25px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 20px;
+    line-height: 1.3;
+    text-align: center;
+    letter-spacing: -0.3px;
+}
+
+h1 .divider {
+    display: block;
+    width: 44px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-gold), transparent);
+    margin: 10px auto 8px;
+}
+
+h1 .accent {
+    color: var(--teal-ink);
+    display: block;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+}
+
+p {
+    font-size: 15.5px;
+    line-height: 1.75;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+}
+
+p.lead {
+    font-weight: 600;
+    color: var(--ink);
+}
+
+.room-how {
+    background: #fff;
+    border: 1px solid #e2d9c5;
+    border-right: 4px solid var(--teal-ink);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin: 16px 0 18px;
+}
+
+.room-how p {
+    margin-bottom: 0;
+    font-size: 14.5px;
+}
+.room-how strong { color: var(--teal-ink); font-weight: 800; }
+
+.room-how .reassure {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(11, 107, 100, 0.28);
+    color: var(--ink-soft);
+    font-weight: 500;
+}
+
+.support {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 6px;
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+/* ===== CTA STAMP (from v2 dossier) ===== */
+.cta-wrap {
+    text-align: center;
+    padding-top: 6px;
+}
+
+.cta {
+    display: inline-block;
+    padding: 14px 44px 13px;
+    background: var(--teal-deep);
+    color: #f3e9d2;
+    font-size: 15px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    border: 2px solid var(--teal-deep);
+    outline: 1.5px solid var(--teal-deep);
+    outline-offset: 3px;
+    transform: rotate(-1deg);
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s ease;
+    position: relative;
+    text-align: center;
+    animation: stampBreath 2.6s ease-in-out infinite;
+}
+.cta::before {
+    content: '»';
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-55%);
+    font-size: 20px;
+    color: var(--rust-soft);
+    font-weight: 900;
+}
+.cta::after {
+    content: '«';
+    position: absolute;
+    right: 14px; top: 50%;
+    transform: translateY(-55%);
+    font-size: 20px;
+    color: var(--rust-soft);
+    font-weight: 900;
+}
+.cta:hover {
+    transform: rotate(-1deg) translateY(-2px);
+    background: var(--teal-ink);
+}
+
+@keyframes stampBreath {
+    0%, 100% { transform: rotate(-1deg) translateY(0); }
+    50%      { transform: rotate(-1deg) translateY(-3px); }
+}
+
+@media (max-width: 560px) {
+    .welcome-card { padding: 24px 22px 26px; }
+    h1 { font-size: 22px; }
+    h1 .accent { font-size: 16px; }
+    p { font-size: 14.5px; }
+    .cta { font-size: 13.5px; padding: 12px 36px; }
+}
+</style>
+</head>
+<body>
+
+<div class="welcome-card">
+    <h1>
+        ברוכים הבאים לחדר הבריחה הווירטואלי
+        <span class="divider"></span>
+        <span class="accent">הון אנושי בשירות המדינה</span>
+    </h1>
+
+    <p class="lead">
+        אתן.ם מנהלי.ות אגף במשרד ממשלתי. על סדר היום שלכן.ם יושבות משימות שונות, הדורשות היכרות עם ידע ועקרונות על הון אנושי בשירות המדינה.
+    </p>
+
+    <div class="room-how">
+        <p>
+            החדר מורכב <strong>מכרטיס העובד.ת</strong> - בו המשימות שעל סדר היום (בצד ימין) וההנחיות והשאלות (בצד שמאל) - <strong>וממרכיבי החדר</strong>. לחיצה על כל אחד מהם תוביל למידע על הנושא ותתי-הנושאים שלו (לדוגמה, לחיצה על הלוח תוביל לדשבורד נתונים לפי נושאים).
+        </p>
+        <p class="reassure">
+            אל דאגה - בכל משימה יש הנחיות ברורות על מה עליכן.ם ללחוץ ומה תגלו שם, ולאחר מכן תוכלו לחזור לכרטיס ולענות על השאלות.
+        </p>
+    </div>
+
+    <p class="support">
+        ניתן לפנות עם כל שאלה, בעיה או אי-דיוק לצוות ההתנסות ונשמח לסייע :)
+    </p>
+
+    <div class="cta-wrap">
+        <div class="cta" onclick="if(window.parent&&window.parent.closeWelcome)window.parent.closeWelcome();">לחצו על כרטיס העובד.ת כדי להתחיל</div>
+    </div>
+</div>
+
+</body>
+</html>

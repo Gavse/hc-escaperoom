@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="heebo.css">
+<link rel="stylesheet" href="tabler-icons.min.css">
+<title>בסיס חוקי-נורמטיבי לניהול הון אנושי בשירות המדינה</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: 'Heebo', sans-serif;
+    background: #d8cfc0;
+    direction: rtl;
+    padding: 24px;
+    min-height: 100vh;
+}
+.page { max-width: 560px; margin: 0 auto; }
+
+.back-btn {
+    font-family: 'Heebo', sans-serif;
+    font-size: 15px; font-weight: 700;
+    color: #2c3e5a;
+    background: linear-gradient(180deg, #eaf0f7 0%, #d5deea 100%);
+    border: 1.5px solid #8a9ab0;
+    border-radius: 6px;
+    padding: 7px 18px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 16px;
+}
+
+h1 { font-size: 22px; font-weight: 800; color: #1e293b; margin-bottom: 8px; }
+.intro-box {
+    background: #fff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+}
+.intro-box p { font-size: 14px; line-height: 1.7; color: #334155; }
+
+/* ===== CABINET ===== */
+.cabinet {
+    background: linear-gradient(180deg, #6d4831 0%, #553522 50%, #46291a 100%);
+    border-radius: 6px;
+    padding: 10px 8px;
+    box-shadow:
+        0 12px 40px rgba(0,0,0,0.35),
+        inset 0 1px 0 rgba(255,255,255,0.15),
+        inset 0 -1px 0 rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    position: relative;
+}
+/* Metal edge trim */
+.cabinet::before {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px; right: 3px; bottom: 3px;
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+/* ===== DRAWER ===== */
+.drawer {
+    background: linear-gradient(180deg, #8b6142 0%, #7a5438 40%, #6b482e 100%);
+    border-radius: 3px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.2);
+    box-shadow:
+        0 1px 2px rgba(0,0,0,0.15),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+}
+.drawer:hover:not(.open) {
+    box-shadow:
+        0 2px 6px rgba(0,0,0,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+}
+.drawer.open {
+    transform: translateX(-8px);
+    box-shadow:
+        4px 4px 16px rgba(0,0,0,0.3),
+        inset 0 1px 0 rgba(255,255,255,0.2);
+    z-index: 2;
+}
+
+.drawer-face {
+    display: flex;
+    align-items: center;
+    padding: 0;
+    cursor: pointer;
+    user-select: none;
+    height: 62px;
+    position: relative;
+}
+
+/* Color tab on the side */
+.drawer-tab {
+    width: 6px;
+    height: 100%;
+    flex-shrink: 0;
+}
+.drawer.c1 .drawer-tab { background: #0d9488; }
+.drawer.c2 .drawer-tab { background: #0d9488; }
+.drawer.c3 .drawer-tab { background: #0d9488; }
+.drawer.c4 .drawer-tab { background: #0d9488; }
+.drawer.c5 .drawer-tab { background: #d97706; }
+
+/* Label holder — metal frame with paper inside */
+.label-holder {
+    margin-right: 14px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.label-frame {
+    background: #f5f2ea;
+    border: 1.5px solid #7a5a38;
+    border-radius: 2px;
+    padding: 5px 12px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.label-frame i { font-size: 16px; color: #555; flex-shrink: 0; }
+.label-frame img.drawer-icon { width: 36px; height: 36px; object-fit: contain; border-radius: 4px; flex-shrink: 0; }
+.label-frame .label-text h3 {
+    font-size: 13.5px; font-weight: 800; color: #2a2520;
+    line-height: 1.2;
+}
+.label-frame .label-text p {
+    font-size: 10px; color: #777; line-height: 1.3; margin-top: 1px;
+}
+
+/* Handle — horizontal metal bar */
+.drawer-handle-area {
+    width: 70px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+.drawer-handle {
+    width: 44px;
+    height: 10px;
+    background: linear-gradient(180deg, #c49a5a 0%, #a88040 40%, #8a6830 100%);
+    border-radius: 3px;
+    border: 1px solid #6a4820;
+    box-shadow:
+        0 2px 4px rgba(0,0,0,0.2),
+        inset 0 1px 0 rgba(255,255,255,0.5);
+}
+
+/* ===== DRAWER CONTENT ===== */
+.drawer-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease;
+    background: #f2ece0;
+    border-top: 1px solid transparent;
+}
+.drawer.open .drawer-content {
+    max-height: 2000px;
+    border-top-color: #8b6340;
+}
+.drawer-content-inner {
+    padding: 14px 16px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* ===== CARDS inside drawers ===== */
+.item-card {
+    background: #fff;
+    border: 1px solid #e2e0db;
+    border-radius: 6px;
+    padding: 10px 12px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+}
+.item-card .ic-icon {
+    width: 26px; height: 26px; border-radius: 6px;
+    background: #f0eeea;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; color: #64748b;
+    flex-shrink: 0; margin-top: 2px;
+}
+.item-card h4 { font-size: 12.5px; font-weight: 700; color: #1e293b; margin-bottom: 2px; }
+.item-card p { font-size: 11.5px; line-height: 1.6; color: #64748b; }
+.item-card .source { font-size: 10px; color: #94a3b8; margin-top: 3px; }
+
+.item-card[data-expandable] { cursor: pointer; }
+.item-card .sub-toggle { font-size: 10px; font-weight: 700; color: #0d9488; display: inline-block; margin-top: 3px; }
+.item-card.open .sub-toggle { display: none; }
+.item-card .sub-details {
+    max-height: 0; overflow: hidden;
+    transition: max-height 0.3s ease;
+    list-style: none; padding: 0; margin: 0;
+}
+.item-card.open .sub-details {
+    max-height: 600px;
+    padding-top: 5px; margin-top: 4px;
+    border-top: 1px solid #f1f0ed;
+}
+.item-card .sub-details li {
+    font-size: 11px; line-height: 1.6; color: #64748b;
+    padding: 2px 10px 2px 0; position: relative;
+}
+.item-card .sub-details li::before {
+    content: ''; position: absolute;
+    right: 0; top: 9px;
+    width: 4px; height: 4px; border-radius: 50%;
+    background: #aaa;
+}
+
+.drawer-intro {
+    font-size: 12px; line-height: 1.7; color: #475569;
+    padding: 0 2px 4px;
+}
+.drawer-intro a { color: #92400e; text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+
+    <button class="back-btn" id="pageBack" onclick="window.parent.postMessage('back','*'); history.back();">← חזרה לחדר</button>
+
+    <h1>בסיס חוקי-נורמטיבי לניהול הון אנושי בשירות המדינה</h1>
+
+    <div class="intro-box">
+        <p>ניהול כוח האדם בשירות המדינה מתבצע בהתאם למסגרת חוקית מגובשת. בראש ההיררכיה עומדת חקיקה ראשית של הכנסת, מתחתיה הנחיות היועץ המשפטי לממשלה (פרשנות מחייבת), פסיקת בג"ץ ובית הדין לעבודה, ובתחתית - התקשי"ר (תקנון שירות המדינה) והנחיות נציב שירות המדינה. כל שכבה מגבילה את מרחב הפעולה של מנהלים, ויוצרת מערכת שבה כמעט כל החלטה בנוגע לגיוס, שכר, קידום, משמעת ופרישה מעוגנת בנורמה כתובה.</p>
+    </div>
+
+    <div class="cabinet">
+
+        <!-- DRAWER 1 -->
+        <div class="drawer c1" onclick="toggleDrawer(this)">
+            <div class="drawer-face">
+                <div class="drawer-tab"></div>
+                <div class="label-holder">
+                    <div class="label-frame">
+                        <i class="ti ti-file-certificate"></i>
+                        <div class="label-text">
+                            <h3>חקיקה ראשית</h3>
+                            <p>חוקי היסוד שקובעים את כללי המשחק</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-handle-area"><div class="drawer-handle"></div></div>
+            </div>
+            <div class="drawer-content"><div class="drawer-content-inner">
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-file-certificate"></i></div>
+                    <div>
+                        <h4>חוק שירות המדינה (מינויים), תשי"ט-1959</h4>
+                        <p>החוק המרכזי - קובע את חובת המכרזים, ייצוג הולם, העסקה בחוזים מיוחדים, פיטורים בשל אי-התאמה, ומגדיר את נציב שירות המדינה כסמכות העליונה.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li><strong>סעיף 19</strong> - חובת מכרזים</li>
+                            <li><strong>סעיף 15א</strong> (נוסף ב-1995 והורחב מספר פעמים) - מחייב ייצוג הולם לנשים, ערבים, דרוזים, צ'רקסים, אנשים עם מוגבלות, יוצאי אתיופיה, חרדים ועולים חדשים</li>
+                            <li><strong>סעיף 40</strong> - מאפשר העסקה בחוזים מיוחדים</li>
+                            <li><strong>סעיף 46א</strong> (תיקון 2008) - מאפשר פיטורי עובד בשל אי-התאמה לתפקיד, לאחר שימוע</li>
+                            <li><strong>סעיף 6</strong> - מגדיר את נציב שירות המדינה כסמכות העליונה בכל הנוגע להון אנושי - מינויים, העברות, קידום, ותנאי שירות</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-coins"></i></div>
+                    <div>
+                        <h4>חוק יסודות התקציב, תשמ"ה-1985</h4>
+                        <p>סעיף 29 - סעיף שמסביר חלק מנוקשות השכר בשירות המדינה. כל שינוי בשכר, בתנאי פרישה או בגמלאות טעון אישור שר האוצר. הסכמים בלי אישור - בטלים.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li>בפועל: הממונה על השכר מחזיק בוטו על כל שינוי תגמול בשירות המדינה, ברשויות, בחברות ממשלתיות ובגופים נתמכים.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-gavel"></i></div>
+                    <div>
+                        <h4>חוק שירות המדינה (משמעת), תשכ"ג-1963</h4>
+                        <p>חוק שמסביר חלק מהקושי בפיטורי עובד מדינה. החוק מגדיר בית דין למשמעת עם הליך מעין-שיפוטי מלא: ייצוג, טיעון, ראיות, ערעור.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li>עבירות המשמעת מוגדרות ברשימה פתוחה, הענישה נעה מאזהרה ועד פיטורים</li>
+                            <li>התיישנות: שלוש שנים</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-flag-off"></i></div>
+                    <div>
+                        <h4>חוק שירות המדינה (סיוג פעילות מפלגתית ומגבית כספים), תשי"ט-1959</h4>
+                        <p>חוק שמבסס את ה-DNA הא-פוליטי של שירות המדינה כגוף מקצועי ולא מפלגתי, שמשרת כל ממשלה באותה מקצועיות.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li>אוסר על עובדי מדינה חברות בהנהלת מפלגה, תעמולת בחירות, וביקורת פומבית על מדיניות הממשלה</li>
+                            <li>מחייב תקופת צינון של ארבע שנים לפני כניסה לפוליטיקה (תיקון 2001)</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div></div>
+        </div>
+
+        <!-- DRAWER 2 -->
+        <div class="drawer c2" onclick="toggleDrawer(this)">
+            <div class="drawer-face">
+                <div class="drawer-tab"></div>
+                <div class="label-holder">
+                    <div class="label-frame">
+                        <i class="ti ti-book-2"></i>
+                        <div class="label-text">
+                            <h3>תקשי"ר</h3>
+                            <p>תקנון שירות המדינה - מגיוס ועד פרישה</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-handle-area"><div class="drawer-handle"></div></div>
+            </div>
+            <div class="drawer-content"><div class="drawer-content-inner">
+                <p class="drawer-intro">התקשי"ר הוא ספר הוראות נורמטיבי - אלפי סעיפים שמכסים היבטים שונים של ניהול עובדים בשירות המדינה, מגיוס ועד פרישה. הוא אינו חקיקה פורמלית אלא הנחיות מנהל מחייבות שמוציאה נציבות שירות המדינה. בין היתר, הוא קובע איך נראה מכרז פנימי מול פומבי, תנאי הסף, תקופת נסיון, תנאי הסף לקביעות, איך מחושב קידום בדרגה, מה תהליך לפיטורים, ועד כמה ימי חופשה מגיעים לעובד לפי ותק. הוא מתעדכן באופן שוטף על ידי הנציבות. <a href="https://www.gov.il/apps/nasham/takshir/takshir-tree" target="_blank">לתקשי"ר המלא</a></p>
+            </div></div>
+        </div>
+
+        <!-- DRAWER 3 -->
+        <div class="drawer c3" onclick="toggleDrawer(this)">
+            <div class="drawer-face">
+                <div class="drawer-tab"></div>
+                <div class="label-holder">
+                    <div class="label-frame">
+                        <i class="ti ti-scale"></i>
+                        <div class="label-text">
+                            <h3>הנחיות היועמ"ש</h3>
+                            <p>פרשנות מחייבת שמעצבת גבולות פעולה</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-handle-area"><div class="drawer-handle"></div></div>
+            </div>
+            <div class="drawer-content"><div class="drawer-content-inner">
+                <p class="drawer-intro">הנחיות היועמ"ש בתחום כוח האדם, קובעות כמה עקרונות מעצבים:</p>
+
+                <div class="item-card" onclick="event.stopPropagation()">
+                    <div class="ic-icon"><i class="ti ti-clipboard-list"></i></div>
+                    <div>
+                        <h4>מכרז כברירת מחדל ומעורבות פוליטית</h4>
+                        <p>קבלה לשירות המדינה חייבת להיות דרך מכרז תחרותי פתוח. פטור ממכרז מצומצם ומחייב נימוק ענייני מפורט (הנחיה 1.15). מעורבות הדרג הפוליטי במינויים באמצעות מכרז אסורה (הנחיה 1.1501).</p>
+                    </div>
+                </div>
+
+                <div class="item-card" onclick="event.stopPropagation()">
+                    <div class="ic-icon"><i class="ti ti-key"></i></div>
+                    <div>
+                        <h4>משרת אמון אינה פטור מהחוק</h4>
+                        <p>גם במינויים פוליטיים חלים עקרונות המשפט המנהלי, כולל חובת ייצוג הולם ואיסור שיקולים זרים.</p>
+                        <div class="source">הנחיה 1.1911</div>
+                    </div>
+                </div>
+
+                <div class="item-card" onclick="event.stopPropagation()">
+                    <div class="ic-icon"><i class="ti ti-alert-triangle"></i></div>
+                    <div>
+                        <h4>ניגוד עניינים</h4>
+                        <p>איסור השתתפות בהחלטות שיש בהן ניגוד אישי, משפחתי או כלכלי.</p>
+                        <div class="source">הנחיה 050222</div>
+                    </div>
+                </div>
+
+            </div></div>
+        </div>
+
+        <!-- DRAWER 4 -->
+        <div class="drawer c4" onclick="toggleDrawer(this)">
+            <div class="drawer-face">
+                <div class="drawer-tab"></div>
+                <div class="label-holder">
+                    <div class="label-frame">
+                        <i class="ti ti-gavel"></i>
+                        <div class="label-text">
+                            <h3>פסיקה מנחה</h3>
+                            <p>בג"ץ ובית הדין לעבודה</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-handle-area"><div class="drawer-handle"></div></div>
+            </div>
+            <div class="drawer-content"><div class="drawer-content-inner">
+                <p class="drawer-intro">פסיקת בג"ץ ובית הדין לעבודה עיצבה כמה עקרונות יסוד שמגדירים את גבולות ניהול כוח האדם כמו:</p>
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-ear"></i></div>
+                    <div>
+                        <h4>חובת שימוע</h4>
+                        <p>אי אפשר לפטר עובד מדינה בלי לתת לו לשמוע את הטענות, להתכונן, ולהשמיע את עמדתו. פיטורים ללא שימוע - בטלים.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li><strong>בע"ע 1027/01 גוטרמן (2003)</strong> - קבע את חובת השימוע כחובה מוחלטת</li>
+                            <li>לאחר מכן <strong>תיקון 14 לחוק המינויים (2008)</strong> הוסיף מסלול פיטורים בשל אי-התאמה לאחר שימוע, בלי הליך משמעתי מלא</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-users"></i></div>
+                    <div>
+                        <h4>חובה אקטיבית לייצוג הולם</h4>
+                        <p>לא מספיק לא להפלות - יש חובה אקטיבית לפעול לייצוג.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li><strong>בג"ץ 453/94 (שדולת הנשים, 1994)</strong> - הכיר לראשונה בהעדפה מתקנת</li>
+                            <li><strong>בג"ץ 1363/23 (2025)</strong> - קבע חובה אקטיבית לאתר מועמדות לתפקידים בכירים, ונטל ההוכחה על השר</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="item-card" onclick="event.stopPropagation()">
+                    <div class="ic-icon"><i class="ti ti-ban"></i></div>
+                    <div>
+                        <h4>איסור מינויים פוליטיים</h4>
+                        <p>"מינוי פוליטי מהווה הפרת אמון של הרשות המבצעת כרשות ציבורית, כלפי הציבור; פוגע בעקרון השוויון; פוגע ברמה המקצועית של עובדי הציבור"</p>
+                        <div class="source">בג"ץ 154/98, הסתדרות העובדים הכללית נ' מדינת ישראל</div>
+                    </div>
+                </div>
+
+            </div></div>
+        </div>
+
+        <!-- DRAWER 5 -->
+        <div class="drawer c5" onclick="toggleDrawer(this)">
+            <div class="drawer-face">
+                <div class="drawer-tab"></div>
+                <div class="label-holder">
+                    <div class="label-frame">
+                        <i class="ti ti-certificate"></i>
+                        <div class="label-text">
+                            <h3>החלטות ממשלה</h3>
+                            <p>רפורמות ומהלכים שעיצבו את המערכת</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="drawer-handle-area"><div class="drawer-handle"></div></div>
+            </div>
+            <div class="drawer-content"><div class="drawer-content-inner">
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-refresh"></i></div>
+                    <div>
+                        <h4>רפורמת ניהול ההון האנושי - החלטה 481 (2013)</h4>
+                        <p>ב-2011 הקימה הממשלה ועדה בראשות נציב שירות המדינה (משה דיין) לגיבוש רפורמה מקיפה. הרקע: מערכת ריכוזית שבה כמעט כל החלטת הון אנושי עוברת דרך הנציבות, תהליכי גיוס איטיים, ופער גדל מול שוק העבודה הפרטי.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li>ב-2013 אימצה הממשלה את דוח הוועדה שכללה האצלת סמכויות מהנציבות למשרדים, ייעול תהליכי גיוס ומיון וגמישות ניהולית בהעסקה, פיתוח מקצועי מובנה, וגיבוש קוד אתי</li>
+                            <li>מערכת גיוס מקוונת, כלי סינון דיגיטליים, מכרזים מרובי משרות, כתיבת קוד אתי, הטמעת מערכת הערכת עובדים</li>
+                            <li>האצלת הסמכות לא יושמה ברמה מקיפה.</li>
+                            <li>ביטול המכרזים הפנימיים והארכת תקופת הנסיון ל-5 שנים לא יצאו לפועל עקב הצורך בהסכמת ארגוני העובדים</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-hierarchy"></i></div>
+                    <div>
+                        <h4>סגל בכיר: קדנציות ורוטציה - החלטה 2464 (2015)</h4>
+                        <p>לפני ההחלטה, בכירים יכלו להישאר בתפקיד ללא הגבלה. ההחלטה שינתה את המבנה של השכבה הבכירה ממערכת סטטית למערכת רוטציה.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li>הגדרה ראשונה ל"רשימת סגל בכיר" עם תקופות כהונה קצובות - 4 שנים כתקופת מינימום ו-8 כתקופת מקסימום</li>
+                            <li>שלוש דרגות שכר (1ב-3ב), הסדרי רוטציה מנהלתית</li>
+                            <li>מנגנוני מעבר בתום קדנציה: מסלול א - 5 חודשי הסתגלות; מסלול ב - עד 12.5 חודשים גשר</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-users-group"></i></div>
+                    <div>
+                        <h4>אכיפת ייצוג הולם - החלטה 214 (2013)</h4>
+                        <p>מעבר מעידוד לסנקציות - משרד שלא עומד ביעדי הייצוג ההולם אינו רשאי לגייס עובד חדש ללא אישור הוועדה.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li>הנציבות קובעת את היעדים המשרדיים ובמידה ואין עמידה בהם יש צורך בוועדת חריגים כדי לגייס</li>
+                            <li>כיום יש שחיקה ביישום עקב החרום ומצד שני נסיון לעבור להתערבויות בזמן אמת</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="item-card" data-expandable onclick="event.stopPropagation(); this.classList.toggle('open')">
+                    <div class="ic-icon"><i class="ti ti-scissors"></i></div>
+                    <div>
+                        <h4>הפחתת תקנים - החלטה 2312 (2024)</h4>
+                        <p>חלק ממהלך רחב של משרד האוצר לביצוע התאמות פיסקליות בעקבות עלויות המלחמה. הרחיבה את הפחתת התקנים הלא-מנוצלים, קיצצה בתקציבי כוננות, ואסרה קליטת עובדים חדשים עם רכיב כוננות.</p>
+                        <span class="sub-toggle">פירוט ▼</span>
+                        <ul class="sub-details">
+                            <li>חלה על כלל משרדי הממשלה, ביטוח לאומי ושירות התעסוקה</li>
+                            <li>תקנים שנותרו פנויים מעל שנה יבוטלו לצמיתות</li>
+                            <li>צמצמה דרסטית את רכיב ה"כוננות": הופחת בסיס התקציב לכוננויות, הוקפאה מכסת השעות האישית לעובדים קיימים, וחל איסור על קליטת עובדים חדשים עם רכיב כוננות בשכרם</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div></div>
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+function toggleDrawer(drawer) {
+    drawer.parentElement.querySelectorAll('.drawer.open').forEach(function(d) {
+        if (d !== drawer) d.classList.remove('open');
+    });
+    drawer.classList.toggle('open');
+}
+</script>
+</body>
+</html>
