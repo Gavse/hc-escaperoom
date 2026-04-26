@@ -637,6 +637,14 @@ body {
     margin: 0;
     opacity: 0.85;
   }
+  .mobile-block-bypass {
+    display: inline-block;
+    margin-top: 32px;
+    font-size: 13px;
+    color: rgba(232,213,163,0.4);
+    cursor: pointer;
+    text-decoration: none;
+  }
 }
 
 /* ============================================================
