@@ -601,33 +601,41 @@ body {
   pointer-events: all;
 }
 
-/* Mobile compatibility notice (touch devices only) */
-#mobileNotice { display: none; }
-@media (pointer: coarse) {
-  #mobileNotice {
+/* Mobile block — full screen overlay on touch/small devices */
+#mobileBlock { display: none; }
+@media (pointer: coarse), (max-width: 768px) {
+  #mobileBlock {
     display: flex;
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 10000;
-    background: rgba(0, 0, 0, 0.85);
-    color: #fff;
-    padding: 10px 14px;
-    font-family: 'Heebo', sans-serif;
-    font-size: 14px;
+    inset: 0;
+    z-index: 99999;
+    background: #0f1023;
+    color: #e0d6c8;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
+    font-family: 'Heebo', sans-serif;
     direction: rtl;
   }
-  #mobileNotice button {
-    background: transparent;
-    border: none;
-    color: #fff;
-    font-size: 20px;
-    cursor: pointer;
-    padding: 0 8px;
-    line-height: 1;
+  .mobile-block-inner {
+    text-align: center;
+    padding: 40px 28px;
+    max-width: 420px;
+  }
+  .mobile-block-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+  }
+  #mobileBlock h1 {
+    font-size: 24px;
+    font-weight: 700;
+    margin: 0 0 16px;
+    color: #e8d5a3;
+  }
+  #mobileBlock p {
+    font-size: 16px;
+    line-height: 1.7;
+    margin: 0;
+    opacity: 0.85;
   }
 }
 
