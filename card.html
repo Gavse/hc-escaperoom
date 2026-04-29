@@ -1718,10 +1718,23 @@ function showCompletion() {
   localStorage.setItem('completedTasks', JSON.stringify([...completedTasks]));
   const container = document.getElementById('questionContainer');
   triggerAnimation();
-  var nextTask = allTasks.find(t => t.enabled && t.questions && !completedTasks.has(t.id));
-  var nextBtn = nextTask
-    ? `<button class="next-btn" onclick="switchTask(${nextTask.id})" style="margin-top:10px">\u05DE\u05E9\u05D9\u05DE\u05D4 \u05D4\u05D1\u05D0\u05D4: ${nextTask.task} \u2190</button>`
-    : '';
+  // Find next task by mission order, ignoring `enabled` so locked missions still surface as a label
+  var taskOrder = [0, 1, 2, 6, 3, 4, 5];
+  var idx = taskOrder.indexOf(activeTask.id);
+  var nextTask = null;
+  for (var i = idx + 1; i < taskOrder.length; i++) {
+    var t = allTasks.find(x => x.id === taskOrder[i]);
+    if (t && t.questions) { nextTask = t; break; }
+  }
+  var nextBtn = '';
+  if (nextTask) {
+    if (nextTask.enabled) {
+      nextBtn = `<button class="next-btn" onclick="switchTask(${nextTask.id})" style="margin-top:10px">\u05DE\u05E9\u05D9\u05DE\u05D4 \u05D4\u05D1\u05D0\u05D4: ${nextTask.task} \u2190</button>`;
+    } else {
+      nextBtn = `<div class="next-btn" style="margin-top:10px;opacity:0.7;cursor:default;pointer-events:none">\u05DE\u05E9\u05D9\u05DE\u05D4 \u05D4\u05D1\u05D0\u05D4: ${nextTask.task} \u2190</div>`
+              + `<div style="margin-top:14px;font-weight:800;color:#ffffff;font-size:14px;letter-spacing:0.2px">\u05E9\u05D0\u05E8 \u05D4\u05DE\u05E9\u05D9\u05DE\u05D5\u05EA \u05D9\u05D5\u05E9\u05DC\u05DE\u05D5 \u05D9\u05D7\u05D3 \u05D1\u05D9\u05D5\u05DD \u05E8\u05D0\u05E9\u05D5\u05DF</div>`;
+    }
+  }
   var factText = activeTask.completionFact || 'החשב הכללי החליט להעלות את הסיבוס מ-22ש"ח ל-30ש"ח ליום';
   container.innerHTML = `
     <div class="completion-msg">
