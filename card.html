@@ -776,6 +776,7 @@ if (window !== window.top) {
         break;
       }
     }
+    window.__masterMode = !!unlocked;
     if (unlocked && typeof allTasks !== 'undefined' && Array.isArray(allTasks)) {
       allTasks.forEach(function (t) { t.enabled = true; });
     }
@@ -1124,7 +1125,7 @@ function renderProgressDots() {
     let cls = '';
     if (completedQuestions.has(i)) cls = 'done';
     else if (i === currentQuestionIndex) cls = 'active';
-    const clickable = completedQuestions.has(i) && i !== currentQuestionIndex;
+    const clickable = (completedQuestions.has(i) || window.__masterMode) && i !== currentQuestionIndex;
     const attrs = clickable ? `onclick="jumpToQuestion(${i})" style="cursor:pointer"` : '';
     return `<div class="progress-dot ${cls}" ${attrs}></div>`;
   }).join('');
@@ -1132,7 +1133,7 @@ function renderProgressDots() {
 
 function jumpToQuestion(idx) {
   if (idx === currentQuestionIndex) return;
-  if (!completedQuestions.has(idx) && idx !== currentQuestionIndex) return;
+  if (!completedQuestions.has(idx) && idx !== currentQuestionIndex && !window.__masterMode) return;
   currentQuestionIndex = idx;
   renderQuestion();
   document.querySelector('.question-overlay').scrollTop = 0;
@@ -1187,6 +1188,10 @@ function renderQuestion() {
   renderProgressDots();
   updateProgress();
   replayAnswer();
+  if (window.__masterMode) {
+    var nbw = document.getElementById('nextBtnWrap');
+    if (nbw) nbw.classList.add('visible');
+  }
 }
 
 function replayAnswer() {
