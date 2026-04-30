@@ -762,6 +762,27 @@ if (window !== window.top) {
 
 <script src="tasks-data.js"></script>
 <script>
+// === Unlock override (additive — no effect without ?key) ===
+(function () {
+  try {
+    var KEY = 'master12';
+    var unlocked = localStorage.getItem('roomUnlock') === '1';
+    var sources = [location.search];
+    try { if (window.parent && window.parent !== window) sources.push(window.parent.location.search); } catch (e) {}
+    for (var i = 0; i < sources.length; i++) {
+      if (new URLSearchParams(sources[i]).get('key') === KEY) {
+        localStorage.setItem('roomUnlock', '1');
+        unlocked = true;
+        break;
+      }
+    }
+    if (unlocked && Array.isArray(window.allTasks)) {
+      window.allTasks.forEach(function (t) { t.enabled = true; });
+    }
+  } catch (e) {}
+})();
+</script>
+<script>
 // ==================== DATA ====================
 
 let currentTaskIndex = 0;
