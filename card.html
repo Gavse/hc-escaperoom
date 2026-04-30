@@ -776,8 +776,8 @@ if (window !== window.top) {
         break;
       }
     }
-    if (unlocked && Array.isArray(window.allTasks)) {
-      window.allTasks.forEach(function (t) { t.enabled = true; });
+    if (unlocked && typeof allTasks !== 'undefined' && Array.isArray(allTasks)) {
+      allTasks.forEach(function (t) { t.enabled = true; });
     }
   } catch (e) {}
 })();
